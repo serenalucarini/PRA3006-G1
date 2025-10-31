@@ -1,0 +1,7 @@
+SELECT ?disease ?diseaseLabel ?factor ?factorLabel
+WHERE {
+  ?disease wdt:P5642 wd:Q662860.
+  ?disease wdt:P5642 ?factor
+   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } # Helps get the label in your language, if not, then default for all languages, then en language
+
+  }
