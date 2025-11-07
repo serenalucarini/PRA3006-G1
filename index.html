@@ -106,6 +106,11 @@ d3.json("diseases_risk_factors.json", function( data) {
           padding: 2rem;
           overflow: auto;
         }
+        .title {
+          position: absolute;
+          left: 50%;
+          margin: 0;
+        }
         .footer_date {
           text-align: right;
         }
@@ -116,7 +121,7 @@ d3.json("diseases_risk_factors.json", function( data) {
     <!-- Page content goes between div files -->
     <div class="header">
         <div><a href="">Link to smoking circle</a></div> <!-- anchor tag, works as a hyperlink -->
-        <h1>Smoking</h1>
+        <h1 class="title">Smoking</h1>
         <div><a href="">Link to histograms</a></div>
     </div>
 
@@ -141,6 +146,7 @@ d3.json("diseases_risk_factors.json", function( data) {
     <script src = "script.js"></script>
 </body>
 </html>
+
 
 
 
