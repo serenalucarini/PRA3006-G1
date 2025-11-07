@@ -21,18 +21,20 @@ async function buildHierarchicalData() {
   diseases.forEach(d => {
     const diseaseName = d.label || d.disease;
     const node = diseaseMap[diseaseName];
+    
     // Symptoms
     const diseaseSymptoms = symptoms
       .filter(s => s.disease === diseaseName)
-      .map(s => ({ name: s.symptomLabel || s.symptom, type: "symptom" }));
+      .map(s => ({ name: s.symptomLabel || s.symptom, type: "symptom", children: []}));
     node.children.push(...diseaseSymptoms);
+    
     // Risk factors
     const diseaseRiskFactors = riskFactors
       .filter(rf => rf.disease === diseaseName)
       .map(rf => {
         const childrenDiseases = diseases
           .filter(other => other.label === rf.factorLabel || other.disease === rf.factor)
-          .map(o => ({ name: o.label || o.disease, type: "disease" }));
+          .map(o => ({ name: o.label || o.disease, type: "disease", children: [] }));
         return {
           name: rf.factorLabel || rf.factor,
           type: "riskFactor",
@@ -41,6 +43,7 @@ async function buildHierarchicalData() {
       });
     node.children.push(...diseaseRiskFactors);
   });
+  
 // Root node: Smoking
   return {
     name: "Smoking",
@@ -48,134 +51,174 @@ async function buildHierarchicalData() {
     children: Object.values(diseaseMap)
   };
 }
+// Flatten hierarchical data into nodes and links
+function flattenData(root) {
+  const nodes = [];
+  const links = []
+  function recurse(node, parent = null) {
+    nodes.push(node);
+    if (parent) {
+      links.push({ source: parent, target: node });
+    }
+    if (node.children) {
+      node.children.forEach(child => recurse(child,node));
+    }
+  }
+  
 // Render force-directed clickable graph
 async function renderGraph() {
-  const data = await buildHierarchicalData(); // <-- correct function name
+  const data = await buildHierarchicalData(); 
 
-  const width = 1200;
-  const height = 800;
+  const width = 900;
+  const height = 700;
 
   const svg = d3.select("#graph")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
 
-  // Flatten the hierarchy (so all nodes are visible initially)
-  let nodes = [];
-  let links = [];
-  const nodeByName = {};
+  const { nodes, links } = flattenData(data);
 
-  function flatten(node, parent = null) {
-    const n = { id: node.name, name: node.name, type: node.type };
-    nodes.push(n);
-    nodeByName[n.id] = n;
-    if (parent) links.push({ source: parent.id, target: n.id });
-    if (node.children) node.children.forEach(c => flatten(c, n));
-  }
-
-  flatten(data);
-
+  // Fix root in center
+  data.fx = width / 2
+  data.fy = height / 2
+  
   const simulation = d3.forceSimulation(nodes)
-    .force("link", d3.forceLink(links).id(d => d.id).distance(120))
-    .force("charge", d3.forceManyBody().strength(-300))
+    .force("link", d3.forceLink(links).distance(120).id(d => d.name))
+    .force("charge", d3.forceManyBody().strength(-500))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
-  const linkGroup = svg.append("g").attr("class", "links")
-      .selectAll("line");
+  // Draw links
+  const link = svg.append("g")
+        .attr("class", "links")
+        .selectAll("line")
+        .data(links)
+        .enter().append("line")
+        .attr("stroke", "#999")
+        .attr("stroke-width", 2);
 
-  const nodeGroup = svg.append("g").attr("class", "nodes")
-      .selectAll("circle");
+  // Draw nodes
+   const node = svg.append("g")
+        .attr("class", "nodes")
+        .selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("r", 20)
+        .attr("fill", d => {
+            if(d.type === "root") return "red";
+            if(d.type === "disease") return "steelblue";
+            if(d.type === "symptom") return "green";
+            if(d.type === "riskFactor") return "orange";
+            return "gray";
+        })
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended))
+        .on("click", expandNode);
 
-  function update() {
-    // Update links
-    const linkSelection = svg.select(".links")
-      .selectAll("line")
-      .data(links, d => d.source.id + "-" + d.target.id);
+  // Node labels
+  const label = svg.append("g")
+        .attr("class", "labels")
+        .selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .attr("dy", 4)
+        .attr("text-anchor", "middle")
+        .text(d => d.name);
 
-    linkSelection.enter()
-      .append("line")
-      .attr("stroke", "#999")
-      .attr("stroke-width", 1.5)
-      .merge(linkSelection);
+    simulation.on("tick", () => {
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
 
-    linkSelection.exit().remove();
+        node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
 
-    // Update nodes
-    const nodeSelection = svg.select(".nodes")
-      .selectAll("circle")
-      .data(nodes, d => d.id);
+        label
+            .attr("x", d => d.x)
+            .attr("y", d => d.y);
+    });
 
-    nodeSelection.enter()
-      .append("circle")
-      .attr("r", 8)
-      .attr("fill", d => {
-        if (d.type === "root") return "red";
-        if (d.type === "disease") return "steelblue";
-        if (d.type === "symptom") return "green";
-        if (d.type === "riskFactor") return "orange";
-        return "gray";
-      })
-      .call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
+      function expandNode(event, d) {
+        if (!d.children || d.children.length === 0) return;
 
-    nodeSelection.exit().remove();
+        d.children.forEach(c => {
+            if (!nodes.includes(c)) {
+                nodes.push(c);
+                links.push({ source: d, target: c });
 
-    // Labels
-    const text = svg.selectAll(".label")
-      .data(nodes, d => d.id);
+                // Add circle for new node
+                svg.select(".nodes")
+                    .append("circle")
+                    .data([c])
+                    .attr("r", 20)
+                    .attr("fill", () => {
+                        if(c.type === "disease") return "steelblue";
+                        if(c.type === "symptom") return "green";
+                        if(c.type === "riskFactor") return "orange";
+                        return "gray";
+                    })
+                    .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended))
+                    .on("click", expandNode);
 
-    text.enter()
-      .append("text")
-      .attr("class", "label")
-      .attr("text-anchor", "middle")
-      .attr("dy", -10)
-      .text(d => d.name.split("/").pop()) // shorten URI
-      .merge(text);
+                // Add label
+                svg.select(".labels")
+                    .append("text")
+                    .data([c])
+                    .attr("dy", 4)
+                    .attr("text-anchor", "middle")
+                    .text(c.name);
+            }
+        });
 
-    simulation.nodes(nodes);
-    simulation.force("link").links(links);
-    simulation.alpha(1).restart();
-  }
+        d._children = d.children;
+        d.children = [];
+        simulation.nodes(nodes);
+        simulation.force("link").links(links);
+        simulation.alpha(1).restart();
+    }
 
-  simulation.on("tick", () => {
-    svg.selectAll("line")
-      .attr("x1", d => d.source.x)
-      .attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x)
-      .attr("y2", d => d.target.y);
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
 
-    svg.selectAll("circle")
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
 
-    svg.selectAll("text")
-      .attr("x", d => d.x)
-      .attr("y", d => d.y);
-  });
-
-  function dragstarted(event, d) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-
-  function dragged(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
-  }
-
-  function dragended(event, d) {
-    if (!event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
-
-  update();
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        if(d.type !== "root") { d.fx = null; d.fy = null; }
+    }
 }
 
-window.onload = renderGraph; 
+window.onload = renderGraph;
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
 
 
   
