@@ -49,24 +49,34 @@ async function buildHierarchicalData() {
 }
 // Render force-directed clickable graph
 async function renderGraph() {
-  const data = await buildHierarchicalData();
+  const data = await buildHierarchicalData(); // <-- correct function name
 
-  const width = 900;
-  const height = 700;
+  const width = 1200;
+  const height = 800;
 
   const svg = d3.select("#graph")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
 
-  let nodes = [{ ...data, id: data.name, fx: width/2, fy: height/2 }]; // fix root in center
+  // Flatten the hierarchy (so all nodes are visible initially)
+  let nodes = [];
   let links = [];
   const nodeByName = {};
-  nodes.forEach(n => nodeByName[n.name] = n);
+
+  function flatten(node, parent = null) {
+    const n = { id: node.name, name: node.name, type: node.type };
+    nodes.push(n);
+    nodeByName[n.id] = n;
+    if (parent) links.push({ source: parent.id, target: n.id });
+    if (node.children) node.children.forEach(c => flatten(c, n));
+  }
+
+  flatten(data);
 
   const simulation = d3.forceSimulation(nodes)
     .force("link", d3.forceLink(links).id(d => d.id).distance(120))
-    .force("charge", d3.forceManyBody().strength(-500))
+    .force("charge", d3.forceManyBody().strength(-300))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
   const linkGroup = svg.append("g").attr("class", "links")
@@ -84,7 +94,7 @@ async function renderGraph() {
     linkSelection.enter()
       .append("line")
       .attr("stroke", "#999")
-      .attr("stroke-width", 2)
+      .attr("stroke-width", 1.5)
       .merge(linkSelection);
 
     linkSelection.exit().remove();
@@ -94,23 +104,24 @@ async function renderGraph() {
       .selectAll("circle")
       .data(nodes, d => d.id);
 
-    const nodeEnter = nodeSelection.enter()
+    nodeSelection.enter()
       .append("circle")
-      .attr("r", 20)
+      .attr("r", 8)
       .attr("fill", d => {
-        if(d.type === "root") return "red";
-        if(d.type === "disease") return "steelblue";
-        if(d.type === "symptom") return "green";
-        if(d.type === "riskFactor") return "orange";
+        if (d.type === "root") return "red";
+        if (d.type === "disease") return "steelblue";
+        if (d.type === "symptom") return "green";
+        if (d.type === "riskFactor") return "orange";
         return "gray";
       })
       .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
-        .on("end", dragended))
-      .on("click", expandNode);
+        .on("end", dragended));
 
-    // Add labels
+    nodeSelection.exit().remove();
+
+    // Labels
     const text = svg.selectAll(".label")
       .data(nodes, d => d.id);
 
@@ -118,30 +129,13 @@ async function renderGraph() {
       .append("text")
       .attr("class", "label")
       .attr("text-anchor", "middle")
-      .attr("dy", 4)
-      .text(d => d.name)
+      .attr("dy", -10)
+      .text(d => d.name.split("/").pop()) // shorten URI
       .merge(text);
 
     simulation.nodes(nodes);
     simulation.force("link").links(links);
     simulation.alpha(1).restart();
-  }
-
-  function expandNode(event, d) {
-    if(!d.children || d.children.length === 0) return;
-
-    d.children.forEach(c => {
-      if(!nodeByName[c.name]) {
-        c.id = c.name + Math.random(); // unique id
-        nodes.push(c);
-        links.push({ source: d, target: c });
-        nodeByName[c.name] = c;
-      }
-    });
-
-    d._children = d.children;
-    d.children = [];
-    update();
   }
 
   simulation.on("tick", () => {
@@ -173,13 +167,13 @@ async function renderGraph() {
 
   function dragended(event, d) {
     if (!event.active) simulation.alphaTarget(0);
-    if(d.type !== "root") { d.fx = null; d.fy = null; }
+    d.fx = null;
+    d.fy = null;
   }
 
   update();
 }
 
-window.onload = renderGraph;
 
 
   
