@@ -2,6 +2,7 @@
 async function loadJSON(file) {
   const response = await fetch(file);
   const data = await response.json();
+  console.log("Loaded:" file, data.length);
   return data; 
 }
 // Build hierarchical data for D3
