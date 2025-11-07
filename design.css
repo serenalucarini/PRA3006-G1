@@ -38,6 +38,15 @@
           position: absolute;
           left: 50%;
           margin: 0;
+         transform: translateX (-50%);
+           font-family: Poppins;
+           font-weight: 700;
+           font-size: 2rem;
+           color: #111;
+           letter-spacing: 1px;
+           
+
+
         }
         .footer_date {
           text-align: right;
