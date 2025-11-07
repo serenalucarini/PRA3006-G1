@@ -42,3 +42,50 @@
         .footer_date {
           text-align: right;
         }
+
+header {
+    padding: 40px 40px;
+    background: transparent;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    gap: 120px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem; /* Rem=Relative to font-size of the root element*/
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    text-shadow: 0 0 10px white;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.logo img {
+    width: 300px; 
+    height: auto;
+    transform: translateY(5px); 
+    margin-left: 45px;
+}
