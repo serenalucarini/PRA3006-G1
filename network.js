@@ -8,7 +8,7 @@ async function loadJSON(file) {
 };
 
 // Build hierarchical data for D3
-const data = await loadJSON("diseases_smoking.json");
+const data = loadJSON("diseases_smoking.json");
 
 // Create nodes — start with smoking
 const nodes = [{ id: 1, name: "smoking" }];
