@@ -2,72 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smoking as a risk factor</title>
-    <link rel="stylesheet" href="websiteStyles2.0.css">
-   <!-- <link rel="stylesheet" href="indexSytles.css"> --><!--Here you link the styling of the index webpage-->
-    <script type="module" src="https://js.arcgis.com/embeddable-components/4.31/arcgis-embeddable-components.esm.js"></script> <!-- Add the ArcGIS API for JavaScript library -->
-    
-
+    <title>Smoking as a Risk Factor</title>
+    <-- start writing in CSS -->
+    <style> 
+        .header {
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          background-color: silver;
+          color: black;
+        }
+        .body {
+          position: fixed;
+          left: 0;
+          top: 130px;
+          width: 100%;
+          background-color: white;
+          color: black;
+        }
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          background-color: silver;
+          color: black;
+        }
+        .right {
+          text-align: right;
+          right: 20px
+        }
+        .center {
+          text-align: center;
+        }
+        .left {
+          text-align: left;
+          left: 20px
+        }
+    </style>
 </head>
-<body id="index">
-    <nav class="navbar"> <!--This is the navigation bar-->
-        <ul>
-            <li><a href="smoking.html">idk yet</a></li>
-            <li><a href="risk factors.html">idk yet</a></li>
-            <li><a href="disease.html">idk yet</a></li>
-            <li><a href="Contact.html">Contact</a></li>
-        </ul>
+    
+<body>
+    <!-- Page content goes between div files -->
+    <div class="header">
+        <h1 class="center">Smoking</h1>
+        <div class="right"><a href="">Link to smoking circle</a></div> <!-- anchor tag, works as a hyperlink -->
+        <div class="left"><a href="">Link to histograms</a></div>
+    </div>
+
+    <div class="body">
+        <h1>Smoking as a Risk Factor</h1>
+        <p>This is my GitHub Pages website. It works!</p>
+        <p>Adding another line</p>
+    </div>
         
-    </nav>
-    <header>
-        <h1>smoking as a risk factors</h1>
-    </header>
-
-    <main>
-        <div class="content-container"> 
-            <div class="whiteboxoutsidestart">
-                <p>
-                    <h3>Welcome to our smoking page wow</h3>
-                    <br>
-                    idkidkdik
-                    <br>
-                    <br>
-                    nice nice <a href="smoking.html">idk</a>, idk
-
-                    <br>
-                    <br>
-                   ciao <a href="disease.html">smoke </a> ssmoke
-                    <br>
-                    Explore the website to find out more about smoking
-                </p>
-            </div>
-            <p> <h4> helpppppp </h4></p>
-            <div class="map-container">
-            <arcgis-embedded-map style="height:600px;width:700px;" item-id="edf77aa178d24e2e90f81da4bfb2dc06" theme="light" portal-url="https://um-fhs.maps.arcgis.com" ></arcgis-embedded-map>
-            </div>
-            <div class="legend-container">
-                <!-- Legend item list -->
-                    <div class="legend-item">
-                        <img src="Images/icon-skull-image.png" alt="Error viweing image">
-                        <span>smoking</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="Images/icon-pot-image.png" alt="Error viweing image">
-                        <span>disease</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="Images/icon-star-image.png" alt="Error viweing image">
-                        <span>risk factors</span>
-                    </div>
-                
-        </div>
-    </main>
-    <footer>
-        <p>&copy; 2025 Project  All rights reserved.</p>
-    </footer>
-
-
-    <script src="popup.js"></script>
+    <div class="footer">
+        <!-- comment: we need to add the UM logo -->
+        <div class="center"><a href="">Link to About Us</a></div>
+        <small class="right">
+            <p>created: 31/10/2025</p>
+            <p>last updated: 07/11/2025</p>
+        </small>
+    </div>
 </body>
 </html>
