@@ -12,12 +12,11 @@
           width: 100%;
           background-color: silver;
           color: black;
-          text-align: center;
         }
         .body {
           position: fixed;
           left: 0;
-          top: 400px;
+          top: 150px;
           width: 100%;
           background-color: white;
           color: black;
@@ -29,7 +28,15 @@
           width: 100%;
           background-color: silver;
           color: black;
+        }
+        .right {
+          text-align: right;
+        }
+        .center {
           text-align: center;
+        }
+        .left {
+          text-align: left;
         }
     </style>
 </head>
@@ -37,9 +44,9 @@
 <body>
     <!-- Page content goes between div files -->
     <div class="header">
-        <h1>Title needs to go in the center</h1>
-        <a href="">Link to smoking circle</a> <!-- anchor tag, works as a hyperlink -->
-        <a href="">Link to histograms</a>
+        <h1 class="center">Smoking</h1>
+        <a href="" class="right">Link to smoking circle</a> <!-- anchor tag, works as a hyperlink -->
+        <a href="" class="left">Link to histograms</a>
     </div>
 
     <div class="body">
@@ -50,8 +57,8 @@
         
     <div class="footer">
         <!-- comment: we need to add the UM logo -->
-        <a href="">Link to About Us</a>
-        <small>
+        <a href="" class="center">Link to About Us</a>
+        <small class="right">
             <p>created: 31/10/2025</p>
             <p>last updated: 07/11/2025</p>
         </small>
