@@ -1,0 +1,536 @@
+[
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "symptom": "http://www.wikidata.org/entity/Q183425",
+        "symptomLabel": "abdominal pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "symptom": "http://www.wikidata.org/entity/Q40878",
+        "symptomLabel": "diarrhea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "symptom": "http://www.wikidata.org/entity/Q9690",
+        "symptomLabel": "fatigue"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "symptom": "http://www.wikidata.org/entity/Q718113",
+        "symptomLabel": "weight loss"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1331905",
+        "diseaseLabel": "Lewy body dementia",
+        "symptom": "http://www.wikidata.org/entity/Q83030",
+        "symptomLabel": "dementia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1331905",
+        "diseaseLabel": "Lewy body dementia",
+        "symptom": "http://www.wikidata.org/entity/Q130741",
+        "symptomLabel": "hallucination"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1331905",
+        "diseaseLabel": "Lewy body dementia",
+        "symptom": "http://www.wikidata.org/entity/Q1531991",
+        "symptomLabel": "parkinsonian syndrome"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q874586",
+        "diseaseLabel": "Peyronie's disease",
+        "symptom": "http://www.wikidata.org/entity/Q184674",
+        "symptomLabel": "erectile dysfunction"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q191779",
+        "diseaseLabel": "Tourette syndrome",
+        "symptom": "http://www.wikidata.org/entity/Q738538",
+        "symptomLabel": "tic"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q121041",
+        "diseaseLabel": "appendicitis",
+        "symptom": "http://www.wikidata.org/entity/Q183425",
+        "symptomLabel": "abdominal pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q121041",
+        "diseaseLabel": "appendicitis",
+        "symptom": "http://www.wikidata.org/entity/Q254327",
+        "symptomLabel": "anorexia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q121041",
+        "diseaseLabel": "appendicitis",
+        "symptom": "http://www.wikidata.org/entity/Q186889",
+        "symptomLabel": "nausea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q121041",
+        "diseaseLabel": "appendicitis",
+        "symptom": "http://www.wikidata.org/entity/Q127076",
+        "symptomLabel": "vomiting"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q180762",
+        "symptomLabel": "angina pectoris"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q188008",
+        "symptomLabel": "dyspnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q9690",
+        "symptomLabel": "fatigue"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q57823162",
+        "symptomLabel": "lightheadedness"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q186889",
+        "symptomLabel": "nausea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q3567802",
+        "symptomLabel": "neck pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q35869",
+        "diseaseLabel": "asthma",
+        "symptom": "http://www.wikidata.org/entity/Q693058",
+        "symptomLabel": "chest pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q35869",
+        "diseaseLabel": "asthma",
+        "symptom": "http://www.wikidata.org/entity/Q35805",
+        "symptomLabel": "cough"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q35869",
+        "diseaseLabel": "asthma",
+        "symptom": "http://www.wikidata.org/entity/Q101991",
+        "symptomLabel": "inflammation"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q35869",
+        "diseaseLabel": "asthma",
+        "symptom": "http://www.wikidata.org/entity/Q517104",
+        "symptomLabel": "wheeze"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12252367",
+        "diseaseLabel": "atherosclerosis",
+        "symptom": "http://www.wikidata.org/entity/Q1058276",
+        "symptomLabel": "atheroma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q55042693",
+        "diseaseLabel": "basal ganglia hemorrhage",
+        "symptom": "http://www.wikidata.org/entity/Q629444",
+        "symptomLabel": "dyskinesia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q55042693",
+        "diseaseLabel": "basal ganglia hemorrhage",
+        "symptom": "http://www.wikidata.org/entity/Q86",
+        "symptomLabel": "headache"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q55042693",
+        "diseaseLabel": "basal ganglia hemorrhage",
+        "symptom": "http://www.wikidata.org/entity/Q2291130",
+        "symptomLabel": "hemiparesis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "symptom": "http://www.wikidata.org/entity/Q953865",
+        "symptomLabel": "breast lump"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "symptom": "http://www.wikidata.org/entity/Q77776",
+        "symptomLabel": "irritation"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "symptom": "http://www.wikidata.org/entity/Q102187040",
+        "symptomLabel": "lump in chest"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "symptom": "http://www.wikidata.org/entity/Q1907986",
+        "symptomLabel": "mastodynia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "symptom": "http://www.wikidata.org/entity/Q3543799",
+        "symptomLabel": "nipple discharge"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "symptom": "http://www.wikidata.org/entity/Q3526279",
+        "symptomLabel": "sore nipples"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "symptom": "http://www.wikidata.org/entity/Q109186",
+        "symptomLabel": "swelling"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q389735",
+        "diseaseLabel": "cardiovascular disease",
+        "symptom": "http://www.wikidata.org/entity/Q693058",
+        "symptomLabel": "chest pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q389735",
+        "diseaseLabel": "cardiovascular disease",
+        "symptom": "http://www.wikidata.org/entity/Q188008",
+        "symptomLabel": "dyspnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q389735",
+        "diseaseLabel": "cardiovascular disease",
+        "symptom": "http://www.wikidata.org/entity/Q9690",
+        "symptomLabel": "fatigue"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q389735",
+        "diseaseLabel": "cardiovascular disease",
+        "symptom": "http://www.wikidata.org/entity/Q12829165",
+        "symptomLabel": "unconsciousness"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q199804",
+        "diseaseLabel": "chronic obstructive pulmonary disease",
+        "symptom": "http://www.wikidata.org/entity/Q35805",
+        "symptomLabel": "cough"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q199804",
+        "diseaseLabel": "chronic obstructive pulmonary disease",
+        "symptom": "http://www.wikidata.org/entity/Q188008",
+        "symptomLabel": "dyspnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q199804",
+        "diseaseLabel": "chronic obstructive pulmonary disease",
+        "symptom": "http://www.wikidata.org/entity/Q517104",
+        "symptomLabel": "wheeze"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4340209",
+        "diseaseLabel": "depression",
+        "symptom": "http://www.wikidata.org/entity/Q290620",
+        "symptomLabel": "dysphoria"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4340209",
+        "diseaseLabel": "depression",
+        "symptom": "http://www.wikidata.org/entity/Q5419936",
+        "symptomLabel": "executive disfunction"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4340209",
+        "diseaseLabel": "depression",
+        "symptom": "http://www.wikidata.org/entity/Q9690",
+        "symptomLabel": "fatigue"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q180762",
+        "symptomLabel": "angina pectoris"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q41861",
+        "symptomLabel": "arterial hypertension"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q193889",
+        "symptomLabel": "ascites"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q3540864",
+        "symptomLabel": "balance disorder"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q693058",
+        "symptomLabel": "chest pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q188008",
+        "symptomLabel": "dyspnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q152234",
+        "symptomLabel": "edema"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q189331",
+        "symptomLabel": "heart arrhythmia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q180007",
+        "symptomLabel": "syncope"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "symptom": "http://www.wikidata.org/entity/Q209583",
+        "symptomLabel": "tachycardia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1877550",
+        "diseaseLabel": "lung abscess",
+        "symptom": "http://www.wikidata.org/entity/Q178069",
+        "symptomLabel": "necrosis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q254327",
+        "symptomLabel": "anorexia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q693058",
+        "symptomLabel": "chest pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q35805",
+        "symptomLabel": "cough"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q188008",
+        "symptomLabel": "dyspnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q9690",
+        "symptomLabel": "fatigue"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q647099",
+        "symptomLabel": "hemoptysis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q718113",
+        "symptomLabel": "weight loss"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "symptom": "http://www.wikidata.org/entity/Q517104",
+        "symptomLabel": "wheeze"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q1344812",
+        "symptomLabel": "epididymitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q38933",
+        "symptomLabel": "fever"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q2673323",
+        "symptomLabel": "malaise"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q48143",
+        "symptomLabel": "meningitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q540850",
+        "symptomLabel": "orchitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q1527888",
+        "symptomLabel": "pancreatitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q109186",
+        "symptomLabel": "swelling"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "symptom": "http://www.wikidata.org/entity/Q1162276",
+        "symptomLabel": "xerostomia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "symptom": "http://www.wikidata.org/entity/Q180762",
+        "symptomLabel": "angina pectoris"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "symptom": "http://www.wikidata.org/entity/Q693058",
+        "symptomLabel": "chest pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "symptom": "http://www.wikidata.org/entity/Q152234",
+        "symptomLabel": "edema"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "symptom": "http://www.wikidata.org/entity/Q186889",
+        "symptomLabel": "nausea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "symptom": "http://www.wikidata.org/entity/Q178069",
+        "symptomLabel": "necrosis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q19000444",
+        "diseaseLabel": "neurotic disorder",
+        "symptom": "http://www.wikidata.org/entity/Q130741",
+        "symptomLabel": "hallucination"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "symptom": "http://www.wikidata.org/entity/Q2260058",
+        "symptomLabel": "chills"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "symptom": "http://www.wikidata.org/entity/Q35805",
+        "symptomLabel": "cough"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "symptom": "http://www.wikidata.org/entity/Q188008",
+        "symptomLabel": "dyspnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "symptom": "http://www.wikidata.org/entity/Q38933",
+        "symptomLabel": "fever"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "symptom": "http://www.wikidata.org/entity/Q647099",
+        "symptomLabel": "hemoptysis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "symptom": "http://www.wikidata.org/entity/Q205835",
+        "symptomLabel": "snoring"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "symptom": "http://www.wikidata.org/entity/Q570920",
+        "symptomLabel": "tachypnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q736776",
+        "diseaseLabel": "tennis elbow",
+        "symptom": "http://www.wikidata.org/entity/Q81938",
+        "symptomLabel": "pain"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1077139",
+        "diseaseLabel": "tic disorder",
+        "symptom": "http://www.wikidata.org/entity/Q738538",
+        "symptomLabel": "tic"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3025883",
+        "diseaseLabel": "type 2 diabetes",
+        "symptom": "http://www.wikidata.org/entity/Q635195",
+        "symptomLabel": "polydipsia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3025883",
+        "diseaseLabel": "type 2 diabetes",
+        "symptom": "http://www.wikidata.org/entity/Q653267",
+        "symptomLabel": "polyphagia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3025883",
+        "diseaseLabel": "type 2 diabetes",
+        "symptom": "http://www.wikidata.org/entity/Q1124286",
+        "symptomLabel": "polyuria"
+    }
+]
