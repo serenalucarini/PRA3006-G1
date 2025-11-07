@@ -15,7 +15,7 @@ async function buildHierarchicalData() {
     const name = d.label || d.disease;
     diseaseMap[name] = { name, type: "disease", children: [] };
   });
-/ Attach symptoms and risk factors to each disease
+// Attach symptoms and risk factors to each disease
   diseases.forEach(d => {
     const diseaseName = d.label || d.disease;
     const node = diseaseMap[diseaseName];
