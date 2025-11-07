@@ -2,8 +2,8 @@
 
 // Read the disease.json file
 async function loadJSON(file) {
-  const response = await fetch(file);
-  const data = await response.json();
+  const response = await fetch(file); // fetch is an asynchronous function, await makes sure the function is done before moving on
+  const data = await response.json(); // converts the fetch output back into json
   return data; 
 };
 
@@ -29,7 +29,6 @@ const links = data.map((_, index) => ({
 
 // Combine into final network object
 const network = { nodes, links };
-const networkJSON = JSON.stringify(network, null, 2);
 
 // Write to network.json   fs.writeFileSync("network.json", JSON.stringify(network, null, 2));    console.log(`✅ Created network.json with ${data.length} diseases`);
 
@@ -51,7 +50,7 @@ var svg = d3.select("#my_dataviz")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json(networkJSON, function(data) {
+d3.json(network, function(data) {
 
   // Initialize the links
   var link = svg
