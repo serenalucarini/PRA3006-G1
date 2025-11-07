@@ -2,14 +2,14 @@
 async function loadJSON(file) {
   const response = await fetch(file);
   const data = await response.json();
-  console.log("Loaded:" file, data.length);
+  console.log("Loaded:", file, data.length);
   return data; 
 }
 // Build hierarchical data for D3
 async function buildHierarchicalData() {
   const diseases = await loadJSON("diseases_smoking.json");
   const symptoms = await loadJSON("diseases_symptoms.json");
-  const riskfactors = await loadJSON("diseases_risk_factors.json");
+  const riskFactors = await loadJSON("diseases_risk_factors.json");
   // Map diseases by name for quick lookup
   const diseaseMap = {};
   diseases.forEach(d => {
