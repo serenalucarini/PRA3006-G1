@@ -12,7 +12,7 @@ var margin = {top: 10, right: 30, bottom: 30, left: 40},
   height = 400 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
-var svg = d3.select("my_dataviz")
+var svg = d3.select("#my_dataviz")
 .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -129,7 +129,7 @@ d3.json("diseases_risk_factors.json", function( data) {
         <p>Adding another line</p>
 
         <!-- Create a div where the graph will take place -->
-    <div id="my_dataviz"></div>
+    <div id="#my_dataviz"></div>
     </div>
         
     <div class="footer">
@@ -144,6 +144,7 @@ d3.json("diseases_risk_factors.json", function( data) {
     <script src = "script.js"></script>
 </body>
 </html>
+
 
 
 
