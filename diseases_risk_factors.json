@@ -1,0 +1,896 @@
+[
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "factor": "http://www.wikidata.org/entity/Q12187",
+        "factorLabel": "antibiotic"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "factor": "http://www.wikidata.org/entity/Q121041",
+        "factorLabel": "appendicitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "factor": "http://www.wikidata.org/entity/Q170381",
+        "factorLabel": "tonsillectomy"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "factor": "http://www.wikidata.org/entity/Q381532",
+        "factorLabel": "urbanity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease",
+        "factor": "http://www.wikidata.org/entity/Q25098571",
+        "factorLabel": "first-degree relative"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12078",
+        "diseaseLabel": "cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "factor": "http://www.wikidata.org/entity/Q12174",
+        "factorLabel": "obesity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "factor": "http://www.wikidata.org/entity/Q12206",
+        "factorLabel": "diabetes"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "factor": "http://www.wikidata.org/entity/Q41861",
+        "factorLabel": "arterial hypertension"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "factor": "http://www.wikidata.org/entity/Q762713",
+        "factorLabel": "hypercholesterolemia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "factor": "http://www.wikidata.org/entity/Q1349358",
+        "factorLabel": "sedentary lifestyle"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction",
+        "factor": "http://www.wikidata.org/entity/Q7212330",
+        "factorLabel": "tobacco smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "factor": "http://www.wikidata.org/entity/Q12206",
+        "factorLabel": "diabetes"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "factor": "http://www.wikidata.org/entity/Q35869",
+        "factorLabel": "asthma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "factor": "http://www.wikidata.org/entity/Q178194",
+        "factorLabel": "cystic fibrosis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "factor": "http://www.wikidata.org/entity/Q181754",
+        "factorLabel": "heart failure"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "factor": "http://www.wikidata.org/entity/Q199804",
+        "factorLabel": "chronic obstructive pulmonary disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12202",
+        "diseaseLabel": "stroke",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q33525",
+        "diseaseLabel": "carcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q35869",
+        "diseaseLabel": "asthma",
+        "factor": "http://www.wikidata.org/entity/Q131123",
+        "factorLabel": "air pollution"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q35869",
+        "diseaseLabel": "asthma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q12133",
+        "factorLabel": "deafness"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q12174",
+        "factorLabel": "obesity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q12206",
+        "factorLabel": "diabetes"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q41861",
+        "factorLabel": "arterial hypertension"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q131123",
+        "factorLabel": "air pollution"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q1349358",
+        "factorLabel": "sedentary lifestyle"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q1778765",
+        "factorLabel": "social isolation"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q2920572",
+        "factorLabel": "cranial trauma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q4340209",
+        "factorLabel": "depression"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q7331102",
+        "factorLabel": "alcohol abuse"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia",
+        "factor": "http://www.wikidata.org/entity/Q128396730",
+        "factorLabel": "overtreatment of diabetes in older people"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q121041",
+        "diseaseLabel": "appendicitis",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q143925",
+        "diseaseLabel": "toothache",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q179945",
+        "diseaseLabel": "psoriasis",
+        "factor": "http://www.wikidata.org/entity/Q12174",
+        "factorLabel": "obesity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q179945",
+        "diseaseLabel": "psoriasis",
+        "factor": "http://www.wikidata.org/entity/Q123414",
+        "factorLabel": "stress"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q179945",
+        "diseaseLabel": "psoriasis",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q179945",
+        "diseaseLabel": "psoriasis",
+        "factor": "http://www.wikidata.org/entity/Q2723497",
+        "factorLabel": "Xerosis cutis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q188874",
+        "diseaseLabel": "colorectal cancer",
+        "factor": "http://www.wikidata.org/entity/Q12174",
+        "factorLabel": "obesity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q188874",
+        "diseaseLabel": "colorectal cancer",
+        "factor": "http://www.wikidata.org/entity/Q185836",
+        "factorLabel": "age of a person"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q188874",
+        "diseaseLabel": "colorectal cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q188874",
+        "diseaseLabel": "colorectal cancer",
+        "factor": "http://www.wikidata.org/entity/Q4713253",
+        "factorLabel": "alcohol and cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q191779",
+        "diseaseLabel": "Tourette syndrome",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q199804",
+        "diseaseLabel": "chronic obstructive pulmonary disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q208726",
+        "diseaseLabel": "anogenital venereal wart",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q356033",
+        "diseaseLabel": "adenocarcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q382091",
+        "diseaseLabel": "post-thrombotic syndrome",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q389735",
+        "diseaseLabel": "cardiovascular disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q477390",
+        "diseaseLabel": "hyperinsulinism",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q681817",
+        "diseaseLabel": "squamous cell carcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q736776",
+        "diseaseLabel": "tennis elbow",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q844935",
+        "diseaseLabel": "coronary artery disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q874586",
+        "diseaseLabel": "Peyronie's disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q929737",
+        "diseaseLabel": "liver disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q935293",
+        "diseaseLabel": "purpura",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q948056",
+        "diseaseLabel": "dentine hypersensitivity",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q949302",
+        "diseaseLabel": "skin disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1053470",
+        "diseaseLabel": "insulin resistance",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1077139",
+        "diseaseLabel": "tic disorder",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1331905",
+        "diseaseLabel": "Lewy body dementia",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1367706",
+        "diseaseLabel": "osteopenia",
+        "factor": "http://www.wikidata.org/entity/Q15326",
+        "factorLabel": "alcoholism"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1367706",
+        "diseaseLabel": "osteopenia",
+        "factor": "http://www.wikidata.org/entity/Q191089",
+        "factorLabel": "old age"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1367706",
+        "diseaseLabel": "osteopenia",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q12174",
+        "factorLabel": "obesity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q12199",
+        "factorLabel": "AIDS"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q12206",
+        "factorLabel": "diabetes"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q41861",
+        "factorLabel": "arterial hypertension"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q185836",
+        "factorLabel": "age of a person"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q213600",
+        "factorLabel": "sleep apnea"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q657193",
+        "factorLabel": "metabolic syndrome"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q736715",
+        "factorLabel": "chronic renal insufficiency"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q939364",
+        "factorLabel": "congenital heart disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q1079120",
+        "factorLabel": "hyperlipidemia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q1349358",
+        "factorLabel": "sedentary lifestyle"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q1467339",
+        "factorLabel": "hypertriglyceridemia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q1869874",
+        "factorLabel": "insomnia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q3500368",
+        "factorLabel": "psychological stress"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q7212330",
+        "factorLabel": "tobacco smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q8084905",
+        "factorLabel": "autoimmune disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease",
+        "factor": "http://www.wikidata.org/entity/Q12252367",
+        "factorLabel": "atherosclerosis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1746068",
+        "diseaseLabel": "clavicle fracture",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1783924",
+        "diseaseLabel": "head and neck cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1870975",
+        "diseaseLabel": "fasciitis",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1877550",
+        "diseaseLabel": "lung abscess",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2300099",
+        "diseaseLabel": "gastrointestinal system disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2508462",
+        "diseaseLabel": "mouth disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2583597",
+        "diseaseLabel": "sinus arrhythmia",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2737426",
+        "diseaseLabel": "umbilical hernia",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3010352",
+        "diseaseLabel": "cerebrovascular disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3025883",
+        "diseaseLabel": "type 2 diabetes",
+        "factor": "http://www.wikidata.org/entity/Q12174",
+        "factorLabel": "obesity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3025883",
+        "diseaseLabel": "type 2 diabetes",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3339235",
+        "diseaseLabel": "neurological disorder",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3339235",
+        "diseaseLabel": "neurological disorder",
+        "factor": "http://www.wikidata.org/entity/Q56196009",
+        "factorLabel": "maternal smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3348620",
+        "diseaseLabel": "central retinal artery occlusion",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3508797",
+        "diseaseLabel": "obstructive lung disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3542027",
+        "diseaseLabel": "epithelioma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4330029",
+        "diseaseLabel": "airway obstruction",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4340209",
+        "diseaseLabel": "depression",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4956398",
+        "diseaseLabel": "branch retinal artery occlusion",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5173263",
+        "diseaseLabel": "cortical deafness",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5442760",
+        "diseaseLabel": "female reproductive system disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5526839",
+        "diseaseLabel": "gastrointestinal system cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5958765",
+        "diseaseLabel": "hypersensitivity",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q7045267",
+        "diseaseLabel": "no reflow phenomenon",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q7900883",
+        "diseaseLabel": "urinary system disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q10859678",
+        "diseaseLabel": "necrotizing enterocolitis",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12252367",
+        "diseaseLabel": "atherosclerosis",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12252367",
+        "diseaseLabel": "atherosclerosis",
+        "factor": "http://www.wikidata.org/entity/Q2303219",
+        "factorLabel": "binge eating"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q13451619",
+        "diseaseLabel": "ovarian mucinous cystadenocarcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q15124212",
+        "diseaseLabel": "lung neoplasm",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553224",
+        "diseaseLabel": "lower respiratory tract disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553556",
+        "diseaseLabel": "large intestine adenocarcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553776",
+        "diseaseLabel": "larynx squamous papilloma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553999",
+        "diseaseLabel": "esophageal carcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18554108",
+        "diseaseLabel": "acute serous otitis media",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18554898",
+        "diseaseLabel": "cardiovascular cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555021",
+        "diseaseLabel": "enamel caries",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555057",
+        "diseaseLabel": "plasma protein metabolism disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555098",
+        "diseaseLabel": "sensory peripheral neuropathy",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555316",
+        "diseaseLabel": "squamous cell neoplasm",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556028",
+        "diseaseLabel": "acute transudative otitis media",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556538",
+        "diseaseLabel": "small intestine carcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556542",
+        "diseaseLabel": "esophagus adenocarcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556564",
+        "diseaseLabel": "gallbladder carcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556865",
+        "diseaseLabel": "testicular germ cell tumor",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18557565",
+        "diseaseLabel": "superficial urinary bladder cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18557950",
+        "diseaseLabel": "retinal artery occlusion",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18557973",
+        "diseaseLabel": "soft palate cancer",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18558220",
+        "diseaseLabel": "bowel dysfunction",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q19000444",
+        "diseaseLabel": "neurotic disorder",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q26695607",
+        "diseaseLabel": "peripheral vascular disease",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q30314084",
+        "diseaseLabel": "running injury",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q32140239",
+        "diseaseLabel": "hypotrichosis 2",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q42417296",
+        "diseaseLabel": "infection associated with diseases",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q53678376",
+        "diseaseLabel": "gingival squamous cell carcinoma",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q54972627",
+        "diseaseLabel": "multiple pulmonary nodules",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q55042693",
+        "diseaseLabel": "basal ganglia hemorrhage",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q55042693",
+        "diseaseLabel": "basal ganglia hemorrhage",
+        "factor": "http://www.wikidata.org/entity/Q1584110",
+        "factorLabel": "arteriovenous malformation"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q55042693",
+        "diseaseLabel": "basal ganglia hemorrhage",
+        "factor": "http://www.wikidata.org/entity/Q2647488",
+        "factorLabel": "alcohol consumption"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q56218018",
+        "diseaseLabel": "heart failure with reduced ejection fraction",
+        "factor": "http://www.wikidata.org/entity/Q662860",
+        "factorLabel": "smoking"
+    }
+]
