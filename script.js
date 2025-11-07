@@ -49,7 +49,7 @@ async function buildHierarchicalData() {
 }
 // Render force-directed clickable graph
 async function renderGraph() {
-  const data = await buildGraphData();
+  const data = await buildHierarchicalData();
 
   const width = 900;
   const height = 700;
