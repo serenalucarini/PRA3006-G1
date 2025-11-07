@@ -198,7 +198,10 @@ async function renderGraph() {
 
     function dragended(event, d) {
         if (!event.active) simulation.alphaTarget(0);
-        if(d.type !== "root") { d.fx = null; d.fy = null; }
+        if(d.type !== "root") {
+          d.fx = null; 
+          d.fy = null; 
+        }
     }
 }
 
