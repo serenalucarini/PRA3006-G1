@@ -1,9 +1,14 @@
 /////////////// CONVERSION OF JSON FILES
 
-import fs from "fs";
-
 // Read the disease.json file
-const data = JSON.parse(fs.readFileSync("diseases_smoking.json", "utf-8"));
+async function loadJSON(file) {
+  const response = await fetch(file);
+  const data = await response.json();
+  return data; 
+};
+
+// Build hierarchical data for D3
+const data = await loadJSON("diseases_smoking.json");
 
 // Create nodes — start with smoking
 const nodes = [{ id: 1, name: "smoking" }];
@@ -24,12 +29,9 @@ const links = data.map((_, index) => ({
 
 // Combine into final network object
 const network = { nodes, links };
+const networkJSON = JSON.stringify(network, null, 2);
 
-// Write to network.json
-fs.writeFileSync("network.json", JSON.stringify(network, null, 2));
-
-console.log(`✅ Created network.json with ${data.length} diseases`);
-
+// Write to network.json   fs.writeFileSync("network.json", JSON.stringify(network, null, 2));    console.log(`✅ Created network.json with ${data.length} diseases`);
 
 /////////////// CREATE NETWORK
 
@@ -49,7 +51,7 @@ var svg = d3.select("#my_dataviz")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json(JSON.stringify(network, null, 2), function( data) {
+d3.json(networkJSON, function(data) {
 
   // Initialize the links
   var link = svg
