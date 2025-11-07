@@ -8,6 +8,14 @@ async function loadJSON(file) {
 async function buildHierarchicalData() {
   const diseases = await loadJSON("diseases_smoking.json");
   const symptoms = await loadJSON("diseases_symptoms.json");
+  const riskfactors = await loadJSON("diseases_risk_factors.json");
+  // Map diseases by name for quick lookup
+  const diseaseMap = {};
+  diseases.forEach(d => {
+    const name = d.label || d.disease;
+    diseaseMap[name] = { name, type: "disease", children: [] };
+  });
+
 
   return {
     name: "Smoking",
