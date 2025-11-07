@@ -32,6 +32,9 @@ console.log(`✅ Created network.json with ${data.length} diseases`);
 
 
 /////////////// CREATE NETWORK
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 40},
   width = 400 - margin.left - margin.right,
@@ -89,4 +92,3 @@ d3.json(JSON.stringify(network, null, 2), function( data) {
   }
 
 });
-
