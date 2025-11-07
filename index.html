@@ -106,11 +106,8 @@ d3.json("diseases_risk_factors.json", function( data) {
           padding: 2rem;
           overflow: auto;
         }
-        .navigation_histograms {
+        .footer_date {
           text-align: right;
-        }
-        .navigation_burst {
-          text-align: left;
         }
     </style>
 </head>
@@ -118,9 +115,9 @@ d3.json("diseases_risk_factors.json", function( data) {
 <body>
     <!-- Page content goes between div files -->
     <div class="header">
-        <div class="navigation_burst"><a href="">Link to smoking circle</a></div> <!-- anchor tag, works as a hyperlink -->
+        <div><a href="">Link to smoking circle</a></div> <!-- anchor tag, works as a hyperlink -->
         <h1>Smoking</h1>
-        <div class="navigation_histograms"><a href="">Link to histograms</a></div>
+        <div><a href="">Link to histograms</a></div>
     </div>
 
     <div class="body">
@@ -135,7 +132,7 @@ d3.json("diseases_risk_factors.json", function( data) {
     <div class="footer">
         <img src="um_logo.png" alt="Logo of Maastricht University" width=44.92px height=50.28px>
         <div><a href="">Link to About Us</a></div>
-        <small>
+        <small class="footer_date">
             <p>created: 31/10/2025</p>
             <p>last updated: 07/11/2025</p>
         </small>
@@ -144,6 +141,7 @@ d3.json("diseases_risk_factors.json", function( data) {
     <script src = "script.js"></script>
 </body>
 </html>
+
 
 
 
