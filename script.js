@@ -3,6 +3,7 @@ async function loadJSON(file) {
   const response = await fetch(file);
   const data = await response.json();
   console.log("Loaded:", file, data.length);
+  console.log("Hierarchical data:", JSON.stringfy(data, null, 2)); 
   return data; 
 }
 // Build hierarchical data for D3
@@ -174,6 +175,7 @@ async function renderGraph() {
   update();
 }
 
+window.onload = renderGraph; 
 
 
   
