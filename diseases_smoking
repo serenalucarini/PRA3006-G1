@@ -1,0 +1,366 @@
+[
+    {
+        "disease": "http://www.wikidata.org/entity/Q1472",
+        "diseaseLabel": "Crohn's disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12078",
+        "diseaseLabel": "cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12152",
+        "diseaseLabel": "myocardial infarction"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12192",
+        "diseaseLabel": "pneumonia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12202",
+        "diseaseLabel": "stroke"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q33525",
+        "diseaseLabel": "carcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q35869",
+        "diseaseLabel": "asthma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q47912",
+        "diseaseLabel": "lung cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q83030",
+        "diseaseLabel": "dementia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q121041",
+        "diseaseLabel": "appendicitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q128581",
+        "diseaseLabel": "breast cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q143925",
+        "diseaseLabel": "toothache"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q176741",
+        "diseaseLabel": "mumps"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q179945",
+        "diseaseLabel": "psoriasis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q188874",
+        "diseaseLabel": "colorectal cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q190805",
+        "diseaseLabel": "heart disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q191779",
+        "diseaseLabel": "Tourette syndrome"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q199804",
+        "diseaseLabel": "chronic obstructive pulmonary disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q208726",
+        "diseaseLabel": "anogenital venereal wart"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q356033",
+        "diseaseLabel": "adenocarcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q382091",
+        "diseaseLabel": "post-thrombotic syndrome"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q389735",
+        "diseaseLabel": "cardiovascular disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q477390",
+        "diseaseLabel": "hyperinsulinism"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q681817",
+        "diseaseLabel": "squamous cell carcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q736776",
+        "diseaseLabel": "tennis elbow"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q844935",
+        "diseaseLabel": "coronary artery disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q874586",
+        "diseaseLabel": "Peyronie's disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q929737",
+        "diseaseLabel": "liver disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q935293",
+        "diseaseLabel": "purpura"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q948056",
+        "diseaseLabel": "dentine hypersensitivity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q949302",
+        "diseaseLabel": "skin disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1053470",
+        "diseaseLabel": "insulin resistance"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1077139",
+        "diseaseLabel": "tic disorder"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1331905",
+        "diseaseLabel": "Lewy body dementia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1367706",
+        "diseaseLabel": "osteopenia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1444550",
+        "diseaseLabel": "arteriosclerotic heart disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1746068",
+        "diseaseLabel": "clavicle fracture"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1783924",
+        "diseaseLabel": "head and neck cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1870975",
+        "diseaseLabel": "fasciitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q1877550",
+        "diseaseLabel": "lung abscess"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2300099",
+        "diseaseLabel": "gastrointestinal system disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2508462",
+        "diseaseLabel": "mouth disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2583597",
+        "diseaseLabel": "sinus arrhythmia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q2737426",
+        "diseaseLabel": "umbilical hernia"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3010352",
+        "diseaseLabel": "cerebrovascular disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3025883",
+        "diseaseLabel": "type 2 diabetes"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3339235",
+        "diseaseLabel": "neurological disorder"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3348620",
+        "diseaseLabel": "central retinal artery occlusion"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3508797",
+        "diseaseLabel": "obstructive lung disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q3542027",
+        "diseaseLabel": "epithelioma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4330029",
+        "diseaseLabel": "airway obstruction"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4340209",
+        "diseaseLabel": "depression"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q4956398",
+        "diseaseLabel": "branch retinal artery occlusion"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5173263",
+        "diseaseLabel": "cortical deafness"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5442760",
+        "diseaseLabel": "female reproductive system disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5526839",
+        "diseaseLabel": "gastrointestinal system cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q5958765",
+        "diseaseLabel": "hypersensitivity"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q7045267",
+        "diseaseLabel": "no reflow phenomenon"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q7900883",
+        "diseaseLabel": "urinary system disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q10859678",
+        "diseaseLabel": "necrotizing enterocolitis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q12252367",
+        "diseaseLabel": "atherosclerosis"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q13451619",
+        "diseaseLabel": "ovarian mucinous cystadenocarcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q15124212",
+        "diseaseLabel": "lung neoplasm"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553224",
+        "diseaseLabel": "lower respiratory tract disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553556",
+        "diseaseLabel": "large intestine adenocarcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553776",
+        "diseaseLabel": "larynx squamous papilloma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18553999",
+        "diseaseLabel": "esophageal carcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18554108",
+        "diseaseLabel": "acute serous otitis media"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18554898",
+        "diseaseLabel": "cardiovascular cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555021",
+        "diseaseLabel": "enamel caries"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555057",
+        "diseaseLabel": "plasma protein metabolism disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555098",
+        "diseaseLabel": "sensory peripheral neuropathy"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18555316",
+        "diseaseLabel": "squamous cell neoplasm"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556028",
+        "diseaseLabel": "acute transudative otitis media"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556538",
+        "diseaseLabel": "small intestine carcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556542",
+        "diseaseLabel": "esophagus adenocarcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556564",
+        "diseaseLabel": "gallbladder carcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18556865",
+        "diseaseLabel": "testicular germ cell tumor"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18557565",
+        "diseaseLabel": "superficial urinary bladder cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18557950",
+        "diseaseLabel": "retinal artery occlusion"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18557973",
+        "diseaseLabel": "soft palate cancer"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q18558220",
+        "diseaseLabel": "bowel dysfunction"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q19000444",
+        "diseaseLabel": "neurotic disorder"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q26695607",
+        "diseaseLabel": "peripheral vascular disease"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q30314084",
+        "diseaseLabel": "running injury"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q32140239",
+        "diseaseLabel": "hypotrichosis 2"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q42417296",
+        "diseaseLabel": "infection associated with diseases"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q53678376",
+        "diseaseLabel": "gingival squamous cell carcinoma"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q54972627",
+        "diseaseLabel": "multiple pulmonary nodules"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q55042693",
+        "diseaseLabel": "basal ganglia hemorrhage"
+    },
+    {
+        "disease": "http://www.wikidata.org/entity/Q56218018",
+        "diseaseLabel": "heart failure with reduced ejection fraction"
+    }
+]
