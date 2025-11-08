@@ -83,11 +83,11 @@ const simulation = d3.forceSimulation(network.nodes)
       .attr("y2", d => d.target.y);
 
     node
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
+    .attr("cx", d => Math.max(20, Math.min(width - 20, d.x))) // prevent cutoff
+    .attr("cy", d => Math.max(20, Math.min(height - 20, d.y)));
 
-    label
-    .attr("x", d => d.x)
-    .attr("y", d => d.y);
+   label
+    .attr("x", d => Math.max(20, Math.min(width - 20, d.x)))
+    .attr("y", d => Math.max(20, Math.min(height - 20, d.y)));
   }
 });
