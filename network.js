@@ -71,7 +71,7 @@ d3.json("diseases_smoking.json").then(data => {
 // Create simulation
 const simulation = d3.forceSimulation(network.nodes)
   .force("link", d3.forceLink(network.links).id(d => d.id).distance(150))
-  .force("charge", d3.forceManyBody().strength(-800))
+  .force("charge", d3.forceManyBody().strength(-400))
   .force("center", d3.forceCenter(width / 2, height / 2))
   .alphaDecay(0.02)
   .on("tick", ticked)
