@@ -14,9 +14,10 @@ const data = loadJSON("diseases_smoking.json");
 const nodes = [{ id: 1, name: "smoking" }];
 
 console.log(data);
+console.log(Array.isArray(data));
 
 // Add disease nodes
-data.data.forEach((item, index) => {
+data.forEach((item, index) => {
   nodes.push({
     id: index + 2, // IDs start at 2
     name: item.diseaseLabel
