@@ -78,6 +78,8 @@ const simulation = d3.forceSimulation(network.nodes)
   .force("center", d3.forceCenter(width / 2, height / 2))
   .on("tick", ticked);
 
+simulation.alphaDecay(0.02);
+  
   function ticked() {
     link
       .attr("x1", d => d.source.x)
