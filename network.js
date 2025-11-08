@@ -1,102 +1,82 @@
-/////////////// CONVERSION OF JSON FILES
-
-// Read the disease.json file
-//async function loadJSON(file) {
-//  const response = await fetch(file); // fetch is an asynchronous function, await makes sure the function is done before moving on
-//  const data = await response.json(); // converts the fetch output back into json
-//  return data; 
-//};
-
-// Build hierarchical data for D3
-//const data = loadJSON("diseases_smoking.json");
-
 d3.json("diseases_smoking.json").then(data => {
   console.log(Array.isArray(data)); // should be true
-  console.log("Number of diseases:", data.length); // size of array
+  console.log("Number of diseases:", data.length); // gives size
 
-// Create nodes — start with smoking
-const nodes = [{ id: 1, name: "smoking" }];
+  // Create nodes — start with smoking, will be the root of the network
+  const nodes = [{ id: 1, name: "smoking" }];
 
-console.log(data);
-console.log(Array.isArray(data));
-
-// Add disease nodes
-data.forEach((item, index) => {
-  nodes.push({
-    id: index + 2, // IDs start at 2
-    name: item.diseaseLabel
+  // Add disease nodes
+  data.forEach((item, index) => {
+    nodes.push({
+      id: index + 2,
+      name: item.diseaseLabel
+    });
   });
-});
 
-// Create links — all from smoking (id 1)
-const links = data.map((_, index) => ({
-  source: 1,
-  target: index + 2
-})); 
+  // Create links — all from smoking (id 1)
+  const links = data.map((_, index) => ({
+    source: 1,
+    target: index + 2
+  }));
 
-// Combine into final network object
-const network = { "nodes": nodes, "links" : links };
-console.log(network)
+  // Combine into final network object
+  const network = { nodes, links };
+  console.log(network);
 
-// Write to network.json   fs.writeFileSync("network.json", JSON.stringify(network, null, 2));    console.log(`✅ Created network.json with ${data.length} diseases`);
+  // set the dimensions and margins of the graph
+  const margin = { top: 10, right: 30, bottom: 30, left: 40 },
+    width = 400 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
-/////////////// CREATE NETWORK
-
-// set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 40},
-  width = 400 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
-
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
-.append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-.append("g")
-  .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
-
-d3.json(network, function(data) {
+  // append the svg object to the body of the page
+  const svg = d3
+    .select("#my_dataviz")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
   // Initialize the links
-  var link = svg
+  const link = svg
     .selectAll("line")
-    .data(data.links)
+    .data(network.links)
     .enter()
     .append("line")
-      .style("stroke", "#aaa")
+    .style("stroke", "#aaa");
 
   // Initialize the nodes
-  var node = svg
+  const node = svg
     .selectAll("circle")
-    .data(data.nodes)
+    .data(network.nodes)
     .enter()
     .append("circle")
-      .attr("r", 20)
-      .style("fill", "#69b3a2")
+    .attr("r", 6)
+    .style("fill", "#69b3a2");
 
-  // Let's list the force we wanna apply on the network
-  var simulation = d3.forceSimulation(data.nodes)                 // Force algorithm is applied to data.nodes
-      .force("link", d3.forceLink()                               // This force provides links between nodes
-            .id(function(d) { return d.id; })                     // This provide  the id of a node
-            .links(data.links)                                    // and this the list of links
-      )
-      .force("charge", d3.forceManyBody().strength(-400))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
-      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
-      .on("end", ticked);
+  // Create simulation
+  const simulation = d3
+    .forceSimulation(network.nodes)
+    .force(
+      "link",
+      d3
+        .forceLink()
+        .id(d => d.id)
+        .links(network.links)
+    )
+    .force("charge", d3.forceManyBody().strength(-100))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .on("tick", ticked);
 
-  // This function is run at each iteration of the force algorithm, updating the nodes position.
   function ticked() {
     link
-        .attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
 
     node
-         .attr("cx", function (d) { return d.x+6; })
-         .attr("cy", function(d) { return d.y-6; });
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
   }
-
-});
 });
