@@ -76,8 +76,7 @@ const simulation = d3.forceSimulation(network.nodes)
   .force("charge", d3.forceManyBody().strength(-400))
   .force("center", d3.forceCenter(width / 2, height / 2))
   .alphaDecay(0.02)
-  .on("tick", ticked)
-  .on("end", rescaleToFit);
+  .on("tick", ticked);
   
   function ticked() {
     link
