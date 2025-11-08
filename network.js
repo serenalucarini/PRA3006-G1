@@ -62,7 +62,7 @@ const height = window.innerHeight - headerHeight - footerHeight;
   .join("text")
   .text(d => d.name)
   .attr("font-size", 20)
-  .attr("dx", 12)  // offset so labels don’t overlap nodes
+  .attr("dx", d => d.id === 1 ? 0 : 8)  // offset so labels don’t overlap nodes
   .attr("dy", 4)
   .attr("fill", "black");
 
