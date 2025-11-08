@@ -68,20 +68,15 @@ d3.json("diseases_smoking.json").then(data => {
   .attr("dy", 4)
   .attr("fill", "black");
 
-
-  // Create simulation
-  const simulation = d3
-    .forceSimulation(network.nodes)
-    .force(
-      "link",
-      d3
-        .forceLink()
-        .id(d => d.id)
-        .links(network.links)
-    )
-    .force("charge", d3.forceManyBody().strength(-100))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .on("tick", ticked);
+// Create simulation
+const simulation = d3.forceSimulation(network.nodes)
+  .force("link", d3.forceLink(network.links)
+    .id(d => d.id)
+    .distance(150)  // ⬅️ increase from 60 → 150 or even 200
+  )
+  .force("charge", d3.forceManyBody().strength(-800)) // ⬅️ more repulsion
+  .force("center", d3.forceCenter(width / 2, height / 2))
+  .on("tick", ticked);
 
   function ticked() {
     link
