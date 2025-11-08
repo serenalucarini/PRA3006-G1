@@ -37,7 +37,7 @@ const links = data.map((_, index) => ({
 // Combine into final network object
 const network = { "nodes": nodes, "links" : links };
 console.log(network)
-});
+
 // Write to network.json   fs.writeFileSync("network.json", JSON.stringify(network, null, 2));    console.log(`✅ Created network.json with ${data.length} diseases`);
 
 /////////////// CREATE NETWORK
@@ -98,4 +98,5 @@ d3.json(network, function(data) {
          .attr("cy", function(d) { return d.y-6; });
   }
 
+});
 });
