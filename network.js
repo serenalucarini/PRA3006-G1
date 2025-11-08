@@ -13,6 +13,8 @@ const data = loadJSON("diseases_smoking.json");
 // Create nodes — start with smoking
 const nodes = [{ id: 1, name: "smoking" }];
 
+console.log(data);
+
 // Add disease nodes
 data.forEach((item, index) => {
   nodes.push({
