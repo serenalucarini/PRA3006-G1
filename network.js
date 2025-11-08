@@ -1,3 +1,5 @@
+/////// CONVERSION INTO REQUIRED JSON
+
 d3.json("diseases_smoking.json").then(data => {
   console.log(Array.isArray(data)); // should be true
   console.log("Number of diseases:", data.length); // gives size
@@ -5,7 +7,7 @@ d3.json("diseases_smoking.json").then(data => {
   // Create nodes — start with smoking, will be the root of the network
   const nodes = [{ id: 1, name: "smoking" }];
 
-  // Add disease nodes
+  // Add disease nodes, iteration
   data.forEach((item, index) => {
     nodes.push({
       id: index + 2,
@@ -13,7 +15,7 @@ d3.json("diseases_smoking.json").then(data => {
     });
   });
 
-  // Create links — all from smoking (id 1)
+  // Create links — all from smoking (id 1), iteration
   const links = data.map((_, index) => ({
     source: 1,
     target: index + 2
@@ -22,6 +24,8 @@ d3.json("diseases_smoking.json").then(data => {
   // Combine into final network object
   const network = { nodes, links };
   console.log(network);
+
+  /////// MAKE NETWORK
 
   // set the dimensions and margins of the graph
   const margin = { top: 10, right: 30, bottom: 30, left: 40 },
