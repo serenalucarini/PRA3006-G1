@@ -29,8 +29,8 @@ d3.json("diseases_smoking.json").then(data => {
 
   // set the dimensions and margins of the graph
   const margin = { top: 10, right: 30, bottom: 30, left: 40 },
-    width = 1600 - margin.left - margin.right,
-    height = 1600 - margin.top - margin.bottom;
+    width = 800 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   const svg = d3
