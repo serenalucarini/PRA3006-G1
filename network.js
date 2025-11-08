@@ -29,8 +29,8 @@ d3.json("diseases_smoking.json").then(data => {
 
   // set the dimensions and margins of the graph
   const margin = { top: 10, right: 30, bottom: 30, left: 40 },
-    width = 800 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom;
+    width = 500 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   const svg = d3
@@ -55,7 +55,7 @@ d3.json("diseases_smoking.json").then(data => {
     .data(network.nodes)
     .enter()
     .append("circle")
-    .attr("r", 6)
+    .attr("r", 15)
     .style("fill", "#E6E6FA"); // colour lavender to match header and footer
 
   const label = svg.append("g")
@@ -63,14 +63,14 @@ d3.json("diseases_smoking.json").then(data => {
   .data(network.nodes)
   .join("text")
   .text(d => d.name)
-  .attr("font-size", 10)
+  .attr("font-size", 20)
   .attr("dx", 8)  // small offset so labels don’t overlap nodes
   .attr("dy", 4)
   .attr("fill", "black");
 
 // Create simulation
 const simulation = d3.forceSimulation(network.nodes)
-  .force("link", d3.forceLink(network.links).id(d => d.id).distance(200))
+  .force("link", d3.forceLink(network.links).id(d => d.id).distance(150))
   .force("charge", d3.forceManyBody().strength(-800))
   .force("center", d3.forceCenter(width / 2, height / 2))
   .alphaDecay(0.02)
