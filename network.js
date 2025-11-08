@@ -12,7 +12,7 @@
 
 d3.json("diseases_smoking.json").then(data => {
   console.log(Array.isArray(data)); // should be true
-  console.log("Number of diseases:", data.length);
+  console.log("Number of diseases:", data.length)});
 
 // Create nodes — start with smoking
 const nodes = [{ id: 1, name: "smoking" }];
