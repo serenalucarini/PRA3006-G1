@@ -27,8 +27,8 @@ d3.json("diseases_smoking.json").then(data => {
 
   /////// MAKE NETWORK
 
-const headerHeight = window.innerHeight * 0.15; // since header and footer are 15%
-const footerHeight = window.innerHeight * 0.15;
+const headerHeight = window.innerHeight * 0.20; // since header and footer are 15%
+const footerHeight = window.innerHeight * 0.20;
 const width = window.innerWidth * 0.7;  // percentage of viewport width
 const height = window.innerHeight - headerHeight - footerHeight;
 
