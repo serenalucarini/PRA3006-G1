@@ -73,7 +73,7 @@ const node = svg.append("g")
 // Create simulation
 const simulation = d3.forceSimulation(network.nodes)
   .force("link", d3.forceLink(network.links).id(d => d.id).distance(100))
-  .force("charge", d3.forceManyBody().strength(-400))
+  .force("charge", d3.forceManyBody().strength(-200))
   .force("center", d3.forceCenter(width / 2, height / 2))
   .alphaDecay(0.02)
   .on("tick", ticked);
