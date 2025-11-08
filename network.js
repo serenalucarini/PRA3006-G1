@@ -1,14 +1,18 @@
 /////////////// CONVERSION OF JSON FILES
 
 // Read the disease.json file
-async function loadJSON(file) {
-  const response = await fetch(file); // fetch is an asynchronous function, await makes sure the function is done before moving on
-  const data = await response.json(); // converts the fetch output back into json
-  return data; 
-};
+//async function loadJSON(file) {
+//  const response = await fetch(file); // fetch is an asynchronous function, await makes sure the function is done before moving on
+//  const data = await response.json(); // converts the fetch output back into json
+//  return data; 
+//};
 
 // Build hierarchical data for D3
-const data = loadJSON("diseases_smoking.json");
+//const data = loadJSON("diseases_smoking.json");
+
+d3.json("diseases_smoking.json").then(data => {
+  console.log(Array.isArray(data)); // should be true
+  console.log("Number of diseases:", data.length);
 
 // Create nodes — start with smoking
 const nodes = [{ id: 1, name: "smoking" }];
