@@ -48,23 +48,27 @@ const height = window.innerHeight - headerHeight - footerHeight;
     .style("stroke", "#aaa");
 
   // Initialize the nodes
-  const node = svg
-    .selectAll("circle")
-    .data(network.nodes)
-    .enter()
-    .append("circle")
-    .attr("r", 15)
-    .style("fill", "#E6E6FA"); // colour lavender to match header and footer
+const tooltip = d3.select("#tooltip");
 
-  const label = svg.append("g")
-  .selectAll("text")
+const node = svg.append("g")
+  .selectAll("circle")
   .data(network.nodes)
-  .join("text")
-  .text(d => d.name)
-  .attr("font-size", 20)
-  .attr("dx", d => d.id === 1 ? 0 : 8)  // offset so labels don’t overlap nodes
-  .attr("dy", 4)
-  .attr("fill", "black");
+  .join("circle")
+  .attr("r", 15)
+  .attr("fill", 0)
+  .on("mouseover", (event, d) => { // show tooltip with node name
+      tooltip
+        .style("opacity", 1)
+        .html(d.name);
+  })
+  .on("mousemove", (event) => { // move tooltip near cursor
+      tooltip
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 15) + "px");
+  })
+  .on("mouseout", () => { // hide tooltip
+      tooltip.style("opacity", 0);
+  });
 
 // Create simulation
 const simulation = d3.forceSimulation(network.nodes)
@@ -85,9 +89,5 @@ const simulation = d3.forceSimulation(network.nodes)
     node
     .attr("cx", d => Math.max(20, Math.min(width - 20, d.x))) // prevent cutoff
     .attr("cy", d => Math.max(20, Math.min(height - 20, d.y)));
-
-   label
-    .attr("x", d => Math.max(20, Math.min(width - 20, d.x)))
-    .attr("y", d => Math.max(20, Math.min(height - 20, d.y)));
   }
 });
