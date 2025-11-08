@@ -58,6 +58,17 @@ d3.json("diseases_smoking.json").then(data => {
     .attr("r", 6)
     .style("fill", "#E6E6FA"); // colour lavender to match header and footer
 
+  const label = svg.append("g")
+  .selectAll("text")
+  .data(network.nodes)
+  .join("text")
+  .text(d => d.name)
+  .attr("font-size", 10)
+  .attr("dx", 8)  // small offset so labels don’t overlap nodes
+  .attr("dy", 4)
+  .attr("fill", "black");
+
+
   // Create simulation
   const simulation = d3
     .forceSimulation(network.nodes)
@@ -82,5 +93,9 @@ d3.json("diseases_smoking.json").then(data => {
     node
       .attr("cx", d => d.x)
       .attr("cy", d => d.y);
+
+    label
+    .attr("x", d => d.x)
+    .attr("y", d => d.y);
   }
 });
