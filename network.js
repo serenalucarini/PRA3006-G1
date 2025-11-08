@@ -16,7 +16,7 @@ const nodes = [{ id: 1, name: "smoking" }];
 console.log(data);
 
 // Add disease nodes
-data.forEach((item, index) => {
+data.data.forEach((item, index) => {
   nodes.push({
     id: index + 2, // IDs start at 2
     name: item.diseaseLabel
