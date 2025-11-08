@@ -27,19 +27,18 @@ d3.json("diseases_smoking.json").then(data => {
 
   /////// MAKE NETWORK
 
-  // set the dimensions and margins of the graph
-  const margin = { top: 10, right: 30, bottom: 30, left: 40 },
-    width = 500 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+const headerHeight = window.innerHeight * 0.15; // since header and footer are 15%
+const footerHeight = window.innerHeight * 0.15;
+const width = window.innerWidth * 0.8;  // percentage of viewport width
+const height = window.innerHeight - headerHeight - footerHeight;
 
   // append the svg object to the body of the page
-  const svg = d3
-    .select("#circle")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
+  const svg = d3.select("#circle")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .style("background", "#f0f0f0")
+  .style("margin-top", headerHeight + "px"); // pushes network below header
 
   // Initialize the links
   const link = svg
@@ -55,7 +54,7 @@ d3.json("diseases_smoking.json").then(data => {
     .data(network.nodes)
     .enter()
     .append("circle")
-    .attr("r", 15)
+    .attr("r", 20)
     .style("fill", "#E6E6FA"); // colour lavender to match header and footer
 
   const label = svg.append("g")
@@ -64,7 +63,7 @@ d3.json("diseases_smoking.json").then(data => {
   .join("text")
   .text(d => d.name)
   .attr("font-size", 20)
-  .attr("dx", 8)  // small offset so labels don’t overlap nodes
+  .attr("dx", 12)  // offset so labels don’t overlap nodes
   .attr("dy", 4)
   .attr("fill", "black");
 
