@@ -29,7 +29,7 @@ d3.json("diseases_smoking.json").then(data => {
 
 const headerHeight = window.innerHeight * 0.15; // since header and footer are 15%
 const footerHeight = window.innerHeight * 0.15;
-const width = window.innerWidth * 0.8;  // percentage of viewport width
+const width = window.innerWidth * 0.7;  // percentage of viewport width
 const height = window.innerHeight - headerHeight - footerHeight;
 
   // append the svg object to the body of the page
@@ -37,7 +37,6 @@ const height = window.innerHeight - headerHeight - footerHeight;
   .append("svg")
   .attr("width", width)
   .attr("height", height)
-  .style("background", "#f0f0f0")
   .style("margin-top", headerHeight + "px"); // pushes network below header
 
   // Initialize the links
@@ -54,7 +53,7 @@ const height = window.innerHeight - headerHeight - footerHeight;
     .data(network.nodes)
     .enter()
     .append("circle")
-    .attr("r", 20)
+    .attr("r", 15)
     .style("fill", "#E6E6FA"); // colour lavender to match header and footer
 
   const label = svg.append("g")
@@ -69,7 +68,7 @@ const height = window.innerHeight - headerHeight - footerHeight;
 
 // Create simulation
 const simulation = d3.forceSimulation(network.nodes)
-  .force("link", d3.forceLink(network.links).id(d => d.id).distance(150))
+  .force("link", d3.forceLink(network.links).id(d => d.id).distance(100))
   .force("charge", d3.forceManyBody().strength(-400))
   .force("center", d3.forceCenter(width / 2, height / 2))
   .alphaDecay(0.02)
