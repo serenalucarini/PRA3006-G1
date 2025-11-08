@@ -12,7 +12,7 @@
 
 d3.json("diseases_smoking.json").then(data => {
   console.log(Array.isArray(data)); // should be true
-  console.log("Number of diseases:", data.length)});
+  console.log("Number of diseases:", data.length); // size of array
 
 // Create nodes — start with smoking
 const nodes = [{ id: 1, name: "smoking" }];
@@ -32,12 +32,12 @@ data.forEach((item, index) => {
 const links = data.map((_, index) => ({
   source: 1,
   target: index + 2
-}));
+})); 
 
 // Combine into final network object
 const network = { "nodes": nodes, "links" : links };
 console.log(network)
-
+});
 // Write to network.json   fs.writeFileSync("network.json", JSON.stringify(network, null, 2));    console.log(`✅ Created network.json with ${data.length} diseases`);
 
 /////////////// CREATE NETWORK
