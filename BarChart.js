@@ -1,151 +1,153 @@
 // Define the SPARQL endpoint
-        const sparqlEndpoint = "https://query.wikidata.org/sparql";
+const sparqlEndpoint = "https://query.wikidata.org/sparql";
 
-        // Function to fetch data from SPARQL endpoint
-        async function fetchData() {
-            const loadingMessage = document.getElementById("loading-message");
-            loadingMessage.classList.remove("hidden");
+// Function to fetch data from SPARQL endpoint
+async function fetchData() {
+    const loadingMessage = document.getElementById("loading-message");
+    loadingMessage.classList.remove("hidden");
 
-            const sparqlQuery = `
-            SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
-            WHERE {
-              ?disease wdt:P5642 wd:Q662860.
-              ?disease wdt:P5642 ?factor .
-              ?disease wdt:P780 ?symptoms.
-              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
-            }`;
+    const sparqlQuery = `
+    SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
+    WHERE {
+      ?disease wdt:P5642 wd:Q662860.
+      ?disease wdt:P5642 ?factor .
+      ?disease wdt:P780 ?symptoms.
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
+    }`;
 
-            try {
-                const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
-                    headers: { Accept: "application/json" },
-                });
+    try {
+        const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
+            headers: { Accept: "application/json" },
+        });
 
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                }
-
-                const json = await response.json();
-                return json.results.bindings.map((row) => ({
-                    diseaseLabel: row.diseaseLabel.value,
-                    factorLabel: row.factorLabel.value,
-                }));
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                return []; // Return an empty array if there is an error
-            } finally {
-                loadingMessage.classList.add("hidden"); //Hide the loading message
-            }
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
         }
 
-        // Function to prepare data for bar chart
-        function prepareChartData(data) {
-            // Group by risk factor and count unique diseases
-            const groupedByFactor = d3.group(data, (d) => d.factorLabel);
-            
-            return Array.from(groupedByFactor, ([factor, values]) => {
-                // Count unique diseases for this risk factor
-                const uniqueDiseases = new Set(values.map(v => v.disease));
-                return {
-                    factor: factor,
-                    count: uniqueDiseases.size
-                };
-            }).sort((a, b) => b.count - a.count); // Sort by count descending
-        }
+        const json = await response.json();
+        return json.results.bindings.map((row) => ({
+            disease: row.disease.value,
+            diseaseLabel: row.diseaseLabel.value,
+            factor: row.factor.value,
+            factorLabel: row.factorLabel.value,
+        }));
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
+    } finally {
+        loadingMessage.classList.add("hidden");
+    }
+}
 
-        // Function to draw the bar chart
-        function drawChart(chartData) {
-            // Set dimensions and margins
-            const margin = { top: 20, right: 30, bottom: 150, left: 60 };
-            const width = 1000 - margin.left - margin.right;
-            const height = 600 - margin.top - margin.bottom;
+// Function to prepare data for bar chart
+function prepareChartData(data) {
+    // Group by risk factor and count unique diseases
+    const groupedByFactor = d3.group(data, (d) => d.factorLabel);
+    
+    return Array.from(groupedByFactor, ([factor, values]) => {
+        // Count unique diseases for this risk factor
+        const uniqueDiseases = new Set(values.map(v => v.disease));
+        return {
+            factor: factor,
+            count: uniqueDiseases.size
+        };
+    }).sort((a, b) => b.count - a.count); // Sort by count descending
+}
 
-            // Create SVG container
-            const svg = d3
-                .select("#barchart-container")
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+// Function to draw the bar chart
+function drawChart(chartData) {
+    // Set dimensions and margins
+    const margin = { top: 20, right: 30, bottom: 150, left: 60 };
+    const width = 1000 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
 
-            // Define scales
-            const x = d3.scaleBand()
-                .range([0, width])
-                .domain(chartData.map(d => d.factor))
-                .padding(0.2);
+    // Create SVG container
+    const svg = d3
+        .select("#barchart-container")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            const y = d3.scaleLinear()
-                .range([height, 0])
-                .domain([0, d3.max(chartData, d => d.count)]);
+    // Define scales
+    const x = d3.scaleBand()
+        .range([0, width])
+        .domain(chartData.map(d => d.factor))
+        .padding(0.2);
 
-            // Add bars
-            svg.selectAll(".bar")
-                .data(chartData)
-                .join("rect")
-                .attr("class", "bar")
-                .attr("x", d => x(d.factor))
-                .attr("y", d => y(d.count))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.count))
-                .attr("fill", "#4CAF50")
-                .append("title")
-                .text(d => `${d.factor}: ${d.count} diseases`);
+    const y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([0, d3.max(chartData, d => d.count)]);
 
-            // Add X axis
-            svg.append("g")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x))
-                .selectAll("text")
-                .attr("transform", "rotate(-45)")
-                .style("text-anchor", "end")
-                .style("fill", "#ffffff");
+    // Add bars
+    svg.selectAll(".bar")
+        .data(chartData)
+        .join("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.factor))
+        .attr("y", d => y(d.count))
+        .attr("width", x.bandwidth())
+        .attr("height", d => height - y(d.count))
+        .attr("fill", "#4CAF50")
+        .append("title")
+        .text(d => `${d.factor}: ${d.count} diseases`);
 
-            // Add Y axis
-            svg.append("g")
-                .call(d3.axisLeft(y).ticks(10))
-                .selectAll("text")
-                .style("fill", "#ffffff");
+    // Add X axis
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end")
+        .style("fill", "#333");
 
-            // Add Y axis label
-            svg.append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
-                .attr("x", 0 - (height / 2))
-                .attr("dy", "1em")
-                .style("text-anchor", "middle")
-                .style("fill", "#ffffff")
-                .text("Number of Diseases");
+    // Add Y axis
+    svg.append("g")
+        .call(d3.axisLeft(y).ticks(10))
+        .selectAll("text")
+        .style("fill", "#333");
 
-            // Add X axis label
-            svg.append("text")
-                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
-                .style("text-anchor", "middle")
-                .style("fill", "#ffffff")
-                .text("Risk Factors");
+    // Add Y axis label
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("fill", "#333")
+        .text("Number of Diseases");
 
-            // Style axis lines
-            svg.selectAll(".domain, .tick line")
-                .style("stroke", "#ffffff");
-        }
+    // Add X axis label
+    svg.append("text")
+        .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+        .style("text-anchor", "middle")
+        .style("fill", "#333")
+        .text("Risk Factors");
 
-        // Initialize the visualization
-        async function init() {
-            const rawData = await fetchData();
-            if (rawData.length === 0) {
-                console.warn("No data available to display");
-                document.getElementById("loading-message").textContent = "No data available";
-                document.getElementById("loading-message").classList.remove("hidden");
-                return;
-            }
+    // Style axis lines and text
+    svg.selectAll(".domain, .tick line")
+        .style("stroke", "#333");
+    
+    svg.selectAll(".tick text")
+        .style("fill", "#333");
+}
 
-            console.log("Raw Data:", rawData);
-            const chartData = prepareChartData(rawData);
-            console.log("Chart Data:", chartData);
-            drawChart(chartData);
-        }
+// Initialize the visualization
+async function init() {
+    const rawData = await fetchData();
+    if (rawData.length === 0) {
+        console.warn("No data available to display");
+        document.getElementById("loading-message").textContent = "No data available";
+        document.getElementById("loading-message").classList.remove("hidden");
+        return;
+    }
 
-        // Start the visualization
-        init();
-    </script>
-</body>
-</html>
+    console.log("Raw Data:", rawData);
+    const chartData = prepareChartData(rawData);
+    console.log("Chart Data:", chartData);
+    drawChart(chartData);
+}
+
+// Start the visualization
+init();
