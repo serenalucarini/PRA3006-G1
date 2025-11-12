@@ -6,48 +6,78 @@
     <title>Disease Risk Factors Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
         .header, .footer {
-          position: fixed;
-          left: 0;
-          width: 100%;
-          height: 15%;
-          background-color: Lavender;
-          color: black;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          box-sizing: border-box;
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 15%;
+            background-color: Lavender;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
         }
         
         .header {
-          top: 0;
-          padding: 0 15%;
+            top: 0;
+            padding: 0 15%;
         }
         
         .footer {
-          bottom: 0;
-          padding: 0 2%;
+            bottom: 0;
+            padding: 0 2%;
         }
         
         .body {
-          position: fixed;
-          top: 15%;
-          left: 0;
-          width: 100%;
-          height: 70%;
-          color: black;
-          padding: 2rem;
-          overflow: auto;
+            position: fixed;
+            top: 15%;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            color: black;
+            padding: 2rem;
+            overflow: auto;
         }
         
         .title {
-          position: absolute;
-          left: 50%;
-          margin: 0;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
         }
         
         .footer_date {
-          text-align: right;
+            text-align: right;
+        }
+        
+        #loading-message {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+        }
+        
+        #barchart-container {
+            margin-top: 30px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .bar {
+            transition: opacity 0.3s;
+        }
+        
+        .bar:hover {
+            opacity: 0.7;
         }
     </style>
 </head>
