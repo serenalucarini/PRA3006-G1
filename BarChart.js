@@ -26,16 +26,14 @@
 
                 const json = await response.json();
                 return json.results.bindings.map((row) => ({
-                    disease: row.disease.value,
                     diseaseLabel: row.diseaseLabel.value,
-                    factor: row.factor.value,
                     factorLabel: row.factorLabel.value,
                 }));
             } catch (error) {
                 console.error("Error fetching data:", error);
-                return [];
+                return []; // Return an empty array if there is an error
             } finally {
-                loadingMessage.classList.add("hidden");
+                loadingMessage.classList.add("hidden"); //Hide the loading message
             }
         }
 
