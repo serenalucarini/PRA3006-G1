@@ -6,38 +6,48 @@
     <title>Disease Risk Factors Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            padding: 20px;
-            margin: 0;
+        .header, .footer {
+          position: fixed;
+          left: 0;
+          width: 100%;
+          height: 15%;
+          background-color: Lavender;
+          color: black;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          box-sizing: border-box;
         }
-        #container {
-            max-width: 1200px;
-            margin: 0 auto;
+        
+        .header {
+          top: 0;
+          padding: 0 15%;
         }
-        h1 {
-            text-align: center;
-            color: #4CAF50;
+        
+        .footer {
+          bottom: 0;
+          padding: 0 2%;
         }
-        #loading-message {
-            text-align: center;
-            font-size: 18px;
-            color: #4CAF50;
-            margin: 20px 0;
+        
+        .body {
+          position: fixed;
+          top: 15%;
+          left: 0;
+          width: 100%;
+          height: 70%;
+          color: black;
+          padding: 2rem;
+          overflow: auto;
         }
-        #barchart-container {
-            margin-top: 30px;
+        
+        .title {
+          position: absolute;
+          left: 50%;
+          margin: 0;
         }
-        .hidden {
-            display: none;
-        }
-        .bar {
-            transition: opacity 0.3s;
-        }
-        .bar:hover {
-            opacity: 0.7;
+        
+        .footer_date {
+          text-align: right;
         }
     </style>
 </head>
