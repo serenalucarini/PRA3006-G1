@@ -82,10 +82,20 @@
     </style>
 </head>
 <body>
-    <div id="container">
-        <h1>Diseases per Risk Factor</h1>
+    <div class="header">
+        <div></div>
+        <h1 class="title">Diseases per Risk Factor</h1>
+        <div></div>
+    </div>
+    
+    <div class="body">
         <div id="loading-message">Loading data...</div>
         <div id="barchart-container"></div>
+    </div>
+    
+    <div class="footer">
+        <div>Risk Factor Analysis</div>
+        <div class="footer_date">Data from Wikidata</div>
     </div>
 
     <script>
@@ -171,7 +181,7 @@
                 .range([height, 0])
                 .domain([0, d3.max(chartData, d => d.count)]);
 
-            // Add bars
+            // Add bars (changed to pink)
             svg.selectAll(".bar")
                 .data(chartData)
                 .join("rect")
@@ -180,45 +190,45 @@
                 .attr("y", d => y(d.count))
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.count))
-                .attr("fill", "#4CAF50")
+                .attr("fill", "#FF69B4")
                 .append("title")
                 .text(d => `${d.factor}: ${d.count} diseases`);
 
-            // Add X axis
+            // Add X axis (changed to black)
             svg.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x))
                 .selectAll("text")
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end")
-                .style("fill", "#ffffff");
+                .style("fill", "#000000");
 
-            // Add Y axis
+            // Add Y axis (changed to black)
             svg.append("g")
                 .call(d3.axisLeft(y).ticks(10))
                 .selectAll("text")
-                .style("fill", "#ffffff");
+                .style("fill", "#000000");
 
-            // Add Y axis label
+            // Add Y axis label (changed to black)
             svg.append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 0 - margin.left)
                 .attr("x", 0 - (height / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
-                .style("fill", "#ffffff")
+                .style("fill", "#000000")
                 .text("Number of Diseases");
 
-            // Add X axis label
+            // Add X axis label (changed to black)
             svg.append("text")
                 .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
                 .style("text-anchor", "middle")
-                .style("fill", "#ffffff")
+                .style("fill", "#000000")
                 .text("Risk Factors");
 
-            // Style axis lines
+            // Style axis lines (changed to black)
             svg.selectAll(".domain, .tick line")
-                .style("stroke", "#ffffff");
+                .style("stroke", "#000000");
         }
 
         // Initialize the visualization
