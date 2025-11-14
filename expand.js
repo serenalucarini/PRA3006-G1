@@ -56,7 +56,7 @@ const node = svg.append("g")
   })
   .on("mouseout", (event, d) => { // hide tooltip
       if (!d.isMain) {
-          / Restore original color for disease nodes
+          // Restore original color for disease nodes
         d3.select(event.currentTarget)
           .attr("fill", "#87ceeb")
           .attr("r", 15);
