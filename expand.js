@@ -1,5 +1,6 @@
 async function loadJSON(file) {
     const res = await fetch(file);
+    if (!res.ok) throw new Error(`Failed to load ${file}: ${res.status}`); //error handling
     return res.json();
 }
 async function renderGraph() {
@@ -33,10 +34,11 @@ async function renderGraph() {
         nodes.push(node);
         links.push({ source: root, target: node });
     });
-    const sim = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).distance(200).id(d => d.name))
-        .force("charge", d3.forceManyBody().strength(-500))
-        .force("center", d3.forceCenter(width/2, height/2));
+ const sim = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).distance(200).id(d => d.name))
+    .force("charge", d3.forceManyBody().strength(-500))
+    .force("collide", d3.forceCollide(44)) // 44 = 2 × radius (22)
+    .force("center", d3.forceCenter(width/2, height/2));
     const link = svg.append("g").selectAll("line")
         .data(links).enter().append("line")
         .attr("stroke", "#aaa");
