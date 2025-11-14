@@ -24,7 +24,7 @@ async function renderGraph() {
     const links = [];
 
     diseases.forEach(d => {
-        const name = d.diseaselabel || d.disease;
+        const name = d.diseaseLabel || d.disease;
         const node = { name, type: "disease" };
         nodes.push(node);
         links.push({ source: root, target: node });
