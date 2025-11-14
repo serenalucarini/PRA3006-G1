@@ -67,12 +67,12 @@ async function renderDiseasePage() {
             update();
             return;
         }
-        if (dytpe === "symptom") {
+        if (d.type === "symptom") {
             window.location.href = 
                 "symptom.html?name=" + encodeURIComponent(d.name);
             return;
         }
-        if (dytpe === "riskFactor") {
+        if (d.type === "riskFactor") {
             window.location.href = 
                 "riskFactor.html?name=" + encodeURIComponent(d.name);
             return;
@@ -107,7 +107,7 @@ async function renderDiseasePage() {
                          riskFactor: "purple"
                     }[d.type]))
                     .style("cursor", "pointer")
-                    .on("click", expandNode);
+                    .on("click", expandNode),
                 update => update
                     .style("cursor", "pointer")
                     .on("click", expandNode),
