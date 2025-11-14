@@ -47,38 +47,49 @@ async function renderDiseasePage() {
     };
 
     function expandNode(event, d) {
-        console.log("CLICKED:", d);
-        if (d.type === "category" && d.name.trim() === "Symptoms" && !expanded.symptoms) {
-            diseaseSymptoms.forEach(s => {
-                nodes.push(s);
-                links.push({ source: d, target: s });
-            });
-            expanded.symptoms = true;
-            update();
-            return;
-        }
+    console.log("CLICKED:", d);
 
-        if (d.name === "category" && d.name.trim() === Risk Factors" && !expanded.risks) {
-            diseaseRisks.forEach(r => {
-                nodes.push(r);
-                links.push({ source: d, target: r });
-            });
-            expanded.risks = true;
-            update();
-            return;
-        }
-        if (d.type === "symptom") {
-            window.location.href = 
-                "symptom.html?name=" + encodeURIComponent(d.name);
-            return;
-        }
-        if (d.type === "riskFactor") {
-            window.location.href = 
-                "riskFactor.html?name=" + encodeURIComponent(d.name);
-            return;
-        }
+    const name = d.name.trim();
+
+    // Expand Symptoms
+    if (d.type === "category" && name === "Symptoms" && !expanded.symptoms) {
+        console.log("EXPANDING SYMPTOMS");
+        diseaseSymptoms.forEach(s => {
+            nodes.push(s);
+            links.push({ source: d, target: s });
+        });
+        expanded.symptoms = true;
         update();
+        return;
     }
+
+    // Expand Risk Factors
+    if (d.type === "category" && name === "Risk Factors" && !expanded.risks) {
+        console.log("EXPANDING RISK FACTORS");
+        diseaseRisks.forEach(r => {
+            nodes.push(r);
+            links.push({ source: d, target: r });
+        });
+        expanded.risks = true;
+        update();
+        return;
+    }
+
+    // Symptom page
+    if (d.type === "symptom") {
+        window.location.href =
+            "symptom.html?name=" + encodeURIComponent(d.name);
+        return;
+    }
+
+    // Risk factor page
+    if (d.type === "riskFactor") {
+        window.location.href =
+            "riskfactor.html?name=" + encodeURIComponent(d.name);
+        return;
+    }
+        update();
+ }
 
     const sim = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).distance(150).id(n => n.name))
