@@ -1,7 +1,5 @@
-// disease_bubbles.js
-// Bubble chart: each bubble = disease
-// Bubble size = number of unique symptoms
-// Data source: diseases_symptoms.json (format you pasted)
+alert("diseases_bubbles.js IS LOADED!");
+console.log(">>> diseases_bubbles.js loaded!");
 
 d3.json("diseases_symptoms.json").then(rows => {
     console.log("Loaded JSON rows:", rows.length);
