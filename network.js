@@ -1,6 +1,4 @@
-/////// CONVERSION INTO REQUIRED JSON
-
-// Define the SPARQL endpoint
+/////// Define the SPARQL endpoint
 const sparqlEndpoint = "https://query.wikidata.org/sparql";
 
 // Function to fetch data from SPARQL endpoint
@@ -40,7 +38,9 @@ async function fetchData() {
     }
 }
 
-const SmokingDiseases = await fetchData()
+const SmokingDiseases = fetchData()
+
+/////// CONVERSION INTO REQUIRED JSON
 
 d3.json(SmokingDiseases).then(data => {
   console.log(Array.isArray(data)); // should be true
