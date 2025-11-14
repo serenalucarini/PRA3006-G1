@@ -23,6 +23,8 @@ async function renderDiseasePage() {
     const diseaseRisks = risks
         .filter(r => r.disease === diseaseName)
         .map(r => ({ name: r.factorLabel || r.factor, type: "riskFactor" }));
+    console.log("SYMPTOMS FOUND FOR:", diseaseName, diseaseSymptoms);
+    console.log("RISKS FOUND FOR:", diseaseName, diseaseRisks);
 
     const root = { name: diseaseName, type: "disease", fx: 450, fy: 350 };
     const symCat = { name: "Symptoms", type: "category" };
