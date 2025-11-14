@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disease Risk Factors Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    <style src="design.css">
+    <style>
         .header, .footer {
             position: fixed;
             left: 0;
@@ -38,6 +38,8 @@
             color: black;
             padding: 2rem;
             overflow: auto;
+            display: flex;
+            gap: 2rem;
         }
         
         .title {
@@ -59,7 +61,44 @@
         }
         
         #barchart-container {
-            margin-top: 30px;
+            flex: 1;
+            min-width: 500px;
+        }
+        
+        #diseases-panel {
+            flex: 0 0 400px;
+            background-color: #f5f5f5;
+            border: 2px solid #FF69B4;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        #diseases-panel.active {
+            display: block;
+        }
+        
+        .diseases-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FF69B4;
+            margin-bottom: 15px;
+        }
+        
+        .diseases-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .disease-item {
+            background-color: white;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #FF69B4;
+            border-radius: 4px;
+            font-size: 14px;
         }
         
         .hidden {
@@ -67,11 +106,16 @@
         }
         
         .bar {
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, fill 0.3s;
+            cursor: pointer;
         }
         
         .bar:hover {
-            opacity: 0.7;
+            opacity: 0.8;
+        }
+        
+        .bar.active {
+            fill: #FF1493 !important;
         }
     </style>
 </head>
@@ -83,8 +127,14 @@
     </div>
     
     <div class="body">
-        <div id="loading-message">Loading data...</div>
-        <div id="barchart-container"></div>
+        <div style="flex: 1;">
+            <div id="loading-message">Loading data...</div>
+            <div id="barchart-container"></div>
+        </div>
+        <div id="diseases-panel">
+            <div class="diseases-title" id="selected-factor"></div>
+            <ul class="diseases-list" id="diseases-list"></ul>
+        </div>
     </div>
     
     <div class="footer">
@@ -99,6 +149,7 @@
     <script>
         // Define the SPARQL endpoint
         const sparqlEndpoint = "https://query.wikidata.org/sparql";
+        let allData = []; // Store all data globally
 
         // Function to fetch data from SPARQL endpoint
         async function fetchData() {
@@ -153,6 +204,33 @@
             }).sort((a, b) => b.count - a.count); // Sort by count descending
         }
 
+        // Function to get diseases by risk factor
+        function getDiseasesByFactor(factorName) {
+            const factorData = allData.filter(d => d.factorLabel === factorName);
+            const uniqueDiseases = [...new Set(factorData.map(d => d.diseaseLabel))];
+            return uniqueDiseases.sort();
+        }
+
+        // Function to display diseases in panel
+        function displayDiseases(factorName) {
+            const diseases = getDiseasesByFactor(factorName);
+            const panel = document.getElementById("diseases-panel");
+            const titleEl = document.getElementById("selected-factor");
+            const listEl = document.getElementById("diseases-list");
+
+            titleEl.textContent = factorName;
+            listEl.innerHTML = "";
+
+            diseases.forEach(disease => {
+                const li = document.createElement("li");
+                li.className = "disease-item";
+                li.textContent = disease;
+                listEl.appendChild(li);
+            });
+
+            panel.classList.add("active");
+        }
+
         // Function to draw the bar chart
         function drawChart(chartData) {
             // Set dimensions and margins
@@ -179,7 +257,7 @@
                 .range([height, 0])
                 .domain([0, d3.max(chartData, d => d.count)]);
 
-            // Add bars (changed to pink)
+            // Add bars with click interaction
             svg.selectAll(".bar")
                 .data(chartData)
                 .join("rect")
@@ -189,10 +267,18 @@
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.count))
                 .attr("fill", "#FF69B4")
+                .on("click", function(event, d) {
+                    // Remove active class from all bars
+                    svg.selectAll(".bar").classed("active", false);
+                    // Add active class to clicked bar
+                    d3.select(this).classed("active", true);
+                    // Display diseases
+                    displayDiseases(d.factor);
+                })
                 .append("title")
                 .text(d => `${d.factor}: ${d.count} diseases`);
 
-            // Add X axis (changed to black)
+            // Add X axis
             svg.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x))
@@ -201,13 +287,13 @@
                 .style("text-anchor", "end")
                 .style("fill", "#000000");
 
-            // Add Y axis (changed to black)
+            // Add Y axis
             svg.append("g")
                 .call(d3.axisLeft(y).ticks(10))
                 .selectAll("text")
                 .style("fill", "#000000");
 
-            // Add Y axis label (changed to black)
+            // Add Y axis label
             svg.append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 0 - margin.left)
@@ -217,30 +303,30 @@
                 .style("fill", "#000000")
                 .text("Number of Diseases");
 
-            // Add X axis label (changed to black)
+            // Add X axis label
             svg.append("text")
                 .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
                 .style("text-anchor", "middle")
                 .style("fill", "#000000")
                 .text("Risk Factors");
 
-            // Style axis lines (changed to black)
+            // Style axis lines
             svg.selectAll(".domain, .tick line")
                 .style("stroke", "#000000");
         }
 
         // Initialize the visualization
         async function init() {
-            const rawData = await fetchData();
-            if (rawData.length === 0) {
+            allData = await fetchData();
+            if (allData.length === 0) {
                 console.warn("No data available to display");
                 document.getElementById("loading-message").textContent = "No data available";
                 document.getElementById("loading-message").classList.remove("hidden");
                 return;
             }
 
-            console.log("Raw Data:", rawData);
-            const chartData = prepareChartData(rawData);
+            console.log("Raw Data:", allData);
+            const chartData = prepareChartData(allData);
             console.log("Chart Data:", chartData);
             drawChart(chartData);
         }
