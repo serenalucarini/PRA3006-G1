@@ -10,11 +10,13 @@ async function fetchData() {
     loadingMessage.classList.remove("hidden");
 
     const sparqlQuery = `
-    SELECT ?disease ?diseaseLabel
-    WHERE {
-      ?disease wdt:P5642 wd:Q662860.   # smoking is a risk factor
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-    }`;
+    SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
+            WHERE {
+              ?disease wdt:P5642 wd:Q662860.
+              ?disease wdt:P5642 ?factor .
+              ?disease wdt:P780 ?symptoms.
+              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
+            }`;
 
     try {
         const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
