@@ -4,6 +4,8 @@ const sparqlEndpoint = "https://query.wikidata.org/sparql";
 // Function to fetch data from SPARQL endpoint
 async function fetchData() {
     const loadingMessage = document.getElementById("loading-message");
+    console.log("loading message: "+ loadingMessage);
+    console.log("classList: "+ classList);
     loadingMessage.classList.remove("hidden");
 
     const sparqlQuery = `
