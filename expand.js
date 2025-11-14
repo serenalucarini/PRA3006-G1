@@ -51,7 +51,7 @@ async function renderGraph() {
                 const url = "disease.html?name=" + encodeURIComponent(d.name);
                 window.location.href = url;
             }
-        
+        });
 
     const label = svg.append("g").selectAll("text")
         .data(nodes).enter()
