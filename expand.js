@@ -14,13 +14,12 @@ async function renderGraph() {
     // Create tooltip
     const tooltip = d3.select("body").append("div")
         .style("position", "absolute")
-        .style("background", "rgba(0, 0, 0, 0.8)")
+        .style("background", "white")
         .style("color", "white")
-        .style("padding", "8px 12px")
-        .style("border-radius", "4px")
+        .style("padding", "6px 10px")
+        .style("border", "1px solid #ccc")
         .style("font-size", "14px")
         .style("pointer-events", "none")
-        .style("display", "none")
         .style("z-index", "1000");
 
     const root = {
