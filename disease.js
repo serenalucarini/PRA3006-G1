@@ -96,16 +96,23 @@ async function renderDiseasePage() {
             .attr("stroke", "#aaa");
 
         const node = nodeGroup.selectAll("circle")
-            .data(nodes)
-            .join("circle")
-            .attr("r", 20)
-            .attr("fill", d => ({
-                disease: "steelblue",
-                category: "orange",
-                symptom: "green",
-                riskFactor: "purple"
-            }[d.type]))
-            .on("click", expandNode);
+            .data(nodes, d => d.name))
+            .join(
+                enter => enter.append("circle")
+                    .attr("r", 20)
+                    .attr("fill", d => ({
+                         disease: "steelblue",
+                         category: "orange",
+                         symptom: "green",
+                         riskFactor: "purple"
+                    }[d.type]))
+                    .style("cursor", "pointer")
+                    .on("click", expandNode);
+                update => update
+                    .style("cursor", "pointer")
+                    .on("click", expandNode),
+                exit => exit.remove()
+            );
 
         const label = labelGroup.selectAll("text")
             .data(nodes)
