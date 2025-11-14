@@ -1,11 +1,12 @@
 /////// Define the SPARQL endpoint
 const sparqlEndpoint = "https://query.wikidata.org/sparql";
+let allData = []; // store all data globally
 
 // Function to fetch data from SPARQL endpoint
 async function fetchData() {
     const loadingMessage = document.getElementById("loading-message");
-    console.log("loading message: "+ loadingMessage);
-    console.log("classList: "+ classList);
+    //console.log("loading message: "+ loadingMessage);
+    //console.log("classList: "+ classList);
     loadingMessage.classList.remove("hidden");
 
     const sparqlQuery = `
@@ -45,13 +46,14 @@ d3.json(fetchData()).then(data => {
   console.log("Number of diseases:", data.length); // gives size
 
   // Create nodes — start with smoking, will be the root of the network
-  const nodes = [{ id: 1, name: "smoking" }];
+  const nodes = [{ id: 1, name: "smoking", isMain: true }];
 
   // Add disease nodes, iteration
   data.forEach((item, index) => {
     nodes.push({
       id: index + 2,
-      name: item.diseaseLabel
+      name: item.diseaseLabel,
+      isMain: false
     });
   });
 
@@ -95,8 +97,13 @@ const node = svg.append("g")
   .data(network.nodes)
   .join("circle")
   .attr("r", 15)
-  .attr("fill", 0)
+  .attr("fill", d => d.isMain ? "#1f77b4" : "#87ceeb")
   .on("mouseover", (event, d) => { // show tooltip with node name
+      if (!isMain) {
+          // Change color on hover for disease nodes only
+        d3.select(event.currentTarget)
+          .attr("fill", "#ff6b6b") // red/coral on hover
+          .attr("r", 20); // slightly larger
       tooltip
         .style("opacity", 1)
         .html(d.name);
@@ -106,7 +113,13 @@ const node = svg.append("g")
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 15) + "px");
   })
-  .on("mouseout", () => { // hide tooltip
+  .on("mouseout", (event, d) => { // hide tooltip
+      if (!d.isMain) {
+          / Restore original color for disease nodes
+        d3.select(event.currentTarget)
+          .attr("fill", "#87ceeb")
+          .attr("r", 15);
+      }
       tooltip.style("opacity", 0);
   });
 
