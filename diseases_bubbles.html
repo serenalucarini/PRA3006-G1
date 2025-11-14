@@ -4,7 +4,11 @@
     <meta charset="utf-8">
     <title>Disease bubble chart</title>
 
+    <!-- Your CSS (pick the one you use) -->
     <link rel="stylesheet" href="stylefinal.css">
+    <!-- or: <link rel="stylesheet" href="design.css"> -->
+
+    <!-- D3 -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
@@ -22,15 +26,15 @@
     <div class="body">
         <h1>Number of symptoms per disease</h1>
         <p>
-            Each circle represents a disease. The larger the circle,
-            the more symptoms are associated with that disease.
+            TEST VERSION: dummy data only. If you see coloured circles below,
+            the page works. Then we can plug in the real JSON.
         </p>
 
         <div id="chart-container"></div>
     </div>
 
     <div class="footer">
-        <img src="um_logo.png" width="44.92" height="50.28">
+        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
         <div class="title"><a href="AboutUs.html">About Us</a></div>
         <small class="footer_date">
             <p>created: 31/10/2025</p>
@@ -38,14 +42,93 @@
         </small>
     </div>
 
-    <!-- VERY IMPORTANT: CORRECT FILE NAME -->
-    <script src="diseases_bubbles.js?v=4"></script>
+    <!-- INLINE SCRIPT: NO EXTERNAL JS FILES -->
+    <script>
+      alert("Inline bubble script IS RUNNING!");
+
+      console.log(">>> starting inline bubble chart");
+
+      // Dummy data: diseaseLabel + number of symptoms
+      const data = [
+        { diseaseLabel: "Heart disease", count: 9 },
+        { diseaseLabel: "Breast cancer", count: 7 },
+        { diseaseLabel: "Lung cancer", count: 8 },
+        { diseaseLabel: "Asthma", count: 4 },
+        { diseaseLabel: "Pneumonia", count: 5 },
+        { diseaseLabel: "Mumps", count: 8 },
+        { diseaseLabel: "Type 2 diabetes", count: 3 },
+        { diseaseLabel: "Depression", count: 3 }
+      ];
+
+      const width = 900;
+      const height = 600;
+
+      const svg = d3.select("#chart-container")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      const root = d3.hierarchy({ children: data })
+        .sum(d => d.count);
+
+      const pack = d3.pack()
+        .size([width, height])
+        .padding(5);
+
+      const nodes = pack(root).leaves();
+
+      const countExtent = d3.extent(nodes, d => d.data.count);
+      const color = d3.scaleSequential()
+        .domain(countExtent)
+        .interpolator(d3.interpolatePuRd);
+
+      const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("pointer-events", "none")
+        .style("background", "white")
+        .style("border", "1px solid #ccc")
+        .style("border-radius", "4px")
+        .style("padding", "6px 8px")
+        .style("font-size", "12px")
+        .style("opacity", 0);
+
+      const node = svg.selectAll("g.node")
+        .data(nodes)
+        .enter()
+        .append("g")
+          .attr("class", "node")
+          .attr("transform", d => \`translate(\${d.x},\${d.y})\`);
+
+      node.append("circle")
+        .attr("r", d => d.r)
+        .attr("fill", d => color(d.data.count))
+        .attr("stroke", "#333")
+        .attr("stroke-width", 0.5)
+        .on("mouseover", (event, d) => {
+          tooltip
+            .style("opacity", 1)
+            .html(\`<strong>\${d.data.diseaseLabel}</strong><br>\${d.data.count} symptom(s)\`);
+        })
+        .on("mousemove", (event) => {
+          tooltip
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("opacity", 0);
+        });
+
+      node.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.3em")
+        .attr("font-size", d => Math.min(12, d.r / 3))
+        .text(d => {
+          const label = d.data.diseaseLabel;
+          return label.length > 18 ? label.slice(0, 15) + "…" : label;
+        });
+    </script>
 </body>
 </html>
 
-
-    <!-- Bubble chart code -->
-    <script src="diseases_bubbles.js?v=1"></script>
-</body>
-</html>
 
