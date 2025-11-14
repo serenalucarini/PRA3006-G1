@@ -15,15 +15,16 @@ async function renderDiseasePage() {
     const symptoms = await loadJSON("diseases_symptoms.json");
     const risks = await loadJSON("diseases_risk_factors.json");
 
+    // Match by exact disease name
     const diseaseSymptoms = symptoms
         .filter(s => s.disease === diseaseName)
-        .map(s => ({ name: s.symptomLabel || s.symptom }));
+        .map(s => ({ name: s.symptomLabel || s.symptom, type: "symptom" }));
 
     const diseaseRisks = risks
         .filter(r => r.disease === diseaseName)
-        .map(r => ({ name: r.factorLabel || r.factor }));
+        .map(r => ({ name: r.factorLabel || r.factor, type: "riskFactor" }));
 
-    const root = { name: diseaseName, type: "disease" };
+    const root = { name: diseaseName, type: "disease", fx: 450, fy: 350 };
     const symCat = { name: "Symptoms", type: "category" };
     const riskCat = { name: "Risk Factors", type: "category" };
 
@@ -39,29 +40,36 @@ async function renderDiseasePage() {
         { source: root, target: riskCat }
     ];
 
-    const addChildren = (parent, items, type) => {
-        items.forEach(i => {
-            i.type = type;
-            nodes.push(i);
-            links.push({ source: parent, target: i });
-        });
+    // Track which categories have been expanded
+    let expanded = {
+        symptoms: false,
+        risks: false
     };
 
-    // clicking category nodes expands children
     function expandNode(event, d) {
-        if (d.name === "Symptoms") {
-            addChildren(d, diseaseSymptoms, "symptom");
+        if (d.name === "Symptoms" && !expanded.symptoms) {
+            diseaseSymptoms.forEach(s => {
+                nodes.push(s);
+                links.push({ source: d, target: s });
+            });
+            expanded.symptoms = true;
         }
-        if (d.name === "Risk Factors") {
-            addChildren(d, diseaseRisks, "riskFactor");
+
+        if (d.name === "Risk Factors" && !expanded.risks) {
+            diseaseRisks.forEach(r => {
+                nodes.push(r);
+                links.push({ source: d, target: r });
+            });
+            expanded.risks = true;
         }
+
         update();
     }
 
     const sim = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).distance(150).id(n => n.name))
-        .force("charge", d3.forceManyBody().strength(-400))
-        .force("center", d3.forceCenter(width/2, height/2));
+        .force("charge", d3.forceManyBody().strength(-300))
+        .force("center", d3.forceCenter(width / 2, height / 2));
 
     const linkGroup = svg.append("g");
     const nodeGroup = svg.append("g");
@@ -88,8 +96,9 @@ async function renderDiseasePage() {
         const label = labelGroup.selectAll("text")
             .data(nodes)
             .join("text")
-            .attr("text-anchor","middle")
-            .attr("dy",5)
+            .attr("text-anchor", "middle")
+            .attr("dy", 5)
+            .style("font-size", "12px")
             .text(d => d.name);
 
         sim.nodes(nodes).on("tick", () => {
