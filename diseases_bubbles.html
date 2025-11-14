@@ -2,162 +2,171 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Disease bubble chart</title>
+    <title>Disease Bubble Chart</title>
 
-    <!-- use your main CSS -->
-    <link rel="stylesheet" href="stylefinal.css">
-    <!-- or: <link rel="stylesheet" href="design.css"> -->
+    <style> 
+        .header, .footer {
+          position: fixed;
+          left: 0;
+          width: 100%;
+          height: 15%;
+          background-color: LavenderBlush;
+          color: black;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          box-sizing: border-box;
+        }
 
-    <!-- D3 from CDN -->
+        .header {
+          top: 0;
+          padding: 0 15%;
+        }
+
+        .footer {
+          bottom: 0;
+          padding: 0 2%;
+        }
+
+        .body {
+          position: relative;
+          top: 15%;
+          left: 0;
+          width: 100%;
+          height: 70%;
+          padding: 2rem;
+          overflow: auto;
+          color: black;
+        }
+
+        .title {
+          position: absolute;
+          left: 50%;
+          margin: 0;
+        }
+
+        .footer_date {
+          text-align: right;
+        }
+    </style>
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
+
+    <!-- HEADER -->
     <div class="header">
-        <div>
-            <a href="index.html">Homepage</a> |
-            <a href="Bar2.html">Bar2</a> |
-            <a href="Circles.html">Smoking circle</a> |
-            <a href="diseases_bubbles.html">Disease bubbles</a>
-        </div>
+        <div><a href="index.html">Home</a></div>
         <h1 class="title">Disease Bubble Chart</h1>
+        <div><a href="AboutUs.html">About Us</a></div>
     </div>
 
+    <!-- MAIN BODY -->
     <div class="body">
-        <h1>Number of symptoms per disease</h1>
-        <p>
-            Each circle represents a disease. The larger the circle,
-            the more symptoms are associated with that disease.
-        </p>
+        <h2>Disease Bubble Chart</h2>
+        <p>Bigger bubbles represent diseases with more symptoms.</p>
 
-        <!-- D3 will draw inside this div -->
-        <div id="chart-container"></div>
+        <div id="bubble-chart" style="width: 100%; height: 800px;"></div>
     </div>
 
+    <!-- FOOTER -->
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
-        <div class="title"><a href="AboutUs.html">About Us</a></div>
+        <img src="um_logo.png" width="44.92" height="50.28" alt="UM Logo">
         <small class="footer_date">
-            <p>created: 31/10/2025</p>
-            <p>last updated: 07/11/2025</p>
+            <p>created: 2025/10/31</p>
+            <p>last updated: 2025/11/14</p>
         </small>
     </div>
 
-    <!-- INLINE SCRIPT: THIS IS THE ONLY JS YOU NEED -->
+    <!-- BUBBLE CHART SCRIPT -->
     <script>
-      // debug: if you don't see this alert, this file is not the one you are opening
-      alert("Bubble chart page is running!");
+        d3.json("diseases_symptoms.json").then(rows => {
 
-      // Load your existing JSON with diseases + symptoms
-      d3.json("diseases_symptoms.json").then(rows => {
-        console.log("Loaded JSON rows:", rows.length);
+            const grouped = d3.rollup(
+                rows,
+                v => {
+                    const set = new Set(v.map(d => d.symptomLabel));
+                    return { count: set.size, symptoms: [...set] };
+                },
+                d => d.diseaseLabel
+            );
 
-        // Group by diseaseLabel -> unique symptomLabels
-        const diseaseToInfo = d3.rollup(
-          rows,
-          v => {
-            const symptomSet = new Set(v.map(d => d.symptomLabel));
-            return {
-              count: symptomSet.size,
-              symptoms: Array.from(symptomSet)
-            };
-          },
-          d => d.diseaseLabel
-        );
+            const data = Array.from(grouped, ([diseaseLabel, info]) => ({
+                diseaseLabel,
+                count: info.count,
+                symptoms: info.symptoms
+            }));
 
-        let data = Array.from(diseaseToInfo, ([diseaseLabel, info]) => ({
-          diseaseLabel,
-          count: info.count,
-          symptoms: info.symptoms
-        }));
+            data.sort((a,b) => b.count - a.count);
 
-        // Sort biggest first
-        data.sort((a, b) => b.count - a.count);
+            const width = 1100, height = 900;
 
-        const width = 900;
-        const height = 600;
+            const svg = d3.select("#bubble-chart")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
 
-        const svg = d3.select("#chart-container")
-          .append("svg")
-          .attr("width", width)
-          .attr("height", height);
+            const root = d3.hierarchy({children: data}).sum(d => d.count);
 
-        // Layout bubbles
-        const root = d3.hierarchy({ children: data })
-          .sum(d => d.count);
+            const pack = d3.pack()
+                .size([width, height])
+                .padding(5);
 
-        const pack = d3.pack()
-          .size([width, height])
-          .padding(5);
+            const nodes = pack(root).leaves();
 
-        const nodes = pack(root).leaves();
+            const color = d3.scaleSequential()
+                .domain(d3.extent(nodes, d => d.data.count))
+                .interpolator(d3.interpolatePuRd);
 
-        const countExtent = d3.extent(nodes, d => d.data.count);
-        const color = d3.scaleSequential()
-          .domain(countExtent)
-          .interpolator(d3.interpolatePuRd);
+            const tooltip = d3.select("body").append("div")
+                .style("position", "absolute")
+                .style("background", "white")
+                .style("padding", "6px 10px")
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "4px")
+                .style("font-size", "13px")
+                .style("opacity", 0)
+                .style("pointer-events", "none");
 
-        // Tooltip
-        const tooltip = d3.select("body")
-          .append("div")
-          .style("position", "absolute")
-          .style("pointer-events", "none")
-          .style("background", "white")
-          .style("border", "1px solid #ccc")
-          .style("border-radius", "4px")
-          .style("padding", "8px 10px")
-          .style("font-size", "12px")
-          .style("max-width", "260px")
-          .style("box-shadow", "0 2px 6px rgba(0,0,0,0.2)")
-          .style("opacity", 0);
+            const node = svg.selectAll("g")
+                .data(nodes)
+                .enter()
+                .append("g")
+                .attr("transform", d => `translate(${d.x},${d.y})`);
 
-        const node = svg.selectAll("g.node")
-          .data(nodes)
-          .enter()
-          .append("g")
-            .attr("class", "node")
-            .attr("transform", d => `translate(${d.x},${d.y})`);
+            node.append("circle")
+                .attr("r", d => d.r)
+                .attr("fill", d => color(d.data.count))
+                .attr("stroke", "#333")
+                .on("mouseover", (event,d) => {
+                    tooltip.style("opacity", 1)
+                        .html(`
+                            <strong>${d.data.diseaseLabel}</strong><br>
+                            ${d.data.count} symptoms<br><br>
+                            <strong>Symptoms:</strong><br>
+                            ${d.data.symptoms.join(", ")}
+                        `);
+                })
+                .on("mousemove", (event) => {
+                    tooltip.style("left", event.pageX + 10 + "px")
+                           .style("top", event.pageY + 10 + "px");
+                })
+                .on("mouseout", () => tooltip.style("opacity", 0));
 
-        // Circles
-        node.append("circle")
-          .attr("r", d => d.r)
-          .attr("fill", d => color(d.data.count))
-          .attr("stroke", "#333")
-          .attr("stroke-width", 0.5)
-          .on("mouseover", (event, d) => {
-            const html = `
-              <strong>${d.data.diseaseLabel}</strong><br/>
-              <em>${d.data.count} symptom(s)</em><br/><br/>
-              <strong>Symptoms:</strong><br/>
-              ${d.data.symptoms.join(", ")}
-            `;
-            tooltip.style("opacity", 1).html(html);
-          })
-          .on("mousemove", (event) => {
-            tooltip
-              .style("left", (event.pageX + 10) + "px")
-              .style("top", (event.pageY + 10) + "px");
-          })
-          .on("mouseout", () => {
-            tooltip.style("opacity", 0);
-          });
-
-        // Labels inside bubbles
-        node.append("text")
-          .attr("text-anchor", "middle")
-          .attr("dy", "0.3em")
-          .attr("font-size", d => Math.min(12, d.r / 3))
-          .text(d => {
-            const label = d.data.diseaseLabel;
-            return label.length > 18 ? label.slice(0, 15) + "…" : label;
-          });
-
-      }).catch(err => {
-        console.error("Error loading or parsing diseases_symptoms.json:", err);
-        alert("Error loading diseases_symptoms.json — check console");
-      });
+            node.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.3em")
+                .attr("font-size", d => Math.min(14, d.r / 3))
+                .text(d => {
+                    const t = d.data.diseaseLabel;
+                    return t.length > 15 ? t.slice(0,12) + "…" : t;
+                });
+        });
     </script>
+
 </body>
 </html>
+
 
 

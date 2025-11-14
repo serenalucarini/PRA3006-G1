@@ -47,23 +47,47 @@ async function renderDiseasePage() {
     };
 
     function expandNode(event, d) {
-        if (d.name === "Symptoms" && !expanded.symptoms) {
+        console.log("CLICKED:", d);
+
+        const name = d.name.trim();
+
+        // Expand Symptoms
+        if (d.type === "category" && d.name.trim() === "Symptoms" && !expanded.symptoms) {
+            console.log("EXPANDING SYMPTOMS");
             diseaseSymptoms.forEach(s => {
                 nodes.push(s);
-                links.push({ source: d, target: s });
+                links.push({ source: symCat, target: s });
             });
             expanded.symptoms = true;
+            update();
+            return;
         }
 
-        if (d.name === "Risk Factors" && !expanded.risks) {
+        // Expand Risk Factors
+        if (d.type === "category" && d.name.trim() === "Risk Factors" && !expanded.risks) {
+            console.log("EXPANDING RISK FACTORS");
             diseaseRisks.forEach(r => {
                 nodes.push(r);
-                links.push({ source: d, target: r });
+                links.push({ source: riskCat, target: r });
             });
             expanded.risks = true;
+            update();
+            return;
         }
 
-        update();
+        // Symptom page
+        if (d.type === "symptom") {
+            window.location.href =
+                "symptom.html?name=" + encodeURIComponent(d.name);
+            return;
+        }
+
+        // Risk factor page
+        if (d.type === "riskFactor") {
+            window.location.href =
+                "riskfactor.html?name=" + encodeURIComponent(d.name);
+            return;
+        }
     }
 
     const sim = d3.forceSimulation(nodes)
@@ -76,32 +100,48 @@ async function renderDiseasePage() {
     const labelGroup = svg.append("g");
 
     function update() {
+        // Update the simulation with current nodes and links
+        sim.nodes(nodes);
+        sim.force("link").links(links);
+
+        // Bind links to data
         const link = linkGroup.selectAll("line")
-            .data(links)
+            .data(links, (d, i) => i)
             .join("line")
             .attr("stroke", "#aaa");
 
+        // Bind nodes to data
         const node = nodeGroup.selectAll("circle")
-            .data(nodes)
-            .join("circle")
-            .attr("r", 20)
-            .attr("fill", d => ({
-                disease: "steelblue",
-                category: "orange",
-                symptom: "green",
-                riskFactor: "purple"
-            }[d.type]))
-            .on("click", expandNode);
+            .data(nodes, d => d.name)
+            .join(
+                enter => enter.append("circle")
+                    .attr("r", 20)
+                    .attr("fill", d => ({
+                        disease: "steelblue",
+                        category: "orange",
+                        symptom: "green",
+                        riskFactor: "purple"
+                    }[d.type]))
+                    .style("cursor", "pointer")
+                    .on("click", expandNode),
+                update => update
+                    .style("cursor", "pointer")
+                    .on("click", expandNode),
+                exit => exit.remove()
+            );
 
+        // Bind labels to data
         const label = labelGroup.selectAll("text")
-            .data(nodes)
+            .data(nodes, d => d.name)
             .join("text")
             .attr("text-anchor", "middle")
             .attr("dy", 5)
             .style("font-size", "12px")
+            .style("pointer-events", "none")
             .text(d => d.name);
 
-        sim.nodes(nodes).on("tick", () => {
+        // Update positions on each tick
+        sim.on("tick", () => {
             link.attr("x1", d => d.source.x)
                 .attr("y1", d => d.source.y)
                 .attr("x2", d => d.target.x)
@@ -111,10 +151,10 @@ async function renderDiseasePage() {
                 .attr("cy", d => d.y);
 
             label.attr("x", d => d.x)
-                 .attr("y", d => d.y);
+                .attr("y", d => d.y);
         });
 
-        sim.force("link").links(links);
+        // Restart the simulation
         sim.alpha(1).restart();
     }
 
