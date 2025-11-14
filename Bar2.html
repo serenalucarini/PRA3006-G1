@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disease Risk Factors Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    <style src="design.css">
+    <style>
         .header, .footer {
             position: fixed;
             left: 0;
@@ -38,6 +38,8 @@
             color: black;
             padding: 2rem;
             overflow: auto;
+            display: flex;
+            gap: 2rem;
         }
         
         .title {
@@ -59,7 +61,44 @@
         }
         
         #barchart-container {
-            margin-top: 30px;
+            flex: 1;
+            min-width: 500px;
+        }
+        
+        #symptoms-panel {
+            flex: 0 0 400px;
+            background-color: #f5f5f5;
+            border: 2px solid #FF69B4;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        #symptoms-panel.active {
+            display: block;
+        }
+        
+        .symptoms-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FF69B4;
+            margin-bottom: 15px;
+        }
+        
+        .symptoms-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .symptom-item {
+            background-color: white;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #FF69B4;
+            border-radius: 4px;
+            font-size: 14px;
         }
         
         .hidden {
@@ -67,26 +106,36 @@
         }
         
         .bar {
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, fill 0.3s;
+            cursor: pointer;
         }
         
         .bar:hover {
-            opacity: 0.7;
+            opacity: 0.8;
+        }
+        
+        .bar.active {
+            fill: #FF1493 !important;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div><a href="index.html">Homepage</a></div>
-        <p>For each disease linked to smoking, all the symptoms of that disease were extracted. Each symptom is linked to multiple disease. The following bar chart displays this relationship, 
-            showing how many symptoms related to smoking each disease has.</p>
+        <p>For each disease linked to smoking, all the symptoms of that disease were extracted. Each symptom is linked to multiple disease. Click on a disease to see its symptoms.</p>
         <h1 class="title">Symptoms per Disease</h1>
         <div></div>
     </div>
     
     <div class="body">
-        <div id="loading-message">Loading data...</div>
-        <div id="barchart-container"></div>
+        <div style="flex: 1;">
+            <div id="loading-message">Loading data...</div>
+            <div id="barchart-container"></div>
+        </div>
+        <div id="symptoms-panel">
+            <div class="symptoms-title" id="selected-disease"></div>
+            <ul class="symptoms-list" id="symptoms-list"></ul>
+        </div>
     </div>
     
     <div class="footer">
@@ -99,10 +148,9 @@
     </div>
 
     <script>
-        // Define the SPARQL endpoint
         const sparqlEndpoint = "https://query.wikidata.org/sparql";
+        let allData = []; // Store all data globally
 
-        // Function to fetch data from SPARQL endpoint
         async function fetchData() {
             const loadingMessage = document.getElementById("loading-message");
             loadingMessage.classList.remove("hidden");
@@ -140,29 +188,48 @@
             }
         }
 
-        // Function to prepare data for bar chart
         function prepareChartData(data) {
-            // Group by disease and count unique symptoms
             const groupedByDisease = d3.group(data, (d) => d.diseaseLabel);
             
             return Array.from(groupedByDisease, ([disease, values]) => {
-                // Count unique symptoms for this disease
                 const uniqueSymptoms = new Set(values.map(v => v.symptoms));
                 return {
                     disease: disease,
                     count: uniqueSymptoms.size
                 };
-            }).sort((a, b) => b.count - a.count); // Sort by count descending
+            }).sort((a, b) => b.count - a.count);
         }
 
-        // Function to draw the bar chart
+        function getSymptomsByDisease(diseaseName) {
+            const diseaseData = allData.filter(d => d.diseaseLabel === diseaseName);
+            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomsLabel))];
+            return uniqueSymptoms.sort();
+        }
+
+        function displaySymptoms(diseaseName) {
+            const symptoms = getSymptomsByDisease(diseaseName);
+            const panel = document.getElementById("symptoms-panel");
+            const titleEl = document.getElementById("selected-disease");
+            const listEl = document.getElementById("symptoms-list");
+
+            titleEl.textContent = diseaseName;
+            listEl.innerHTML = "";
+
+            symptoms.forEach(symptom => {
+                const li = document.createElement("li");
+                li.className = "symptom-item";
+                li.textContent = symptom;
+                listEl.appendChild(li);
+            });
+
+            panel.classList.add("active");
+        }
+
         function drawChart(chartData) {
-            // Set dimensions and margins
             const margin = { top: 20, right: 30, bottom: 150, left: 60 };
             const width = 1000 - margin.left - margin.right;
             const height = 600 - margin.top - margin.bottom;
 
-            // Create SVG container
             const svg = d3
                 .select("#barchart-container")
                 .append("svg")
@@ -171,7 +238,6 @@
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            // Define scales
             const x = d3.scaleBand()
                 .range([0, width])
                 .domain(chartData.map(d => d.disease))
@@ -181,7 +247,7 @@
                 .range([height, 0])
                 .domain([0, d3.max(chartData, d => d.count)]);
 
-            // Add bars
+            // Add bars with click interaction
             svg.selectAll(".bar")
                 .data(chartData)
                 .join("rect")
@@ -191,6 +257,14 @@
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.count))
                 .attr("fill", "#FF69B4")
+                .on("click", function(event, d) {
+                    // Remove active class from all bars
+                    svg.selectAll(".bar").classed("active", false);
+                    // Add active class to clicked bar
+                    d3.select(this).classed("active", true);
+                    // Display symptoms
+                    displaySymptoms(d.disease);
+                })
                 .append("title")
                 .text(d => `${d.disease}: ${d.count} symptoms`);
 
@@ -231,23 +305,21 @@
                 .style("stroke", "#000000");
         }
 
-        // Initialize the visualization
         async function init() {
-            const rawData = await fetchData();
-            if (rawData.length === 0) {
+            allData = await fetchData();
+            if (allData.length === 0) {
                 console.warn("No data available to display");
                 document.getElementById("loading-message").textContent = "No data available";
                 document.getElementById("loading-message").classList.remove("hidden");
                 return;
             }
 
-            console.log("Raw Data:", rawData);
-            const chartData = prepareChartData(rawData);
+            console.log("Raw Data:", allData);
+            const chartData = prepareChartData(allData);
             console.log("Chart Data:", chartData);
             drawChart(chartData);
         }
 
-        // Start the visualization
         init();
     </script>
 </body>
