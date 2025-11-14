@@ -47,6 +47,7 @@ async function renderDiseasePage() {
     };
 
     function expandNode(event, d) {
+        console.log("CLICKED:", d);
         if (d.name === "Symptoms" && !expanded.symptoms) {
             diseaseSymptoms.forEach(s => {
                 nodes.push(s);
