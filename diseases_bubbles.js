@@ -1,10 +1,13 @@
-
+// disease_bubbles.js
+// Bubble chart: each bubble = disease
+// Bubble size = number of unique symptoms
+// Data source: diseases_symptoms.json (format you pasted)
 
 d3.json("diseases_symptoms.json").then(rows => {
     console.log("Loaded JSON rows:", rows.length);
 
-    // Group by diseaseLabel -> unique symptomLabels
-    const diseaseToSymptoms = d3.rollup(
+    // Group by diseaseLabel -> set of symptomLabels
+    const diseaseToInfo = d3.rollup(
         rows,
         v => {
             const symptomSet = new Set(v.map(d => d.symptomLabel));
@@ -16,13 +19,13 @@ d3.json("diseases_symptoms.json").then(rows => {
         d => d.diseaseLabel
     );
 
-    let data = Array.from(diseaseToSymptoms, ([diseaseLabel, info]) => ({
+    let data = Array.from(diseaseToInfo, ([diseaseLabel, info]) => ({
         diseaseLabel,
         count: info.count,
         symptoms: info.symptoms
     }));
 
-    // Sort by number of symptoms, descending
+    // Sort by number of symptoms, largest first
     data.sort((a, b) => b.count - a.count);
 
     console.log("Unique diseases:", data.length);
@@ -35,7 +38,7 @@ d3.json("diseases_symptoms.json").then(rows => {
             .attr("width", width)
             .attr("height", height);
 
-    // Create hierarchy for d3.pack
+    // Build hierarchy for d3.pack
     const root = d3.hierarchy({ children: data })
         .sum(d => d.count);
 
@@ -45,13 +48,13 @@ d3.json("diseases_symptoms.json").then(rows => {
 
     const nodes = pack(root).leaves();
 
-    // Color scale by number of symptoms
+    // Color scale based on number of symptoms
     const countExtent = d3.extent(nodes, d => d.data.count);
     const color = d3.scaleSequential()
         .domain(countExtent)
         .interpolator(d3.interpolatePuRd);
 
-    // Tooltip (HTML div)
+    // Tooltip div
     const tooltip = d3.select("body")
         .append("div")
         .attr("class", "bubble-tooltip")
@@ -109,12 +112,12 @@ d3.json("diseases_symptoms.json").then(rows => {
             return label.length > 18 ? label.slice(0, 15) + "…" : label;
         });
 
-    // === Legend for bubble size ===
+    // ---- Legend for bubble size ----
     const legend = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", "translate(60,80)");
+        .attr("transform", "translate(70,80)");
 
-    const legendTitle = legend.append("text")
+    legend.append("text")
         .attr("x", 0)
         .attr("y", -40)
         .attr("font-weight", "bold")
@@ -127,7 +130,6 @@ d3.json("diseases_symptoms.json").then(rows => {
 
     const legendValues = [minCount, midCount, maxCount];
 
-    // Radius scale ONLY for legend (approximate visual)
     const rScale = d3.scaleSqrt()
         .domain(countExtent)
         .range([8, 25]);
@@ -155,3 +157,4 @@ d3.json("diseases_symptoms.json").then(rows => {
 }).catch(err => {
     console.error("Error loading or parsing diseases_symptoms.json:", err);
 });
+
