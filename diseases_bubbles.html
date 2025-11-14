@@ -4,19 +4,23 @@
     <meta charset="utf-8">
     <title>Disease bubble chart</title>
 
-    <!-- Use whichever CSS you actually use -->
+    <!-- Use your main CSS file -->
     <link rel="stylesheet" href="stylefinal.css">
-    <!-- or: <link rel="stylesheet" href="design.css"> -->
+    <!-- or, if you use this one: <link rel="stylesheet" href="design.css"> -->
 
+    <!-- D3 library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
+    <!-- You can copy this header structure from one of your other pages -->
     <div class="header">
         <div>
             <a href="index.html">Homepage</a> |
-            <a href="disease.html">Disease bar chart</a> |
-            <a href="disease_bubbles.html">Disease bubble chart</a>
+            <a href="Bar2.html">Bar2</a> |
+            <a href="Circles.html">Smoking circle</a> |
+            <!-- NEW LINK IS THIS PAGE -->
+            <a href="disease_bubbles.html">Disease bubbles</a>
         </div>
         <h1 class="title">Disease Bubble Chart</h1>
     </div>
@@ -28,6 +32,7 @@
             the more symptoms are associated with that disease.
         </p>
 
+        <!-- D3 will draw the chart here -->
         <div id="chart-container"></div>
     </div>
 
@@ -40,6 +45,8 @@
         </small>
     </div>
 
+    <!-- Bubble chart code -->
     <script src="disease_bubbles.js?v=1"></script>
 </body>
 </html>
+
