@@ -1,6 +1,48 @@
 /////// CONVERSION INTO REQUIRED JSON
 
-d3.json("diseases_smoking.json").then(data => {
+// Define the SPARQL endpoint
+const sparqlEndpoint = "https://query.wikidata.org/sparql";
+
+// Function to fetch data from SPARQL endpoint
+async function fetchData() {
+    const loadingMessage = document.getElementById("loading-message");
+    loadingMessage.classList.remove("hidden");
+
+    const sparqlQuery = `
+    SELECT ?disease ?diseaseLabel ?symptom ?symptomLabel
+    WHERE {
+      ?disease wdt:P5642 wd:Q662860.   # smoking is a risk factor
+      ?disease wdt:P780 ?symptom.      # disease has symptom
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+    }`;
+
+    try {
+        const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
+            headers: { Accept: "application/json" },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+
+        const json = await response.json();
+        return json.results.bindings.map((row) => ({
+            disease: row.disease.value,
+            diseaseLabel: row.diseaseLabel.value,
+            factor: row.factor.value,
+            factorLabel: row.factorLabel.value,
+        }));
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
+    } finally {
+        loadingMessage.classList.add("hidden");
+    }
+}
+
+const SmokingDiseases = await fetchData()
+
+d3.json(SmokingDiseases).then(data => {
   console.log(Array.isArray(data)); // should be true
   console.log("Number of diseases:", data.length); // gives size
 
