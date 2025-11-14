@@ -64,9 +64,9 @@ async function initializeNetwork() {
     const network = await fetchData();
     
     // set up network dimensions
-    const headerHeight = window.innerHeight * 0.20;
-    const footerHeight = window.innerHeight * 0.20;
-    const width = window.innerWidth * 0.7;
+    const headerHeight = window.innerHeight * 0.18;
+    const footerHeight = window.innerHeight * 0.18;
+    const width = window.innerWidth * 0.8;
     const height = window.innerHeight - headerHeight - footerHeight;
 
     // add nodes
