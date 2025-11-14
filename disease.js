@@ -53,6 +53,8 @@ async function renderDiseasePage() {
                 links.push({ source: d, target: s });
             });
             expanded.symptoms = true;
+            update();
+            return;
         }
 
         if (d.name === "Risk Factors" && !expanded.risks) {
@@ -61,8 +63,19 @@ async function renderDiseasePage() {
                 links.push({ source: d, target: r });
             });
             expanded.risks = true;
+            update();
+            return;
         }
-
+        if (dytpe === "symptom") {
+            window.location.href = 
+                "symptom.html?name=" + encodeURIComponent(d.name);
+            return;
+        }
+        if (dytpe === "riskFactor") {
+            window.location.href = 
+                "riskFactor.html?name=" + encodeURIComponent(d.name);
+            return;
+        }
         update();
     }
 
