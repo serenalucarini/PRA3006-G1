@@ -7,10 +7,9 @@ async function fetchData() {
     loadingMessage.classList.remove("hidden");
 
     const sparqlQuery = `
-    SELECT ?disease ?diseaseLabel ?symptom ?symptomLabel
+    SELECT ?disease ?diseaseLabel
     WHERE {
       ?disease wdt:P5642 wd:Q662860.   # smoking is a risk factor
-      ?disease wdt:P780 ?symptom.      # disease has symptom
       SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
     }`;
 
@@ -26,9 +25,7 @@ async function fetchData() {
         const json = await response.json();
         return json.results.bindings.map((row) => ({
             disease: row.disease.value,
-            diseaseLabel: row.diseaseLabel.value,
-            factor: row.factor.value,
-            factorLabel: row.factorLabel.value,
+            diseaseLabel: row.diseaseLabel.value
         }));
     } catch (error) {
         console.error("Error fetching data:", error);
