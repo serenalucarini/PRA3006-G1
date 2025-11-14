@@ -56,15 +56,17 @@ async function renderGraph() {
         .attr("r", 22)
         .attr("fill", d => d.type==="root" ? "red" : "steelblue")
         .style("cursor", "pointer")
-        .on("mouseenter", (event, d) => {
+        .on("mouseover", (event, d) => {
             tooltip.style("display", "block")
-                .text(d.name);
+                .text(d.name)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY + 10) + "px");
         })
         .on("mousemove", (event) => {
             tooltip.style("left", (event.pageX + 10) + "px")
                    .style("top", (event.pageY + 10) + "px");
         })
-        .on("mouseleave", () => {
+        .on("mouseout", () => {
             tooltip.style("display", "none");
         })
         .on("click", (event, d) => {
