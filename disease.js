@@ -96,7 +96,7 @@ async function renderDiseasePage() {
             .attr("stroke", "#aaa");
 
         const node = nodeGroup.selectAll("circle")
-            .data(nodes, d => d.name))
+            .data(nodes, d => d.name)
             .join(
                 enter => enter.append("circle")
                     .attr("r", 20)
