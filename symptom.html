@@ -1,0 +1,6 @@
+<h1 id="title"></h1>
+<p>Details coming soon...</p>
+<script>
+  const params = new URLSearchParams(location.search);
+  document.getElementById("title").textContent = params.get("name");
+</script>
