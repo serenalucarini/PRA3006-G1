@@ -23,8 +23,6 @@ async function renderDiseasePage() {
     const diseaseRisks = risks
         .filter(r => r.disease === diseaseName)
         .map(r => ({ name: r.factorLabel || r.factor, type: "riskFactor" }));
-    console.log("SYMPTOMS FOUND FOR:", diseaseName, diseaseSymptoms);
-    console.log("RISKS FOUND FOR:", diseaseName, diseaseRisks);
 
     const root = { name: diseaseName, type: "disease", fx: 450, fy: 350 };
     const symCat = { name: "Symptoms", type: "category" };
@@ -49,49 +47,48 @@ async function renderDiseasePage() {
     };
 
     function expandNode(event, d) {
-    console.log("CLICKED:", d);
+        console.log("CLICKED:", d);
 
-    const name = d.name.trim();
+        const name = d.name.trim();
 
-    // Expand Symptoms
-    if (d.type === "category" && d.name.trim() === "Symptoms" && !expanded.symptoms) {
-        console.log("EXPANDING SYMPTOMS");
-        diseaseSymptoms.forEach(s => {
-            nodes.push(s);
-            links.push({ source: d, target: s });
-        });
-        expanded.symptoms = true;
-        update();
-        return;
+        // Expand Symptoms
+        if (d.type === "category" && d.name.trim() === "Symptoms" && !expanded.symptoms) {
+            console.log("EXPANDING SYMPTOMS");
+            diseaseSymptoms.forEach(s => {
+                nodes.push(s);
+                links.push({ source: symCat, target: s });
+            });
+            expanded.symptoms = true;
+            update();
+            return;
+        }
+
+        // Expand Risk Factors
+        if (d.type === "category" && d.name.trim() === "Risk Factors" && !expanded.risks) {
+            console.log("EXPANDING RISK FACTORS");
+            diseaseRisks.forEach(r => {
+                nodes.push(r);
+                links.push({ source: riskCat, target: r });
+            });
+            expanded.risks = true;
+            update();
+            return;
+        }
+
+        // Symptom page
+        if (d.type === "symptom") {
+            window.location.href =
+                "symptom.html?name=" + encodeURIComponent(d.name);
+            return;
+        }
+
+        // Risk factor page
+        if (d.type === "riskFactor") {
+            window.location.href =
+                "riskfactor.html?name=" + encodeURIComponent(d.name);
+            return;
+        }
     }
-
-    // Expand Risk Factors
-    if (d.type === "category" && d.name.trim() === "Risk Factors" && !expanded.risks) {
-        console.log("EXPANDING RISK FACTORS");
-        diseaseRisks.forEach(r => {
-            nodes.push(r);
-            links.push({ source: d, target: r });
-        });
-        expanded.risks = true;
-        update();
-        return;
-    }
-
-    // Symptom page
-    if (d.type === "symptom") {
-        window.location.href =
-            "symptom.html?name=" + encodeURIComponent(d.name);
-        return;
-    }
-
-    // Risk factor page
-    if (d.type === "riskFactor") {
-        window.location.href =
-            "riskfactor.html?name=" + encodeURIComponent(d.name);
-        return;
-    }
-        update();
- }
 
     const sim = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).distance(150).id(n => n.name))
@@ -103,39 +100,48 @@ async function renderDiseasePage() {
     const labelGroup = svg.append("g");
 
     function update() {
+        // Update the simulation with current nodes and links
+        sim.nodes(nodes);
+        sim.force("link").links(links);
+
+        // Bind links to data
         const link = linkGroup.selectAll("line")
-            .data(links)
+            .data(links, (d, i) => i)
             .join("line")
             .attr("stroke", "#aaa");
 
+        // Bind nodes to data
         const node = nodeGroup.selectAll("circle")
             .data(nodes, d => d.name)
             .join(
                 enter => enter.append("circle")
                     .attr("r", 20)
                     .attr("fill", d => ({
-                         disease: "steelblue",
-                         category: "orange",
-                         symptom: "green",
-                         riskFactor: "purple"
+                        disease: "steelblue",
+                        category: "orange",
+                        symptom: "green",
+                        riskFactor: "purple"
                     }[d.type]))
                     .style("cursor", "pointer")
                     .on("click", expandNode),
-                update => update,
+                update => update
                     .style("cursor", "pointer")
                     .on("click", expandNode),
                 exit => exit.remove()
             );
 
+        // Bind labels to data
         const label = labelGroup.selectAll("text")
-            .data(nodes)
+            .data(nodes, d => d.name)
             .join("text")
             .attr("text-anchor", "middle")
             .attr("dy", 5)
             .style("font-size", "12px")
+            .style("pointer-events", "none")
             .text(d => d.name);
 
-        sim.nodes(nodes).on("tick", () => {
+        // Update positions on each tick
+        sim.on("tick", () => {
             link.attr("x1", d => d.source.x)
                 .attr("y1", d => d.source.y)
                 .attr("x2", d => d.target.x)
@@ -145,10 +151,10 @@ async function renderDiseasePage() {
                 .attr("cy", d => d.y);
 
             label.attr("x", d => d.x)
-                 .attr("y", d => d.y);
+                .attr("y", d => d.y);
         });
 
-        sim.force("link").links(links);
+        // Restart the simulation
         sim.alpha(1).restart();
     }
 
@@ -156,5 +162,3 @@ async function renderDiseasePage() {
 }
 
 window.onload = renderDiseasePage;
-
-
