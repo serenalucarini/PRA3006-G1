@@ -80,112 +80,11 @@
             <p>last updated: 2025/11/14</p>
         </small>
     </div>
-    
-    <!-- Load external JS script -->
-   
-
-<script src="https://d3js.org/d3.v7.min.js"></script>
-
-<script>
-// --- BUBBLE CHART SCRIPT GOES HERE ---
-
-d3.json("diseases_symptoms.json").then(rows => {
-
-    const grouped = d3.rollup(
-        rows,
-        v => {
-            const symptoms = new Set(v.map(d => d.symptomLabel));
-            return {
-                count: symptoms.size,
-                symptoms: Array.from(symptoms)
-            };
-        },
-        d => d.diseaseLabel
-    );
-
-    const data = Array.from(grouped, ([diseaseLabel, info]) => ({
-        diseaseLabel,
-        count: info.count,
-        symptoms: info.symptoms
-    }));
-
-    data.sort((a,b) => b.count - a.count);
-
-    const width = 900;
-    const height = 600;
-
-    const svg = d3.select("#bubble-chart")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    const root = d3.hierarchy({children: data}).sum(d => d.count);
-
-    const pack = d3.pack()
-        .size([width, height])
-        .padding(5);
-
-    const nodes = pack(root).leaves();
-
-    const color = d3.scaleSequential()
-        .domain(d3.extent(nodes, d => d.data.count))
-        .interpolator(d3.interpolatePuRd);
-
-    const tooltip = d3.select("body").append("div")
-        .style("position", "absolute")
-        .style("background", "white")
-        .style("padding", "6px 10px")
-        .style("border", "1px solid #ccc")
-        .style("font-size", "13px")
-        .style("pointer-events", "none")
-        .style("opacity", 0);
-
-    const node = svg.selectAll("g")
-        .data(nodes)
-        .enter()
-        .append("g")
-        .attr("transform", d => `translate(${d.x},${d.y})`);
-
-    node.append("circle")
-        .attr("r", d => d.r)
-        .attr("fill", d => color(d.data.count))
-        .attr("stroke", "#333")
-        .on("mouseover", (event,d) => {
-            tooltip.style("opacity", 1).html(`
-                <strong>${d.data.diseaseLabel}</strong><br>
-                ${d.data.count} symptoms<br><br>
-                <strong>Symptoms:</strong><br>
-                ${d.data.symptoms.join(", ")}
-            `);
-        })
-        .on("mousemove", (event) => {
-            tooltip.style("left", event.pageX + 10 + "px")
-                   .style("top", event.pageY + 10 + "px");
-        })
-        .on("mouseout", () => tooltip.style("opacity", 0));
-
-    node.append("text")
-        .attr("text-anchor", "middle")
-        .attr("dy", "0.3em")
-        .attr("font-size", d => Math.min(14, d.r / 3))
-        .text(d => {
-            let t = d.data.diseaseLabel;
-            return t.length > 15 ? t.slice(0,12) + "…" : t;
-        });
-
-});
-</script>
-
-<script src="expand.js"></script>
-</body>
-</html>
-
-</body>
-</html>
-
     <script src="expand.js"></script>
+
 </body>
 </html>
+
 
 
 
