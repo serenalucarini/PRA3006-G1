@@ -12,10 +12,9 @@ async function fetchData() {
     const sparqlQuery = `
     SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
             WHERE {
-              ?disease wdt:P5642 wd:Q662860.
-              ?disease wdt:P5642 ?factor .
-              ?disease wdt:P780 ?symptoms.
-              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
+              WHERE {
+      ?disease wdt:P5642 wd:Q1810 .
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }  
             }`;
 
     try {
@@ -101,7 +100,7 @@ const node = svg.append("g")
   .attr("r", 15)
   .attr("fill", d => d.isMain ? "#1f77b4" : "#87ceeb")
   .on("mouseover", (event, d) => { // show tooltip with node name
-      if (!isMain) {
+      if (!d.isMain) {
           // Change color on hover for disease nodes only
         d3.select(event.currentTarget)
           .attr("fill", "#ff6b6b") // red/coral on hover
