@@ -30,6 +30,40 @@ async function renderGraph() {
         links.push({ source: root, target: node });
     });
 
+     // Initialize the nodes
+const tooltip = d3.select("#tooltip");
+
+const node = svg.append("g")
+  .selectAll("circle")
+  .data(network.nodes)
+  .join("circle")
+  .attr("r", 15)
+  .attr("fill", d => d.isMain ? "#1f77b4" : "#87ceeb")
+  .on("mouseover", (event, d) => { // show tooltip with node name
+      if (!d.isMain) {
+          // Change color on hover for disease nodes only
+        d3.select(event.currentTarget)
+          .attr("fill", "#ff6b6b") // red/coral on hover
+          .attr("r", 20); // slightly larger
+      tooltip
+        .style("opacity", 1)
+        .html(d.name);
+  })
+  .on("mousemove", (event) => { // move tooltip near cursor
+      tooltip
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 15) + "px");
+  })
+  .on("mouseout", (event, d) => { // hide tooltip
+      if (!d.isMain) {
+          / Restore original color for disease nodes
+        d3.select(event.currentTarget)
+          .attr("fill", "#87ceeb")
+          .attr("r", 15);
+      }
+      tooltip.style("opacity", 0);
+  });
+
     const sim = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).distance(200).id(d => d.name))
         .force("charge", d3.forceManyBody().strength(-500))
