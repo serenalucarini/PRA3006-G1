@@ -56,17 +56,19 @@ async function renderGraph() {
         .attr("fill", d => d.type==="root" ? "red" : "steelblue")
         .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
-            tooltip.style("display", "block")
-                .text(d.name)
-                .style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY + 10) + "px");
+            tooltip.style("opacity", 1).html(`
+                <strong>${d.data.diseaseLabel}</strong><br>
+                ${d.data.count} symptoms<br><br>
+                <strong>Symptoms:</strong><br>
+                ${d.data.symptoms.join(", ")}
+            `);
         })
         .on("mousemove", (event) => {
             tooltip.style("left", (event.pageX + 10) + "px")
                    .style("top", (event.pageY + 10) + "px");
         })
         .on("mouseout", () => {
-            tooltip.style("display", "none");
+            tooltip.style("opacity", "0");
         })
         .on("click", (event, d) => {
             if (d.type === "disease") {
