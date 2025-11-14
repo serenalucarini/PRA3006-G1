@@ -2,7 +2,6 @@ async function loadJSON(file) {
     const res = await fetch(file);
     return res.json();
 }
-
 async function renderGraph() {
     const diseases = await loadJSON("diseases_smoking.json");
     const width = 900, height = 700;
@@ -10,28 +9,23 @@ async function renderGraph() {
         .append("svg")
         .attr("width", width)
         .attr("height", height);
-
     // Create tooltip
     const tooltip = d3.select("body").append("div")
         .style("position", "absolute")
         .style("background", "white")
-        .style("color", "white")
         .style("padding", "6px 10px")
         .style("border", "1px solid #ccc")
-        .style("font-size", "14px")
+        .style("font-size", "13px")
         .style("pointer-events", "none")
-        .style("z-index", "1000");
-
+        .style("opacity", 0);
     const root = {
         name: "Smoking",
         type: "root",
         fx: width/2,
         fy: height/2
     };
-
     const nodes = [root];
     const links = [];
-
     diseases.forEach(d => {
         const name = d.diseaseLabel || d.disease;
         if (!name) return;
@@ -39,16 +33,13 @@ async function renderGraph() {
         nodes.push(node);
         links.push({ source: root, target: node });
     });
-
     const sim = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).distance(200).id(d => d.name))
         .force("charge", d3.forceManyBody().strength(-500))
         .force("center", d3.forceCenter(width/2, height/2));
-
     const link = svg.append("g").selectAll("line")
         .data(links).enter().append("line")
         .attr("stroke", "#aaa");
-
     const node = svg.append("g").selectAll("circle")
         .data(nodes).enter()
         .append("circle")
@@ -57,10 +48,7 @@ async function renderGraph() {
         .style("cursor", "pointer")
         .on("mouseover", (event, d) => {
             tooltip.style("opacity", 1).html(`
-                <strong>${d.data.diseaseLabel}</strong><br>
-                ${d.data.count} symptoms<br><br>
-                <strong>Symptoms:</strong><br>
-                ${d.data.symptoms.join(", ")}
+                <strong>${d.name}</strong>
             `);
         })
         .on("mousemove", (event) => {
@@ -68,7 +56,7 @@ async function renderGraph() {
                    .style("top", (event.pageY + 10) + "px");
         })
         .on("mouseout", () => {
-            tooltip.style("opacity", "0");
+            tooltip.style("opacity", 0);
         })
         .on("click", (event, d) => {
             if (d.type === "disease") {
@@ -76,7 +64,6 @@ async function renderGraph() {
                 window.location.href = url;
             }
         });
-
     // Root node label (always visible)
     const rootLabel = svg.append("text")
         .datum(root)
@@ -84,7 +71,6 @@ async function renderGraph() {
         .attr("dy", 5)
         .attr("font-weight", "bold")
         .text(d => d.name);
-
     sim.on("tick", () => {
         link.attr("x1", d=>d.source.x)
             .attr("y1", d=>d.source.y)
@@ -96,5 +82,4 @@ async function renderGraph() {
                  .attr("y", d=>d.y);
     });
 }
-
 window.onload = renderGraph;
