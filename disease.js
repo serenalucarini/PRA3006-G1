@@ -119,7 +119,7 @@ async function renderDiseasePage() {
                     }[d.type]))
                     .style("cursor", "pointer")
                     .on("click", expandNode),
-                update => update
+                update => update,
                     .style("cursor", "pointer")
                     .on("click", expandNode),
                 exit => exit.remove()
