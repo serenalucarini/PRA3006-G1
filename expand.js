@@ -5,13 +5,23 @@ async function loadJSON(file) {
 
 async function renderGraph() {
     const diseases = await loadJSON("diseases_smoking.json");
-
     const width = 900, height = 700;
-
     const svg = d3.select("#graph")
         .append("svg")
         .attr("width", width)
         .attr("height", height);
+
+    // Create tooltip
+    const tooltip = d3.select("body").append("div")
+        .style("position", "absolute")
+        .style("background", "rgba(0, 0, 0, 0.8)")
+        .style("color", "white")
+        .style("padding", "8px 12px")
+        .style("border-radius", "4px")
+        .style("font-size", "14px")
+        .style("pointer-events", "none")
+        .style("display", "none")
+        .style("z-index", "1000");
 
     const root = {
         name: "Smoking",
@@ -25,12 +35,11 @@ async function renderGraph() {
 
     diseases.forEach(d => {
         const name = d.diseaseLabel || d.disease;
-        if (!name) return; 
+        if (!name) return;
         const node = { name, type: "disease" };
         nodes.push(node);
         links.push({ source: root, target: node });
     });
-
 
     const sim = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).distance(200).id(d => d.name))
@@ -46,7 +55,18 @@ async function renderGraph() {
         .append("circle")
         .attr("r", 22)
         .attr("fill", d => d.type==="root" ? "red" : "steelblue")
-        .style("cursor","pointer")
+        .style("cursor", "pointer")
+        .on("mouseenter", (event, d) => {
+            tooltip.style("display", "block")
+                .text(d.name);
+        })
+        .on("mousemove", (event) => {
+            tooltip.style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseleave", () => {
+            tooltip.style("display", "none");
+        })
         .on("click", (event, d) => {
             if (d.type === "disease") {
                 const url = "disease.html?name=" + encodeURIComponent(d.name);
@@ -54,11 +74,12 @@ async function renderGraph() {
             }
         });
 
-    const label = svg.append("g").selectAll("text")
-        .data(nodes).enter()
-        .append("text")
-        .attr("text-anchor","middle")
-        .attr("dy",5)
+    // Root node label (always visible)
+    const rootLabel = svg.append("text")
+        .datum(root)
+        .attr("text-anchor", "middle")
+        .attr("dy", 5)
+        .attr("font-weight", "bold")
         .text(d => d.name);
 
     sim.on("tick", () => {
@@ -66,15 +87,11 @@ async function renderGraph() {
             .attr("y1", d=>d.source.y)
             .attr("x2", d=>d.target.x)
             .attr("y2", d=>d.target.y);
-
         node.attr("cx", d=>d.x)
             .attr("cy", d=>d.y);
-
-        label.attr("x", d=>d.x)
-             .attr("y", d=>d.y);
+        rootLabel.attr("x", d=>d.x)
+                 .attr("y", d=>d.y);
     });
 }
 
 window.onload = renderGraph;
-
-
