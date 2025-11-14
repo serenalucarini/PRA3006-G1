@@ -48,7 +48,7 @@ async function renderDiseasePage() {
 
     function expandNode(event, d) {
         console.log("CLICKED:", d);
-        if (d.name === "Symptoms" && !expanded.symptoms) {
+        if (d.type === "category" && d.name === "Symptoms" && !expanded.symptoms) {
             diseaseSymptoms.forEach(s => {
                 nodes.push(s);
                 links.push({ source: d, target: s });
@@ -58,7 +58,7 @@ async function renderDiseasePage() {
             return;
         }
 
-        if (d.name === "Risk Factors" && !expanded.risks) {
+        if (d.name === "category" && d.name === Risk Factors" && !expanded.risks) {
             diseaseRisks.forEach(r => {
                 nodes.push(r);
                 links.push({ source: d, target: r });
