@@ -38,11 +38,9 @@ async function fetchData() {
     }
 }
 
-const SmokingDiseases = fetchData()
-
 /////// CONVERSION INTO REQUIRED JSON
 
-d3.json(SmokingDiseases).then(data => {
+d3.json(fetchData()).then(data => {
   console.log(Array.isArray(data)); // should be true
   console.log("Number of diseases:", data.length); // gives size
 
