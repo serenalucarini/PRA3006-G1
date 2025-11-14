@@ -52,7 +52,7 @@ async function renderDiseasePage() {
     const name = d.name.trim();
 
     // Expand Symptoms
-    if (d.type === "category" && name === "Symptoms" && !expanded.symptoms) {
+    if (d.type === "category" && d.name.trim() === "Symptoms" && !expanded.symptoms) {
         console.log("EXPANDING SYMPTOMS");
         diseaseSymptoms.forEach(s => {
             nodes.push(s);
@@ -64,7 +64,7 @@ async function renderDiseasePage() {
     }
 
     // Expand Risk Factors
-    if (d.type === "category" && name === "Risk Factors" && !expanded.risks) {
+    if (d.type === "category" && d.name.trim() === "Risk Factors" && !expanded.risks) {
         console.log("EXPANDING RISK FACTORS");
         diseaseRisks.forEach(r => {
             nodes.push(r);
