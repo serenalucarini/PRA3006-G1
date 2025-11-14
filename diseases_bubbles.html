@@ -2,27 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Diseases bubble chart</title>
+    <title>Disease bubble chart</title>
 
-    <!-- Use your main CSS file -->
     <link rel="stylesheet" href="stylefinal.css">
-    <!-- or, if you use this one: <link rel="stylesheet" href="design.css"> -->
-
-    <!-- D3 library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
-    <!-- You can copy this header structure from one of your other pages -->
     <div class="header">
         <div>
             <a href="index.html">Homepage</a> |
             <a href="Bar2.html">Bar2</a> |
             <a href="Circles.html">Smoking circle</a> |
-            <!-- NEW LINK IS THIS PAGE -->
-            <a href="diseases_bubbles.html">Diseases bubbles</a>
+            <a href="diseases_bubbles.html">Disease bubbles</a>
         </div>
-        <h1 class="title">Diseases Bubble Chart</h1>
+        <h1 class="title">Disease Bubble Chart</h1>
     </div>
 
     <div class="body">
@@ -32,18 +26,23 @@
             the more symptoms are associated with that disease.
         </p>
 
-        <!-- D3 will draw the chart here -->
         <div id="chart-container"></div>
     </div>
 
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
+        <img src="um_logo.png" width="44.92" height="50.28">
         <div class="title"><a href="AboutUs.html">About Us</a></div>
         <small class="footer_date">
             <p>created: 31/10/2025</p>
             <p>last updated: 07/11/2025</p>
         </small>
     </div>
+
+    <!-- VERY IMPORTANT: CORRECT FILE NAME -->
+    <script src="diseases_bubbles.js?v=4"></script>
+</body>
+</html>
+
 
     <!-- Bubble chart code -->
     <script src="diseases_bubbles.js?v=1"></script>
