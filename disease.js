@@ -143,3 +143,5 @@ async function renderDiseasePage() {
 }
 
 window.onload = renderDiseasePage;
+
+
