@@ -15,7 +15,8 @@
         html, body {
           height: 100%;
           width: 100%;
-          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+          background-color: #FBF9F1;
         }
 
         /* Fixed header */
@@ -24,9 +25,8 @@
           left: 0;
           top: 0;
           width: 100%;
-          height: 80px;
-          background-color: #D9C6A5;
-          color: #5C3A21;
+          height: 15%;
+          background-color: #E5E1DA;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -64,19 +64,18 @@
           outline: 2px solid rgba(0,0,0,0.15);
           outline-offset: 2px;
         }
-
         .body {
-          position: fixed;
+          position: relative;
           top: 80px;
           left: 0;
           width: 100%;
-          height: calc(100% - 80px - 15%);
+          height: auto;
+          min-height: calc(100vh - 80px - 20%);
           color: black;
           padding: 2rem;
           overflow-y: auto;
           overflow-x: hidden;
         }
-
         /* Rounded content box for placing text */
         .intro-box {
           max-width: 900px;
@@ -85,7 +84,6 @@
           border-radius: 12px;
           padding: 1.5rem 1.75rem;
           box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-          border: 1px solid rgba(0,0,0,0.06);
           color: #111;
         }
         .intro-box h2 {
@@ -116,18 +114,29 @@
         }
         .content-link:hover {
           text-decoration: underline;
-          color: #0645AD;
-          background: rgba(6,69,173,0.04);
+          color: rgba(118, 97, 97, 1);
+          background: rgba(118, 97, 97, 0.2); /* 20% opacity */
         }
-
+        .content-section {
+          max-width: 900px;
+          margin: 1.5rem auto;
+          display: flex;
+          gap: 1.5rem;
+          align-items: flex-start;
+        }
+        .content-section img {
+          flex-shrink: 0;
+        }
+        .content-section p {
+          margin: 0.5rem 0 0 0;
+        }
         .footer {
-          position: fixed;
+          position: static;
           left: 0;
           bottom: 0;
           width: 100%;
-          height: 15%;
-          background-color: #D9C6A5;
-          color: #5C3A21;
+          height: 20%;
+          background-color: #E5E1DA;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -135,16 +144,36 @@
           box-sizing: border-box;
           z-index: 10;
         }
-
-        .footer_date { text-align: right; }
+        .footer > div {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          align-items: center;
+        }
+        .footer .title {
+          margin: 0;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-align: center;
+        }
+        .footer .title p {
+          margin: 0;
+        }
+        .footer .nav-link {
+          font-size: 0.85rem;
+        }
+        .footer_date {
+          font-size: 0.85rem;
+          text-align: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="header">
         <div class="header-left">
-            <a class="nav-link" href="AboutUs.html">About</a>
-            <a class="nav-link" href="Course.html">Course</a>
+            <a class="nav-link" href="AboutUs.html">Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006</a>
         </div>
 
         <div class="header-center">
@@ -161,39 +190,70 @@
         <div class="intro-box" role="region" aria-label="Introductory text">
             <h2>Overview</h2>
             <p>
-                Are you a smoker and are curious about the possible risks and effects it might have on your health. Then you have come to the right site! 
-                In this website, you will different different visualisation techniques that show diseases related to smoking and their respective risk factors and symptoms.
-                The data used was extracted from WidiData through a SPARQL query.
+                Are you a smoker and are curious about the possible risks and effects it might have on your health? Then you have come to the right place! 
+                On this webpage, you will be able to access different visualisation techniques that show diseases related to smoking, and their respective risk factors and symptoms.
+                The data used was extracted from WikiData through SPARQL queries.
             </p>
         </div>
 
-        <!-- Links under the box -->
-        <nav class="body-links" aria-label="Visualizations links">
-            <a class="content-link" href="Circles.html">Network</a>
-            <a class="content-link" href="BarCharts.html">Bar graphs</a>
-            <a class="content-link" href="diseases_bubbles.html">Bubble chart</a>
-            <a class="content-link" href="pie.html">Pie chart</a>
-        </nav>
+        <!-- Network link -->
+        <div class="content-section">
+          <img src="network.png" alt="Network Graphic" width="50" height="50">
+          <nav class="body-links" aria-label="Visualizations links">
+              <a class="content-link" href="Circles.html">Network</a>
+          </nav>
+          <p>Explore all the diseases that can be caused by smoking, with all their risk factors and symptoms.</p>
+        </div>
 
+        <!-- Bar Chart link -->
+        <div class="content-section">
+          <img src="bar.png" alt="Bar Chart Graphic" width="50" height="50">
+          <nav class="body-links" aria-label="Visualizations links">
+              <a class="content-link" href="BarCharts.html">Bar Charts</a>
+          </nav>
+          <p>Explore more quantifiable information on the diseases caused by smoking.</p>
+        </div>
 
-        <div id="bubble-chart" style="width: 100%; height: 600px;"></div>
-        <div id="graph" style="width: 100%; height: 600px;"></div>
+        <!-- Pie Chart link -->
+        <div class="content-section">
+          <img src="pie.png" alt="Pie Chart Graphic" width="50" height="50">
+          <nav class="body-links" aria-label="Visualizations links">
+              <a class="content-link" href="pie.html">Pie chart</a>
+          </nav>
+          <p>Explore how frequent symptoms are amongst all diseases caused by smoking.</p>
+        </div>
+
     </div>
 
-<div id="bubble-chart" style="width: 100%; height: 600px;"></div>
-
-    <div id="graph" style="width: 100%; height: 600px;"></div>
     </div>
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
-        <div class="title"><a class="nav-link" href="AboutUs.html">About Us</a></div>
-        <small class="footer_date">
+      <!-- left section -->
+      <div>
+        <div class="title"><p>Potential effects and risks of smoking</p></div>
+        <small>
+          <a class="nav-link" href="https://github.com/serenalucarini/PRA3006-G1">Access to Github</a>
+        </small>
+      </div>
+
+      <!-- center section -->
+      <div>
+        <div class="title"><p>About</p></div>
+        <a class="nav-link" href="AboutUs.html">The Developers</a>
+          <a class="nav-link" href="Course.html">PRA3006 Course</a>
+          <a class="nav-link" href="https://www.maastrichtuniversity.nl/education/bachelor/programmes/maastricht-science-programme">Maastricht Science Programme</a>
+        
+      </div>
+
+      <!-- right section -->
+      <div>
+        <a class="nav-link" href="Disclaimer.html"><div class="title">Disclaimer</div></a>
+        <div class="footer_date">
             <p>created: 2025/10/31</p>
             <p>last updated: 2025/11/21</p>
-        </small>
+        </div>
+      </div>   
+        
     </div>
-
-    <!script src="expand.js"><!/script>
 
 </body>
 </html>
