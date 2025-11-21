@@ -1,5 +1,4 @@
-<script>
-        /*
+/*
             JavaScript to fetch data from Wikidata SPARQL endpoint, prepare it,
             and draw a D3 bar chart. Everything below is commented to explain steps.
         */
@@ -286,4 +285,3 @@
 
         // Kick off the visualization when the page loads
         init();
-    </script>
