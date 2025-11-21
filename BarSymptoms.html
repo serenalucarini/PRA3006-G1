@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disease Risk Factors Visualization</title>
+
+    <!-- Include D3.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
     <style>
+        /* Page header and footer share some common styles (fixed, full width) */
         .header, .footer {
             position: fixed;
             left: 0;
@@ -18,53 +22,67 @@
             justify-content: space-between;
             box-sizing: border-box;
         }
-        
+
+        /* Header sits at the top of the viewport */
         .header {
             top: 0;
             padding: 0 15%;
         }
-        
+
+        /* Footer sits at the bottom of the viewport */
         .footer {
             bottom: 0;
             padding: 0 2%;
         }
-        
+
+        /* 
+         Main body area: instead of fixing a height, anchor the bottom to
+         the top of the footer (bottom: 15%). This ensures the body
+         always fits between header and footer and prevents overlap.
+        */
         .body {
             position: fixed;
             top: 15%;
+            bottom: 15%;
             left: 0;
             width: 100%;
-            height: 70%;
             color: black;
             padding: 2rem;
             overflow: auto;
             display: flex;
             gap: 2rem;
         }
-        
+
+        /* Centered title inside the header */
         .title {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
             margin: 0;
         }
-        
+
+        /* Small right-aligned footer date column */
         .footer_date {
             text-align: right;
         }
-        
+
+        /* Loading message shown while fetching data */
         #loading-message {
             text-align: center;
             font-size: 18px;
             color: #333;
             margin: 20px 0;
         }
-        
+
+        /* Container that will hold the chart SVG */
         #barchart-container {
             flex: 1;
             min-width: 500px;
+            /* ensure that the container allows space for axis labels */
+            padding-bottom: 1rem;
         }
-        
+
+        /* Side panel that lists symptoms for the selected disease */
         #symptoms-panel {
             flex: 0 0 400px;
             background-color: #f5f5f5;
@@ -74,24 +92,25 @@
             overflow-y: auto;
             display: none;
         }
-        
+
+        /* Activate the panel when a disease is selected */
         #symptoms-panel.active {
             display: block;
         }
-        
+
         .symptoms-title {
             font-size: 20px;
             font-weight: bold;
             color: #FF69B4;
             margin-bottom: 15px;
         }
-        
+
         .symptoms-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        
+
         .symptom-item {
             background-color: white;
             padding: 10px 12px;
@@ -100,44 +119,62 @@
             border-radius: 4px;
             font-size: 14px;
         }
-        
+
+        /* Utility class to hide elements */
         .hidden {
             display: none;
         }
-        
+
+        /* Bar styling and hover effects */
         .bar {
             transition: opacity 0.3s, fill 0.3s;
             cursor: pointer;
         }
-        
+
         .bar:hover {
             opacity: 0.8;
         }
-        
+
+        /* Active bar highlight */
         .bar.active {
             fill: #FF1493 !important;
+        }
+
+        /* Ensure axis text remains visible on dark/light backgrounds */
+        svg text {
+            fill: #000000;
         }
     </style>
 </head>
 <body>
+    <!-- Header: back link, descriptive paragraph, and centered title -->
     <div class="header">
         <div><a href="BarCharts.html">Back</a></div>
         <p>For each disease linked to smoking, all the symptoms of that disease were extracted. Each symptom is linked to multiple disease. Click on a disease to see its symptoms.</p>
         <h1 class="title">Symptoms per Disease</h1>
         <div></div>
     </div>
-    
+
+    <!--
+      Body: left side contains the chart, right side contains the symptoms list.
+      Because .body is anchored with top:15% and bottom:15%, it will not be overlapped by header/footer.
+    -->
     <div class="body">
         <div style="flex: 1;">
+            <!-- Loading message while SPARQL fetch runs -->
             <div id="loading-message">Loading data...</div>
+            <!-- Chart will be inserted into this container -->
             <div id="barchart-container"></div>
         </div>
+
+        <!-- Sidebar panel that shows symptoms for a selected disease -->
         <div id="symptoms-panel">
             <div class="symptoms-title" id="selected-disease"></div>
             <ul class="symptoms-list" id="symptoms-list"></ul>
         </div>
     </div>
-    
+
+    <!-- Footer: simple logo, about link, and timestamps -->
     <div class="footer">
         <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
         <div class="title"><a href="AboutUs.html">About Us</a></div>
@@ -146,181 +183,6 @@
             <p>last updated: 2025/11/21</p>
         </small>
     </div>
-
-    <script>
-        const sparqlEndpoint = "https://query.wikidata.org/sparql";
-        let allData = []; // Store all data globally
-
-        async function fetchData() {
-            const loadingMessage = document.getElementById("loading-message");
-            loadingMessage.classList.remove("hidden");
-
-            const sparqlQuery = `
-            SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
-            WHERE {
-              ?disease wdt:P5642 wd:Q662860.
-              ?disease wdt:P5642 ?factor .
-              ?disease wdt:P780 ?symptoms.
-              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
-            }`;
-
-            try {
-                const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
-                    headers: { Accept: "application/json" },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                }
-
-                const json = await response.json();
-                return json.results.bindings.map((row) => ({
-                    disease: row.disease.value,
-                    diseaseLabel: row.diseaseLabel.value,
-                    symptoms: row.symptoms.value,
-                    symptomsLabel: row.symptomsLabel.value,
-                }));
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                return [];
-            } finally {
-                loadingMessage.classList.add("hidden");
-            }
-        }
-
-        function prepareChartData(data) {
-            const groupedByDisease = d3.group(data, (d) => d.diseaseLabel);
-            
-            return Array.from(groupedByDisease, ([disease, values]) => {
-                const uniqueSymptoms = new Set(values.map(v => v.symptoms));
-                return {
-                    disease: disease,
-                    count: uniqueSymptoms.size
-                };
-            }).sort((a, b) => b.count - a.count);
-        }
-
-        function getSymptomsByDisease(diseaseName) {
-            const diseaseData = allData.filter(d => d.diseaseLabel === diseaseName);
-            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomsLabel))];
-            return uniqueSymptoms.sort();
-        }
-
-        function displaySymptoms(diseaseName) {
-            const symptoms = getSymptomsByDisease(diseaseName);
-            const panel = document.getElementById("symptoms-panel");
-            const titleEl = document.getElementById("selected-disease");
-            const listEl = document.getElementById("symptoms-list");
-
-            titleEl.textContent = diseaseName;
-            listEl.innerHTML = "";
-
-            symptoms.forEach(symptom => {
-                const li = document.createElement("li");
-                li.className = "symptom-item";
-                li.textContent = symptom;
-                listEl.appendChild(li);
-            });
-
-            panel.classList.add("active");
-        }
-
-        function drawChart(chartData) {
-            const margin = { top: 20, right: 30, bottom: 150, left: 60 };
-            const width = 1000 - margin.left - margin.right;
-            const height = 600 - margin.top - margin.bottom;
-
-            const svg = d3
-                .select("#barchart-container")
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
-
-            const x = d3.scaleBand()
-                .range([0, width])
-                .domain(chartData.map(d => d.disease))
-                .padding(0.2);
-
-            const y = d3.scaleLinear()
-                .range([height, 0])
-                .domain([0, d3.max(chartData, d => d.count)]);
-
-            // Add bars with click interaction
-            svg.selectAll(".bar")
-                .data(chartData)
-                .join("rect")
-                .attr("class", "bar")
-                .attr("x", d => x(d.disease))
-                .attr("y", d => y(d.count))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.count))
-                .attr("fill", "#FF69B4")
-                .on("click", function(event, d) {
-                    // Remove active class from all bars
-                    svg.selectAll(".bar").classed("active", false);
-                    // Add active class to clicked bar
-                    d3.select(this).classed("active", true);
-                    // Display symptoms
-                    displaySymptoms(d.disease);
-                })
-                .append("title")
-                .text(d => `${d.disease}: ${d.count} symptoms`);
-
-            // Add X axis
-            svg.append("g")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x))
-                .selectAll("text")
-                .attr("transform", "rotate(-45)")
-                .style("text-anchor", "end")
-                .style("fill", "#000000");
-
-            // Add Y axis
-            svg.append("g")
-                .call(d3.axisLeft(y).ticks(10))
-                .selectAll("text")
-                .style("fill", "#000000");
-
-            // Add Y axis label
-            svg.append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
-                .attr("x", 0 - (height / 2))
-                .attr("dy", "1em")
-                .style("text-anchor", "middle")
-                .style("fill", "#000000")
-                .text("Amount of Symptoms");
-
-            // Add X axis label
-            svg.append("text")
-                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
-                .style("text-anchor", "middle")
-                .style("fill", "#000000")
-                .text("Diseases");
-
-            // Style axis lines
-            svg.selectAll(".domain, .tick line")
-                .style("stroke", "#000000");
-        }
-
-        async function init() {
-            allData = await fetchData();
-            if (allData.length === 0) {
-                console.warn("No data available to display");
-                document.getElementById("loading-message").textContent = "No data available";
-                document.getElementById("loading-message").classList.remove("hidden");
-                return;
-            }
-
-            console.log("Raw Data:", allData);
-            const chartData = prepareChartData(allData);
-            console.log("Chart Data:", chartData);
-            drawChart(chartData);
-        }
-
-        init();
-    </script>
+    <script src="BarSymptoms.js"></script>
 </body>
 </html>
