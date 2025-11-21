@@ -109,20 +109,27 @@ const drag = d3.drag()
 
 // Functions to expand graph
 function collapseChildren(parentLabel) {
-    // names of all children of this parent
-    const childNames = nodes
-        .filter(n => n.parent === parentLabel)
-        .map(n => n.name);
 
-    // remove children from nodes
-    nodes = nodes.filter(n => n.parent !== parentLabel);
+    // get all children for removal
+    const children = nodes.filter(n => n.parent === parentLabel);
 
-    // remove links touching those children
-    links = links.filter(l => {
-        const s = typeof l.source === "string" ? l.source : l.source.name;
-        const t = typeof l.target === "string" ? l.target : l.target.name;
-        return !childNames.includes(s) && !childNames.includes(t);
+    // remove child nodes safely
+    children.forEach(child => {
+        const index = nodes.indexOf(child);
+        if (index !== -1) {
+            nodes.splice(index, 1);
+        }
     });
+
+    // remove links involving those children
+    for (let i = links.length - 1; i >= 0; i--) {
+        const s = typeof links[i].source === "string" ? links[i].source : links[i].source.name;
+        const t = typeof links[i].target === "string" ? links[i].target : links[i].target.name;
+
+        if (children.some(c => c.name === s || c.name === t)) {
+            links.splice(i, 1);
+        }
+    }
 }
 // Symptoms toggle
 async function toggleSymptoms() {
