@@ -18,63 +18,117 @@
           height: 100%;
           width: 100%;
         }
-        .header, .footer {
+
+        /* Fixed header */
+        .header {
           position: fixed;
           left: 0;
+          top: 0;
+          width: 100%;
+          height: 80px;                   /* fixed px height makes layout predictable */
+          background-color: LavenderBlush;
+          color: black;
+          display: flex;
+          align-items: center;
+          justify-content: space-between; /* left, center, right areas */
+          padding: 0 2rem;
+          box-sizing: border-box;
+          z-index: 10;
+        }
+
+        /* Three columns inside header */
+        .header-left,
+        .header-center,
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .header-left {
+          flex: 1;
+          justify-content: flex-start;
+        }
+        .header-center {
+          flex: 1;
+          justify-content: center;
+        }
+        .header-right {
+          flex: 1;
+          justify-content: flex-end;
+        }
+
+        /* Title in the center */
+        .title {
+          margin: 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+          text-transform: none;
+          text-align: center;
+        }
+
+        /* Make anchor look like plain text while remaining clickable */
+        .nav-link {
+          color: inherit;            /* uses header text color */
+          text-decoration: none;     /* removes underline */
+          cursor: pointer;
+          font-size: 1rem;
+        }
+        /* Keep focus visible for keyboard users while still looking like plain text */
+        .nav-link:focus {
+          outline: 2px solid rgba(0,0,0,0.15);
+          outline-offset: 2px;
+        }
+
+        .body {
+          position: fixed;
+          top: 80px;                  /* push content below the fixed header */
+          left: 0;
+          width: 100%;
+          height: calc(100% - 80px - 15%); /* footer is 15% height, subtract header and footer */
+          color: black;
+          padding: 2rem;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
           width: 100%;
           height: 15%;
           background-color: LavenderBlush;
           color: black;
           display: flex;
           align-items: center;
-          justify-content: space-between; /* spreads left, center, right */
-          box-sizing: border-box;
-            z-index:10;
-        }
-        
-        .header {
-          top: 0;
-            height:15%;
-          padding: 0 15%;
-        }
-        
-        .footer {
-          bottom: 0;
-            height:15%;
+          justify-content: space-between;
           padding: 0 2%;
+          box-sizing: border-box;
+          z-index: 10;
         }
-        
-        .body {
-          position: fixed;
-          top: 15%;
-          left: 0;
-          width: 100%;
-          height: 70%;
-          color: black;
-          padding: 2rem;
-          overflow-y: auto;
-            overflow-x: hidden;
-        }
-        .title {
-          position: absolute;
-          left: 50%;
-          margin: 0;
-        }
+
         .footer_date {
           text-align: right;
         }
+
     </style>
 </head>
     
 <body>
     <!-- Page content goes between div files -->
     <div class="header">
-        <div><a href="Circles.html">Smoking circle</a></div> <!-- anchor tag, works as a hyperlink -->
-        <h1 class="title">Smoking</h1>
-        <div><a href="BarCharts">Bar Chart 1</a></div>
-          <div><a href="diseases_bubbles.html">Disease Bubbles</a></div>
-        <div><a href="pie.html">Pie chart</a></div>
-        
+        <div class="header-left">
+            <a class="nav-link" href="AboutUs.html">About Us</a>
+            <a class="nav-link" href="Course.html">Course</a>
+        </div>
+
+        <div class="header-center">
+            <h1 class="title">potential effects and risks of smoking</h1>
+        </div>
+
+        <div class="header-right">
+            <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
+        </div>
     </div>
 
     <div class="body">
@@ -82,33 +136,23 @@
         <p>This is my GitHub Pages website. It works!</p>
         <p>Adding another line</p>
         <h2>Disease Bubble Chart</h2>
-<p>Bubbles represent diseases. Bigger bubbles = more symptoms.</p>
+        <p>Bubbles represent diseases. Bigger bubbles = more symptoms.</p>
 
-<div id="bubble-chart" style="width: 100%; height: 600px;"></div>
+        <div id="bubble-chart" style="width: 100%; height: 600px;"></div>
 
-    <div id="graph" style="width: 100%; height: 600px;"></div>
+        <div id="graph" style="width: 100%; height: 600px;"></div>
     </div>
+
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width=44.92px height=50.28px>
-        <div class="title"><a href="AboutUs.html">About Us</a></div>
+        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
+        <div class="title"><a class="nav-link" href="AboutUs.html">About Us</a></div>
         <small class="footer_date">
             <p>created: 2025/10/31</p>
             <p>last updated: 2025/11/14</p>
         </small>
     </div>
+
     <script src="expand.js"></script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
