@@ -1,17 +1,11 @@
-//-----------------------------------------------------
 // Get disease name from URL
-//-----------------------------------------------------
 const params = new URLSearchParams(window.location.search);
 const diseaseName = params.get("name");
 
 // Set title on the page
 document.getElementById("title").textContent = diseaseName;
 
-
-//-----------------------------------------------------
 // SPARQL Queries
-//-----------------------------------------------------
-
 async function fetchSymptoms(diseaseName) {
     const query = `
     SELECT ?symptomLabel WHERE {
@@ -28,7 +22,6 @@ async function fetchSymptoms(diseaseName) {
     const data = await res.json();
     return data.results.bindings.map(b => b.symptomLabel.value);
 }
-
 
 async function fetchRiskFactors(diseaseName) {
     const query = `
@@ -47,10 +40,7 @@ async function fetchRiskFactors(diseaseName) {
     return data.results.bindings.map(b => b.factorLabel.value);
 }
 
-
-//-----------------------------------------------------
 // Create base nodes
-//-----------------------------------------------------
 const nodes = [
     { name: diseaseName, type: "disease" },
     { name: "Symptoms", type: "symptoms" },
@@ -65,10 +55,7 @@ const links = [
 let expandedSymptoms = false;
 let expandedRisks = false;
 
-
-//-----------------------------------------------------
 // Build SVG + Force Simulation
-//-----------------------------------------------------
 const width = window.innerWidth;
 const height = window.innerHeight;
 
@@ -78,59 +65,131 @@ const svg = d3.select("#graph")
     .attr("height", height)
     .style("overflow", "visible");
 
-const linkGroup = svg.append("g");
-const nodeGroup = svg.append("g");
-const labelGroup = svg.append("g");
+// Zoom container
+const zoomGroup = svg.append("g");
+
+// Groups inside zoom container    
+const linkGroup = zoomGroup.append("g");
+const nodeGroup = zoomGroup.append("g");
+const labelGroup = zoomGroup.append("g");
 
 let link = linkGroup.selectAll("line");
 let node = nodeGroup.selectAll("circle");
 let label = labelGroup.selectAll("text");
+
+// zoom + pan
+const zoom = d3.zoom()
+    .scaleExtent([0.5, 4])
+    .on("zoom", (event) => {
+        zoomGroup.attr("transform", event.transform);
+    });
+svg.call(zoom);
 
 const sim = d3.forceSimulation(nodes)
     .force("link", d3.forceLink(links).id(d => d.name).distance(200))
     .force("charge", d3.forceManyBody().strength(-400))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
+// Drag behaviour for nodes
+const drag = d3.drag()
+    .on("start", (event, d) => {
+        if (!event.active) sim.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    })
+    .on("drag", (event, d) => {
+        d.fx = event.x;
+        d.fy = event.y;
+    })
+    .on("end", (event, d) => {
+        if (!event.active) sim.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    });
 
-//-----------------------------------------------------
 // Functions to expand graph
-//-----------------------------------------------------
+function collapseChildren(parentLabel) {
+    // names of all children of this parent
+    const childNames = nodes
+        .filter(n => n.parent === parentLabel)
+        .map(n => n.name);
 
-async function expandSymptoms() {
-    if (expandedSymptoms) return; 
-    expandedSymptoms = true;
+    if (childNames.length === 0) return;
 
-    const symptoms = await fetchSymptoms(diseaseName);
+    // remove children from nodes
+    nodes = nodes.filter(n => n.parent !== parentLabel);
 
-    symptoms.forEach(sym => {
-        const obj = { name: sym, type: "symptomDetail" };
-        nodes.push(obj);
-        links.push({ source: "Symptoms", target: sym });
+    // remove links touching those children
+    links = links.filter(l => {
+        const s = typeof l.source === "string" ? l.source : l.source.name;
+        const t = typeof l.target === "string" ? l.target : l.target.name;
+        return !childNames.includes(s) && !childNames.includes(t);
     });
+}
+
+async function toggleSymptoms() {
+    if (!expandedSymptoms) {
+        // EXPAND
+        expandedSymptoms = true;
+
+        const symptoms = await fetchSymptoms(diseaseName);
+
+        if (symptoms.length === 0) {
+            const nodeObj = {
+                name: "No symptoms available",
+                type: "noSymptoms",
+                parent: "Symptoms"
+            };
+            nodes.push(nodeObj);
+            links.push({ source: "Symptoms", target: nodeObj.name });
+        } else {
+            symptoms.forEach(sym => {
+                const obj = { name: sym, type: "symptomDetail", parent: "Symptoms" };
+                nodes.push(obj);
+                links.push({ source: "Symptoms", target: sym });
+            });
+        }
+    } else {
+        // COLLAPSE
+        expandedSymptoms = false;
+        collapseChildren("Symptoms");
+    }
 
     restartSimulation();
 }
 
+async function toggleRiskFactors() {
+    if (!expandedRisks) {
+        // EXPAND
+        expandedRisks = true;
 
-async function expandRiskFactors() {
-    if (expandedRisks) return;
-    expandedRisks = true;
+        const risks = await fetchRiskFactors(diseaseName);
 
-    const risks = await fetchRiskFactors(diseaseName);
-
-    risks.forEach(risk => {
-        const obj = { name: risk, type: "riskDetail" };
-        nodes.push(obj);
-        links.push({ source: "Risk Factors", target: risk });
-    });
+        if (risks.length === 0) {
+            const nodeObj = {
+                name: "No risk factors available",
+                type: "noRisks",
+                parent: "Risk Factors"
+            };
+            nodes.push(nodeObj);
+            links.push({ source: "Risk Factors", target: nodeObj.name });
+        } else {
+            risks.forEach(risk => {
+                const obj = { name: risk, type: "riskDetail", parent: "Risk Factors" };
+                nodes.push(obj);
+                links.push({ source: "Risk Factors", target: risk });
+            });
+        }
+    } else {
+        // COLLAPSE
+        expandedRisks = false;
+        collapseChildren("Risk Factors");
+    }
 
     restartSimulation();
 }
 
-
-//-----------------------------------------------------
 // Re-render everything after expanding
-//-----------------------------------------------------
 
 function restartSimulation() {
 
@@ -142,22 +201,25 @@ function restartSimulation() {
 
     // Update nodes
     node = nodeGroup.selectAll("circle")
-        .data(nodes)
+        .data(nodes, d => d.name)
         .join("circle")
         .attr("r", 22)
         .attr("fill", d => {
-            if (d.type === "disease") return "#457b9d";
-            if (d.type === "symptoms") return "#f4a261";
-            if (d.type === "risk") return "#e76f51";
-            if (d.type === "symptomDetail") return "#f7b267";
-            if (d.type === "riskDetail") return "#f79d65";
+            if (d.type === "disease") return "#7393B3";
+            if (d.type === "symptoms") return "#00008B";
+            if (d.type === "risk") return "#5D3FD3";
+            if (d.type === "symptomDetail") return "#CCCCFF";
+            if (d.type === "riskDetail") return "#008080";
             return "gray";
         })
-        .style("cursor", "pointer")
+        .style("cursor", d =>
+            d.type === "symptoms" || d.type === "risk" ? "pointer" : "default"
+        )
         .on("click", (event, d) => {
-            if (d.type === "symptoms") expandSymptoms();
-            if (d.type === "risk") expandRiskFactors();
-        });
+            if (d.type === "symptoms") toggleSymptoms();
+            if (d.type === "risk") toggleRiskFactors();
+        })
+        .call(drag);
 
     // Update labels
     label = labelGroup.selectAll("text")
@@ -174,10 +236,7 @@ function restartSimulation() {
     sim.alpha(1).restart();
 }
 
-
-//-----------------------------------------------------
 // Initial render
-//-----------------------------------------------------
 restartSimulation();
 
 sim.on("tick", () => {
