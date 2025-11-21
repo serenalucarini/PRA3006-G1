@@ -3,11 +3,9 @@
 <head>
     <meta charset="utf-8">
     <title>Smoking as a Risk Factor</title>
-<!-- Load d3.js -->
+    <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <!-- start writing in CSS within the style tags -->
-     
-    <style> 
+    <style>
         * {
           margin: 0;
           padding: 0;
@@ -17,6 +15,7 @@
         html, body {
           height: 100%;
           width: 100%;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
         }
 
         /* Fixed header */
@@ -25,18 +24,17 @@
           left: 0;
           top: 0;
           width: 100%;
-          height: 80px;                   /* fixed px height makes layout predictable */
+          height: 80px;
           background-color: LavenderBlush;
           color: black;
           display: flex;
           align-items: center;
-          justify-content: space-between; /* left, center, right areas */
+          justify-content: space-between;
           padding: 0 2rem;
           box-sizing: border-box;
           z-index: 10;
         }
 
-        /* Three columns inside header */
         .header-left,
         .header-center,
         .header-right {
@@ -44,36 +42,24 @@
           align-items: center;
           gap: 1rem;
         }
-        .header-left {
-          flex: 1;
-          justify-content: flex-start;
-        }
-        .header-center {
-          flex: 1;
-          justify-content: center;
-        }
-        .header-right {
-          flex: 1;
-          justify-content: flex-end;
-        }
+        .header-left { flex: 1; justify-content: flex-start; }
+        .header-center { flex: 1; justify-content: center; }
+        .header-right { flex: 1; justify-content: flex-end; }
 
-        /* Title in the center */
         .title {
           margin: 0;
           font-size: 1.1rem;
           font-weight: 600;
-          text-transform: none;
           text-align: center;
         }
 
         /* Make anchor look like plain text while remaining clickable */
         .nav-link {
-          color: inherit;            /* uses header text color */
-          text-decoration: none;     /* removes underline */
+          color: inherit;
+          text-decoration: none;
           cursor: pointer;
           font-size: 1rem;
         }
-        /* Keep focus visible for keyboard users while still looking like plain text */
         .nav-link:focus {
           outline: 2px solid rgba(0,0,0,0.15);
           outline-offset: 2px;
@@ -81,14 +67,57 @@
 
         .body {
           position: fixed;
-          top: 80px;                  /* push content below the fixed header */
+          top: 80px;
           left: 0;
           width: 100%;
-          height: calc(100% - 80px - 15%); /* footer is 15% height, subtract header and footer */
+          height: calc(100% - 80px - 15%);
           color: black;
           padding: 2rem;
           overflow-y: auto;
           overflow-x: hidden;
+        }
+
+        /* Rounded content box for placing text */
+        .intro-box {
+          max-width: 900px;
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          background: #fff;
+          border-radius: 12px;
+          padding: 1.5rem 1.75rem;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          border: 1px solid rgba(0,0,0,0.06);
+          color: #111;
+        }
+        .intro-box h2 {
+          margin-bottom: 0.5rem;
+          font-size: 1.25rem;
+        }
+        .intro-box p {
+          line-height: 1.5;
+          color: #222;
+        }
+
+        /* Links placed under the box */
+        .body-links {
+          max-width: 900px;
+          margin: 0.25rem auto 2rem auto;
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        .content-link {
+          color: inherit;           /* looks like normal text */
+          text-decoration: none;    /* remove underline by default */
+          padding: 0.25rem 0.5rem;
+          border-radius: 6px;
+          transition: color 120ms ease, background 120ms ease;
+        }
+        .content-link:hover {
+          text-decoration: underline;
+          color: #0645AD;
+          background: rgba(6,69,173,0.04);
         }
 
         .footer {
@@ -107,15 +136,11 @@
           z-index: 10;
         }
 
-        .footer_date {
-          text-align: right;
-        }
-
+        .footer_date { text-align: right; }
     </style>
 </head>
-    
+
 <body>
-    <!-- Page content goes between div files -->
     <div class="header">
         <div class="header-left">
             <a class="nav-link" href="AboutUs.html">About Us</a>
@@ -132,6 +157,25 @@
     </div>
 
     <div class="body">
+        <!-- Rounded box for placing a block of explanatory text -->
+        <div class="intro-box" role="region" aria-label="Introductory text">
+            <h2>Overview</h2>
+            <p>
+                Place your main explanatory text here. This rounded box is centered, has a subtle shadow,
+                and is suitable for a short introduction or description about the potential effects and risks of smoking.
+                Replace this placeholder text with whatever content you want displayed prominently.
+            </p>
+        </div>
+
+        <!-- Links under the box -->
+        <nav class="body-links" aria-label="Visualizations links">
+            <a class="content-link" href="Circles.html">Circles</a>
+            <a class="content-link" href="BarGraphs.html">BarGraphs</a>
+            <a class="content-link" href="diseases_bubbles.html">Disease Bubbles</a>
+            <a class="content-link" href="pie.html">Pie</a>
+        </nav>
+
+        <!-- existing page content kept below -->
         <h1>Smoking as a Risk Factor</h1>
         <p>This is my GitHub Pages website. It works!</p>
         <p>Adding another line</p>
@@ -139,7 +183,6 @@
         <p>Bubbles represent diseases. Bigger bubbles = more symptoms.</p>
 
         <div id="bubble-chart" style="width: 100%; height: 600px;"></div>
-
         <div id="graph" style="width: 100%; height: 600px;"></div>
     </div>
 
@@ -153,6 +196,5 @@
     </div>
 
     <script src="expand.js"></script>
-
 </body>
 </html>
