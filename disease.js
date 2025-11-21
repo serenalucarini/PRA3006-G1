@@ -114,8 +114,6 @@ function collapseChildren(parentLabel) {
         .filter(n => n.parent === parentLabel)
         .map(n => n.name);
 
-    if (childNames.length === 0) return;
-
     // remove children from nodes
     nodes = nodes.filter(n => n.parent !== parentLabel);
 
@@ -126,66 +124,64 @@ function collapseChildren(parentLabel) {
         return !childNames.includes(s) && !childNames.includes(t);
     });
 }
-
+// Symptoms toggle
 async function toggleSymptoms() {
-    if (!expandedSymptoms) {
-        // EXPAND
-        expandedSymptoms = true;
-
-        const symptoms = await fetchSymptoms(diseaseName);
-
-        if (symptoms.length === 0) {
-            const nodeObj = {
-                name: "No symptoms available",
-                type: "noSymptoms",
-                parent: "Symptoms"
-            };
-            nodes.push(nodeObj);
-            links.push({ source: "Symptoms", target: nodeObj.name });
-        } else {
-            symptoms.forEach(sym => {
-                const obj = { name: sym, type: "symptomDetail", parent: "Symptoms" };
-                nodes.push(obj);
-                links.push({ source: "Symptoms", target: sym });
-            });
-        }
-    } else {
-        // COLLAPSE
+    // COLLAPSE
+    if (expandedSymptoms) {
         expandedSymptoms = false;
         collapseChildren("Symptoms");
+        restartSimulation();
+        return;
     }
+    // EXPAND
+    expandedSymptoms = true;
 
+    const symptoms = await fetchSymptoms(diseaseName);
+
+    if (symptoms.length === 0) {
+        const obj = {
+            name: "No symptoms available",
+            type: "noSymptoms",
+            parent: "Symptoms"
+        };
+        nodes.push(obj);
+        links.push({ source: "Symptoms", target: obj.name });
+    } else {
+        symptoms.forEach(sym => {
+            const obj = { name: sym, type: "symptomDetail", parent: "Symptoms" };
+            nodes.push(obj);
+            links.push({ source: "Symptoms", target: sym });
+        });
+    }
     restartSimulation();
 }
-
+// Risk Factors Toggle
 async function toggleRiskFactors() {
-    if (!expandedRisks) {
-        // EXPAND
-        expandedRisks = true;
-
-        const risks = await fetchRiskFactors(diseaseName);
-
-        if (risks.length === 0) {
-            const nodeObj = {
-                name: "No risk factors available",
-                type: "noRisks",
-                parent: "Risk Factors"
-            };
-            nodes.push(nodeObj);
-            links.push({ source: "Risk Factors", target: nodeObj.name });
-        } else {
-            risks.forEach(risk => {
-                const obj = { name: risk, type: "riskDetail", parent: "Risk Factors" };
-                nodes.push(obj);
-                links.push({ source: "Risk Factors", target: risk });
-            });
-        }
-    } else {
-        // COLLAPSE
+    // COLLAPSE
+    if (expandedRisks) {
         expandedRisks = false;
         collapseChildren("Risk Factors");
+        restartSimulation();
+        return;
     }
-
+    // EXPAND
+    expandedRisks = true;
+    const risks = await fetchRiskFactors(diseaseName);
+    if (risks.length === 0) {
+        const obj = {
+            name: "No risk factors available",
+            type: "noRisks",
+            parent: "Risk Factors"
+        };
+        nodes.push(obj);
+        links.push({ source: "Risk Factors", target: obj.name });
+    } else {
+        risks.forEach(risk => {
+            const obj = { name: risk, type: "riskDetail", parent: "Risk Factors" };
+            nodes.push(obj);
+            links.push({ source: "Risk Factors", target: risk });
+        });
+    }
     restartSimulation();
 }
 
