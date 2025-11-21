@@ -92,6 +92,9 @@ async function initializeNetwork() {
         .join("circle")
         .attr("r", 15)
         .attr("fill", d => d.isMain ? "#c5c5ffff" : "#e6e6fa") // color nodes, smoking vs diseases
+        .style("cursor", d => d.isMain ? "default" : "pointer") //pointer only on diseases
+
+        // Interactive Hover
         .on("mouseover", (event, d) => {
             if (!d.isMain) {
                 // if the mouse is over a disease node:
@@ -111,9 +114,17 @@ async function initializeNetwork() {
                 d3.select(event.currentTarget)
                     .attr("fill", "#e6e6fa")
                     .attr("r", 15);
-            }
-            tooltip.style("opacity", 0); // hide tooltip
-        });
+            }   
+            tooltip.style("opacity", 0);
+             
+        })
+    // Interactive click: go to disease page
+    .on("click", (event, d) => {
+        if (!d.isMain) {
+            const url = "disease.html?name=" + encodeURIComponent(d.name); 
+            window.location.href = url
+        }
+    }); 
     
     // set up force simulation, shows the movement at the first page refresh
     const simulation = d3.forceSimulation(network.nodes)
