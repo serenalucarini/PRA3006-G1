@@ -114,10 +114,10 @@ async function initializeNetwork() {
                 d3.select(event.currentTarget)
                     .attr("fill", "#e6e6fa")
                     .attr("r", 15);
-            }
-            tooltip.style("opacity", 0); // hide tooltip
-        });
-
+                tooltip.style("opacity, 1).html(d.name);
+                              }
+       
+        })
     // Interactive click: go to disease page
     .on("click", (event, d) => {
         if (!d.isMain) {
