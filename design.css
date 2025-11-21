@@ -32,6 +32,7 @@
           color: black;
           padding: 2rem;
           overflow: auto;
+          pointer-events: none; // Lets the graph appear
         }
         .title {
           position: absolute;
