@@ -69,13 +69,14 @@ let expandedRisks = false;
 //-----------------------------------------------------
 // Build SVG + Force Simulation
 //-----------------------------------------------------
-const width = 900;
-const height = 600;
+const width = window.innerWidth;
+const height = window.innerHeight;
 
 const svg = d3.select("#graph")
     .append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .style("overflow", "visible");
 
 const linkGroup = svg.append("g");
 const nodeGroup = svg.append("g");
@@ -187,8 +188,8 @@ sim.on("tick", () => {
         .attr("y2", d => d.target.y);
 
     node
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
+        .attr("cx", d => d.x = Math.max(50, Math.min(width - 50, d.x)))
+        .attr("cy", d => d.y = Math.max(50, Math.min(height - 50, d.y)));
 
     label
         .attr("x", d => d.x)
