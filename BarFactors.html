@@ -122,6 +122,7 @@
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
         /* Right side - diseases panel */
@@ -384,43 +385,42 @@
         /**
          * drawChart
          * - Draws the bar chart inside #barchart-container with D3.
-         * - IMPORTANT: Computes sizes from the container so that the x-axis labels
-         *   are always drawn inside the visible .body area (avoids being cut by footer).
+         * - Uses the container's full width and height to fill the available space.
          */
         function drawChart(chartData) {
-            // Get the container element for measurements
+            // Get the container element
             const container = document.getElementById("barchart-container");
 
-            // Determine available width/height from the container (fallback to defaults)
-            // Using clientWidth/clientHeight ensures we measure the actual space inside the .body
-            const availableWidth = container.clientWidth || 1000;
-            const availableHeight = container.clientHeight || Math.max(600, window.innerHeight * 0.6);
+            // Use the container's actual dimensions (includes padding)
+            const rect = container.getBoundingClientRect();
+            const availableWidth = container.clientWidth;
+            const availableHeight = container.clientHeight;
 
-            // Margins: allow extra bottom margin to accomodate rotated labels.
-            // Compute bottom margin relative to the availableHeight but clamp it so it never exceeds the container.
+            // Margins: allow extra bottom margin to accommodate rotated labels
             const margin = {
                 top: 20,
                 right: 30,
                 left: 60,
-                // Use 18-25% of the container height for bottom margin, clamped to sensible pixel values.
                 bottom: Math.min(220, Math.max(100, Math.floor(availableHeight * 0.20)))
             };
 
-            // Compute inner width/height for the chart area (where bars render)
+            // Compute inner width/height for the chart area
             const width = availableWidth - margin.left - margin.right;
             const height = availableHeight - margin.top - margin.bottom;
 
-            // Clear any existing SVG (useful when re-drawing)
+            // Clear any existing SVG
             container.innerHTML = "";
 
-            // Create the SVG sized to the available container height so axes stay inside the scrolling region
+            // Create SVG that fills the container
             const svg = d3
                 .select("#barchart-container")
                 .append("svg")
-                .attr("width", availableWidth)
-                .attr("height", availableHeight)
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", `0 0 ${availableWidth} ${availableHeight}`)
                 .attr("role", "img")
                 .attr("aria-label", "Bar chart showing number of diseases per risk factor")
+                .style("display", "block")
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -443,7 +443,7 @@
                 .attr("x", d => x(d.factor))
                 .attr("y", d => y(d.count))
                 .attr("width", x.bandwidth())
-                .attr("height", d => Math.max(0, height - y(d.count))) // height must be non-negative
+                .attr("height", d => Math.max(0, height - y(d.count)))
                 .attr("fill", "#FF69B4")
                 .on("click", function(event, d) {
                     // On click: clear active class from all bars, set on clicked bar
@@ -453,7 +453,7 @@
                     // Display the associated diseases in the right panel
                     displayDiseases(d.factor);
 
-                    // Scroll the panel into view if it's not fully visible (helpful on small screens)
+                    // Scroll the panel into view if it's not fully visible
                     const panel = document.getElementById("diseases-panel");
                     if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
                 })
@@ -466,7 +466,7 @@
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x));
 
-            // Rotate the x-axis labels so long factor names fit better
+            // Rotate the x-axis labels
             xAxis.selectAll("text")
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end")
@@ -496,7 +496,7 @@
                 .style("fill", "#000000")
                 .text("Risk Factors");
 
-            // Style axis lines and ticks to ensure they are visible
+            // Style axis lines and ticks
             svg.selectAll(".domain, .tick line")
                 .style("stroke", "#000000");
         }
@@ -519,23 +519,21 @@
                 return;
             }
 
-            // Log raw data for debugging purposes (developer console)
+            // Log raw data for debugging purposes
             console.log("Raw Data:", allData);
 
-            // Prepare the chart data (group by factor and count unique diseases)
+            // Prepare the chart data
             const chartData = prepareChartData(allData);
             console.log("Chart Data:", chartData);
 
             // Draw the chart
             drawChart(chartData);
 
-            // Optional: make the chart responsive to window resize so axis labels remain visible
-            // Debounce the resize handler to avoid excessive redraws.
+            // Make the chart responsive to window resize
             let resizeTimeout;
             window.addEventListener("resize", () => {
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(() => {
-                    // Re-draw using the same chart data and container dimensions
                     drawChart(chartData);
                 }, 200);
             });
