@@ -1,287 +1,260 @@
-/*
-            JavaScript to fetch data from Wikidata SPARQL endpoint, prepare it,
-            and draw a D3 bar chart. Everything below is commented to explain steps.
-        */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Risk Factors Visualization</title>
 
-        // SPARQL endpoint to query Wikidata
-        const sparqlEndpoint = "https://query.wikidata.org/sparql";
+    <!-- D3 library for drawing the bar chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
-        // Global storage for all fetched rows (so we can query it later)
-        let allData = [];
-
-        /**
-         * fetchData
-         * - Executes a SPARQL query against the endpoint and returns an array of rows.
-         * - Each row contains disease, diseaseLabel, factor, factorLabel.
-         * - Shows/hides the loading message while running.
-         */
-        async function fetchData() {
-            const loadingMessage = document.getElementById("loading-message");
-            // show loading indicator
-            loadingMessage.classList.remove("hidden");
-            loadingMessage.textContent = "Loading data...";
-
-            // SPARQL query: select disease, factor and symptoms (we only need disease/factor here)
-            const sparqlQuery = `
-            SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
-            WHERE {
-              ?disease wdt:P5642 wd:Q662860.
-              ?disease wdt:P5642 ?factor .
-              ?disease wdt:P780 ?symptoms.
-              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
-            }`;
-
-            try {
-                // Fetch the query result as JSON
-                const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
-                    headers: { Accept: "application/json" },
-                });
-
-                // If the network response is not ok, throw an error to be handled below
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                }
-
-                // Parse the returned JSON
-                const json = await response.json();
-
-                // Map results into a simpler array of objects for our visualization
-                return json.results.bindings.map((row) => ({
-                    disease: row.disease.value,
-                    diseaseLabel: row.diseaseLabel.value,
-                    factor: row.factor.value,
-                    factorLabel: row.factorLabel.value,
-                }));
-            } catch (error) {
-                // Log and return an empty array on error
-                console.error("Error fetching data:", error);
-                return [];
-            } finally {
-                // hide loading indicator (content will be set by the caller)
-                loadingMessage.classList.add("hidden");
-            }
+    <style>
+        /* Reset default margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /**
-         * prepareChartData
-         * - Accepts an array of rows and groups them by factorLabel.
-         * - Counts unique diseases per factor (Set based).
-         * - Returns an array of { factor, count } sorted descending by count.
-         */
-        function prepareChartData(data) {
-            // Group data by factorLabel using d3.group for convenience
-            const groupedByFactor = d3.group(data, (d) => d.factorLabel);
-            
-            // Convert the grouping to an array and count unique diseases per factor
-            return Array.from(groupedByFactor, ([factor, values]) => {
-                const uniqueDiseases = new Set(values.map(v => v.disease));
-                return {
-                    factor: factor,
-                    count: uniqueDiseases.size
-                };
-            }).sort((a, b) => b.count - a.count); // Sort by descending count for presentation
+        :root {
+            --header-height: 80px;
+            --footer-height: 80px;
         }
 
-        /**
-         * getDiseasesByFactor
-         * - Returns a sorted list of unique disease labels associated with a given factor name.
-         */
-        function getDiseasesByFactor(factorName) {
-            const factorData = allData.filter(d => d.factorLabel === factorName);
-            const uniqueDiseases = [...new Set(factorData.map(d => d.diseaseLabel))];
-            return uniqueDiseases.sort();
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
 
-        /**
-         * displayDiseases
-         * - Populates the right-hand panel with the diseases linked to a factor.
-         * - Includes the count in the panel title and handles pluralization.
-         */
-        function displayDiseases(factorName) {
-            const diseases = getDiseasesByFactor(factorName);
-            const panel = document.getElementById("diseases-panel");
-            const titleEl = document.getElementById("selected-factor");
-            const listEl = document.getElementById("diseases-list");
-
-            const count = diseases.length;
-            // Show factor name and the number of linked diseases (proper pluralization)
-            titleEl.textContent = `${factorName} (${count} ${count === 1 ? 'disease' : 'diseases'})`;
-
-            // Clear previous list
-            listEl.innerHTML = "";
-
-            // Add each disease as a list item
-            diseases.forEach(disease => {
-                const li = document.createElement("li");
-                li.className = "disease-item";
-                li.textContent = disease;
-                listEl.appendChild(li);
-            });
-
-            // Reveal the panel
-            panel.classList.add("active");
-            panel.setAttribute("aria-hidden", "false");
+        /* Header stays at the top */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background-color: Lavender;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /**
-         * drawChart
-         * - Draws the bar chart inside #barchart-container with D3.
-         * - IMPORTANT: Computes sizes from the container so that the x-axis labels
-         *   are always drawn inside the visible .body area (avoids being cut by footer).
-         */
-        function drawChart(chartData) {
-            // Get the container element for measurements
-            const container = document.getElementById("barchart-container");
-
-            // Determine available width/height from the container (fallback to defaults)
-            // Using clientWidth/clientHeight ensures we measure the actual space inside the .body
-            const availableWidth = container.clientWidth || 1000;
-            const availableHeight = container.clientHeight || Math.max(600, window.innerHeight * 0.6);
-
-            // Margins: allow extra bottom margin to accomodate rotated labels.
-            // Compute bottom margin relative to the availableHeight but clamp it so it never exceeds the container.
-            const margin = {
-                top: 20,
-                right: 30,
-                left: 60,
-                // Use 18-25% of the container height for bottom margin, clamped to sensible pixel values.
-                bottom: Math.min(220, Math.max(100, Math.floor(availableHeight * 0.20)))
-            };
-
-            // Compute inner width/height for the chart area (where bars render)
-            const width = availableWidth - margin.left - margin.right;
-            const height = availableHeight - margin.top - margin.bottom;
-
-            // Clear any existing SVG (useful when re-drawing)
-            container.innerHTML = "";
-
-            // Create the SVG sized to the available container height so axes stay inside the scrolling region
-            const svg = d3
-                .select("#barchart-container")
-                .append("svg")
-                .attr("width", availableWidth)
-                .attr("height", availableHeight)
-                .attr("role", "img")
-                .attr("aria-label", "Bar chart showing number of diseases per risk factor")
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
-
-            // X scale: factor names (categorical)
-            const x = d3.scaleBand()
-                .range([0, width])
-                .domain(chartData.map(d => d.factor))
-                .padding(0.2);
-
-            // Y scale: linear count scale from 0 to max count
-            const y = d3.scaleLinear()
-                .range([height, 0])
-                .domain([0, d3.max(chartData, d => d.count)]);
-
-            // Add bars
-            svg.selectAll(".bar")
-                .data(chartData)
-                .join("rect")
-                .attr("class", "bar")
-                .attr("x", d => x(d.factor))
-                .attr("y", d => y(d.count))
-                .attr("width", x.bandwidth())
-                .attr("height", d => Math.max(0, height - y(d.count))) // height must be non-negative
-                .attr("fill", "#FF69B4")
-                .on("click", function(event, d) {
-                    // On click: clear active class from all bars, set on clicked bar
-                    svg.selectAll(".bar").classed("active", false);
-                    d3.select(this).classed("active", true);
-
-                    // Display the associated diseases in the right panel
-                    displayDiseases(d.factor);
-
-                    // Scroll the panel into view if it's not fully visible (helpful on small screens)
-                    const panel = document.getElementById("diseases-panel");
-                    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                })
-                // Tooltip text for accessibility and hover
-                .append("title")
-                .text(d => `${d.factor}: ${d.count} diseases`);
-
-            // Add X axis at the bottom of the chart area
-            const xAxis = svg.append("g")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x));
-
-            // Rotate the x-axis labels so long factor names fit better
-            xAxis.selectAll("text")
-                .attr("transform", "rotate(-45)")
-                .style("text-anchor", "end")
-                .style("fill", "#000000");
-
-            // Add Y axis on the left
-            const yAxis = svg.append("g")
-                .call(d3.axisLeft(y).ticks(10));
-
-            yAxis.selectAll("text")
-                .style("fill", "#000000");
-
-            // Add Y axis label (rotated)
-            svg.append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
-                .attr("x", 0 - (height / 2))
-                .attr("dy", "1em")
-                .style("text-anchor", "middle")
-                .style("fill", "#000000")
-                .text("Number of Diseases");
-
-            // Add X axis label centered under the x-axis ticks
-            svg.append("text")
-                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
-                .style("text-anchor", "middle")
-                .style("fill", "#000000")
-                .text("Risk Factors");
-
-            // Style axis lines and ticks to ensure they are visible
-            svg.selectAll(".domain, .tick line")
-                .style("stroke", "#000000");
+        .title {
+            flex: 1;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
         }
 
-        /**
-         * init
-         * - Orchestrates data fetch, preparation and rendering.
-         * - Handles the empty-data case to inform the user.
-         */
-        async function init() {
-            // Fetch data from the SPARQL endpoint (Wikidata)
-            allData = await fetchData();
+        .header a {
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-            // If no data was returned, show a helpful message
-            if (allData.length === 0) {
-                console.warn("No data available to display");
-                const loadingEl = document.getElementById("loading-message");
-                loadingEl.textContent = "No data available";
-                loadingEl.classList.remove("hidden");
-                return;
+        /* Footer stays at the bottom */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--footer-height);
+            background-color: Lavender;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+
+        .footer_date {
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .footer_date p {
+            margin: 2px 0;
+        }
+
+        /* Main scrollable body - takes up all remaining space */
+        .body {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: var(--footer-height);
+            width: 100%;
+            overflow: auto;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+
+        /* Left side - chart container */
+        #chart-wrapper {
+            flex: 1;
+            min-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #loading-message {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            padding: 20px;
+        }
+
+        /* Chart container - allow it to expand */
+        #barchart-container {
+            flex: 1;
+            min-height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Right side - diseases panel */
+        #diseases-panel {
+            flex: 0 0 350px;
+            background-color: white;
+            border: 2px solid #FF69B4;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        #diseases-panel.active {
+            display: block;
+        }
+
+        .diseases-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF69B4;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #FF69B4;
+            padding-bottom: 10px;
+        }
+
+        .diseases-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .disease-item {
+            background-color: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #FF69B4;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Bar styling */
+        .bar {
+            transition: opacity 0.3s, fill 0.3s;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            filter: brightness(1.1);
+        }
+
+        .bar.active {
+            fill: #FF1493 !important;
+            filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.5));
+        }
+
+        /* Axis styling */
+        .axis text {
+            fill: #000000;
+            font-size: 12px;
+        }
+
+        .axis line, .axis path {
+            stroke: #ccc;
+        }
+
+        /* Scrollbar styling */
+        .body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .body::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .body::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        @media (max-width: 1200px) {
+            .body {
+                flex-direction: column;
             }
 
-            // Log raw data for debugging purposes (developer console)
-            console.log("Raw Data:", allData);
-
-            // Prepare the chart data (group by factor and count unique diseases)
-            const chartData = prepareChartData(allData);
-            console.log("Chart Data:", chartData);
-
-            // Draw the chart
-            drawChart(chartData);
-
-            // Optional: make the chart responsive to window resize so axis labels remain visible
-            // Debounce the resize handler to avoid excessive redraws.
-            let resizeTimeout;
-            window.addEventListener("resize", () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    // Re-draw using the same chart data and container dimensions
-                    drawChart(chartData);
-                }, 200);
-            });
+            #diseases-panel {
+                flex: 0 0 auto;
+                min-height: 250px;
+                max-height: 300px;
+            }
         }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div><a href="BarCharts.html">← Back</a></div>
+        <h1 class="title">Diseases per Risk Factor</h1>
+        <div style="width: 60px;"></div>
+    </div>
 
-        // Kick off the visualization when the page loads
-        init();
+    <!-- Main content area -->
+    <div class="body">
+        <!-- Left: Chart section -->
+        <div id="chart-wrapper">
+            <div id="loading-message">Loading data...</div>
+            <div id="barchart-container"></div>
+        </div>
+
+        <!-- Right: Diseases panel -->
+        <div id="diseases-panel" aria-hidden="true">
+            <div class="diseases-title" id="selected-factor"></div>
+            <ul class="diseases-list" id="diseases-list"></ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
+        <div class="title"><a href="AboutUs.html">About Us</a></div>
+        <small class="footer_date">
+            <p>created: 31/10/2025</p>
+            <p>last updated: 07/11/2025</p>
+        </small>
+    </div>
+
+    <script src="BarFactors.js"></script>
+</body>
+</html>
