@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--
-        BarFactors.html
-        Visualization: Diseases per Risk Factor (bar chart)
-        - Added inline comments throughout (HTML/CSS/JS) as requested.
-        - Adjusted layout using CSS variables and viewport-based heights so the x-axis labels are always rendered inside the scrolling body (and do not get cut by the fixed footer).
-        - Chart sizing is now computed from the container size so bars and rotated labels stay visible above the footer.
-    -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disease Risk Factors Visualization</title>
@@ -16,193 +9,243 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
     <style>
-        /* 
-            Use CSS variables for header/footer heights so we can reliably
-            compute body height relative to them and avoid the x-axis being
-            cut by the footer (which is fixed).
-        */
-        :root {
-            --header-height: 15vh; /* header height (viewport-based) */
-            --footer-height: 15vh; /* footer height (viewport-based) */
-            --body-padding: 2rem;  /* internal padding for the scrolling body */
+        /* Reset default margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Header and footer are fixed to the top and bottom respectively */
-        .header, .footer {
-            position: fixed;
-            left: 0;
+        :root {
+            --header-height: 80px;
+            --footer-height: 80px;
+        }
+
+        html, body {
             width: 100%;
-            height: var(--header-height); /* consistent, viewport-based height */
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Header stays at the top */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
             background-color: Lavender;
             color: black;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-sizing: border-box;
-        }
-        
-        /* Header stays at the top */
-        .header {
-            top: 0;
-            padding: 0 15%;
+            padding: 0 20px;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Footer stays at the bottom and uses the footer variable */
-        .footer {
-            bottom: 0;
-            padding: 0 2%;
-            height: var(--footer-height); /* explicitly set using the variable */
-            box-sizing: border-box;
-        }
-
-        /*
-            The body is positioned between header and footer.
-            We use a calc(100vh - header - footer) so it always fits in the remaining viewport
-            and its content (including SVG axes) cannot be hidden behind the footer.
-        */
-        .body {
-            position: fixed;
-            top: var(--header-height); /* start after the header */
-            left: 0;
-            width: 100%;
-            height: calc(100vh - var(--header-height) - var(--footer-height)); /* remaining space */
-            color: black;
-            padding: var(--body-padding);
-            overflow: auto; /* allow scrolling if chart is taller than the available space */
-            display: flex;
-            gap: 2rem;
-            box-sizing: border-box;
-        }
-
-        /* Title in the header centered horizontally */
         .title {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            margin: 0;
+            flex: 1;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header a {
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Footer stays at the bottom */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--footer-height);
+            background-color: Lavender;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
         }
 
         .footer_date {
+            font-size: 12px;
             text-align: right;
         }
 
-        /* Loading message shown while SPARQL query runs */
+        .footer_date p {
+            margin: 2px 0;
+        }
+
+        /* Main scrollable body - takes up all remaining space */
+        .body {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            bottom: var(--footer-height);
+            width: 100%;
+            overflow: auto;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+
+        /* Left side - chart container */
+        #chart-wrapper {
+            flex: 1;
+            min-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         #loading-message {
             text-align: center;
-            font-size: 18px;
-            color: #333;
-            margin: 20px 0;
+            font-size: 16px;
+            color: #666;
+            padding: 20px;
         }
 
-        /*
-            barchart-container: holds the SVG.
-            Ensure it doesn't shrink too small with a min-width.
-            Add bottom padding to give visual breathing room within the scrolling body.
-        */
+        /* Chart container - allow it to expand */
         #barchart-container {
             flex: 1;
-            min-width: 500px;
-            padding-bottom: 1rem; /* spacing between SVG and container bottom */
-            box-sizing: border-box;
+            min-height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /*
-            Right-side panel for listing diseases associated with a chosen factor.
-            Initially hidden and revealed when a bar is clicked.
-        */
+        /* Right side - diseases panel */
         #diseases-panel {
-            flex: 0 0 400px;
-            background-color: #f5f5f5;
+            flex: 0 0 350px;
+            background-color: white;
             border: 2px solid #FF69B4;
             border-radius: 8px;
             padding: 20px;
             overflow-y: auto;
-            display: none; /* hidden by default */
+            display: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        
-        /* When active, the panel is shown */
+
         #diseases-panel.active {
             display: block;
         }
-        
+
         .diseases-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #FF69B4;
             margin-bottom: 15px;
+            border-bottom: 2px solid #FF69B4;
+            padding-bottom: 10px;
         }
-        
+
         .diseases-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        
+
         .disease-item {
-            background-color: white;
-            padding: 10px 12px;
+            background-color: #f9f9f9;
+            padding: 12px;
             margin-bottom: 8px;
             border-left: 4px solid #FF69B4;
             border-radius: 4px;
             font-size: 14px;
+            line-height: 1.4;
         }
-        
-        .hidden {
-            display: none;
-        }
-        
-        /* Styling for bars, transitions and hover state */
+
+        /* Bar styling */
         .bar {
             transition: opacity 0.3s, fill 0.3s;
             cursor: pointer;
         }
-        
+
         .bar:hover {
             opacity: 0.8;
-        }
-        
-        .bar.active {
-            fill: #FF1493 !important; /* highlight color for active bar */
+            filter: brightness(1.1);
         }
 
-        /*
-            Make sure axis labels and lines are legible against the background.
-            All axis text is enforced to use black fill in the script below as well,
-            but we add a CSS fallback here.
-        */
+        .bar.active {
+            fill: #FF1493 !important;
+            filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.5));
+        }
+
+        /* Axis styling */
         .axis text {
             fill: #000000;
+            font-size: 12px;
+        }
+
+        .axis line, .axis path {
+            stroke: #ccc;
+        }
+
+        /* Scrollbar styling */
+        .body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .body::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .body::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        @media (max-width: 1200px) {
+            .body {
+                flex-direction: column;
+            }
+
+            #diseases-panel {
+                flex: 0 0 auto;
+                min-height: 250px;
+                max-height: 300px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header with a back link and centered title -->
+    <!-- Header -->
     <div class="header">
-        <div><a href="BarCharts.html">Back</a></div>
+        <div><a href="BarCharts.html">← Back</a></div>
         <h1 class="title">Diseases per Risk Factor</h1>
-        <div></div>
+        <div style="width: 60px;"></div>
     </div>
-    
-    <!--
-        Main content area (scrollable).
-        Left: chart (takes remaining flex space).
-        Right: optional panel listing diseases when a bar is clicked.
-    -->
+
+    <!-- Main content area -->
     <div class="body">
-        <div style="flex: 1;">
-            <!-- Loading text appears while data is being fetched -->
+        <!-- Left: Chart section -->
+        <div id="chart-wrapper">
             <div id="loading-message">Loading data...</div>
-            <!-- Container where the chart SVG will be appended by D3 -->
             <div id="barchart-container"></div>
         </div>
-        <!-- Panel that lists diseases for the selected factor -->
+
+        <!-- Right: Diseases panel -->
         <div id="diseases-panel" aria-hidden="true">
             <div class="diseases-title" id="selected-factor"></div>
             <ul class="diseases-list" id="diseases-list"></ul>
         </div>
     </div>
-    
-    <!-- Footer with logo, about link and dates -->
+
+    <!-- Footer -->
     <div class="footer">
         <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
         <div class="title"><a href="AboutUs.html">About Us</a></div>
@@ -212,6 +255,6 @@
         </small>
     </div>
 
-    <script src = "BarFactors.js"></script>
+    <script src="BarFactors.js"></script>
 </body>
 </html>
