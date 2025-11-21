@@ -211,14 +211,17 @@
             return uniqueDiseases.sort();
         }
 
-        // Function to display diseases in panel
+        // Function to display diseases in panel (now includes the count in the title)
         function displayDiseases(factorName) {
             const diseases = getDiseasesByFactor(factorName);
             const panel = document.getElementById("diseases-panel");
             const titleEl = document.getElementById("selected-factor");
             const listEl = document.getElementById("diseases-list");
 
-            titleEl.textContent = factorName;
+            const count = diseases.length;
+            // Show factor name and the number of linked diseases (with correct pluralization)
+            titleEl.textContent = `${factorName} (${count} ${count === 1 ? 'disease' : 'diseases'})`;
+
             listEl.innerHTML = "";
 
             diseases.forEach(disease => {
@@ -272,7 +275,7 @@
                     svg.selectAll(".bar").classed("active", false);
                     // Add active class to clicked bar
                     d3.select(this).classed("active", true);
-                    // Display diseases
+                    // Display diseases and count
                     displayDiseases(d.factor);
                 })
                 .append("title")
