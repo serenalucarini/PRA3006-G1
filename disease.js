@@ -1,9 +1,8 @@
 // Get disease name from URL
 const params = new URLSearchParams(window.location.search);
-const diseaseName = params.get("name");
-
-// Set title on the page
-document.getElementById("title").textContent = diseaseName;
+const diseaseName = params.get("name")|| "Unknown disease";
+const titleEl = document.getElementById("title");
+if (titleEl) titleEl.textContent = diseaseName;
 
 // SPARQL Queries
 async function fetchSymptoms(diseaseName) {
@@ -68,6 +67,19 @@ const linkGroup = zoomGroup.append("g");
 const nodeGroup = zoomGroup.append("g");
 const labelGroup = zoomGroup.append("g");
 
+// tooltip for children
+const tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px 10px")
+    .style("border-radius", "10px")
+    .style("box-shadow", "0 4px 12px rgba(0,0,0,0.2)")
+    .style("background", "white")
+    .style("font-size", "13px")
+    .style("pointer-events", "none")
+    .style("opacity", 0)
+    .style("transition", "opacity 0.15s ease-out");
+
 let link = linkGroup.selectAll("line");
 let node = nodeGroup.selectAll("circle");
 let label = labelGroup.selectAll("text");
@@ -83,8 +95,25 @@ svg.call(zoom);
 const sim = d3.forceSimulation(nodes)
     .force("link", d3.forceLink(links).id(d => d.name).distance(200))
     .force("charge", d3.forceManyBody().strength(-400))
-    .force("center", d3.forceCenter(width / 2, height / 2));
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collide", d3.forceCollide(35));
 
+// Visual Help
+function nodeRadius(d) {
+    if (d.type === "disease") return 45;   // big center
+    if (d.type === "symptoms" || d.type === "risk") return 35; // category
+    return 22; // children
+    
+function nodeColor(d) {
+    if (d.type === "disease") return "#7393B3";          // steel-ish blue
+    if (d.type === "symptoms") return "#00008B";         // dark blue
+    if (d.type === "risk") return "#5D3FD3";             // purple
+    if (d.type === "symptomDetail") return "#CCCCFF";    // light lavender
+    if (d.type === "riskDetail") return "#008080";       // teal
+    if (d.type === "noSymptoms" || d.type === "noRisks") return "#bfbfbf"; // grey
+    return "gray";
+}
+    
 // Drag behaviour for nodes
 const drag = d3.drag()
     .on("start", (event, d) => {
@@ -104,10 +133,8 @@ const drag = d3.drag()
 
 // Functions to expand graph
 function collapseChildren(parentLabel) {
-
     // get all children for removal
     const children = nodes.filter(n => n.parent === parentLabel);
-
     // remove child nodes safely
     children.forEach(child => {
         const index = nodes.indexOf(child);
@@ -187,48 +214,108 @@ async function toggleRiskFactors() {
     restartSimulation();
 }
 
-// Re-render everything after expanding
+// Re-render everything after expanding (smooth animations)
 
 function restartSimulation() {
 
-    // Update links
+    // update links
     link = linkGroup.selectAll("line")
         .data(links)
-        .join("line")
-        .attr("stroke", "#aaa");
+        .join(
+            enter => enter.append("line")
+                .attr("stroke", "#ccc")
+                .attr("stroke-opacity", 0)
+                .call(enter => enter.transition().duration(300)
+                    .attr("stroke-opacity", 1)),
+            update => update,
+            exit => exit.transition().duration(250)
+                .attr("stroke-opacity", 0)
+                .remove()
+        );
 
-    // Update nodes
+    // update nodes
     node = nodeGroup.selectAll("circle")
         .data(nodes, d => d.name)
-        .join("circle")
-        .attr("r", 22)
-        .attr("fill", d => {
-            if (d.type === "disease") return "#7393B3";
-            if (d.type === "symptoms") return "#00008B";
-            if (d.type === "risk") return "#5D3FD3";
-            if (d.type === "symptomDetail") return "#CCCCFF";
-            if (d.type === "riskDetail") return "#008080";
-            return "gray";
-        })
-        .style("cursor", d =>
-            d.type === "symptoms" || d.type === "risk" ? "pointer" : "default"
-        )
-        .on("click", (event, d) => {
-            if (d.type === "symptoms") toggleSymptoms();
-            if (d.type === "risk") toggleRiskFactors();
-        })
-        .call(drag);
+        .join(
+            enter => {
+                const c = enter.append("circle")
+                    .attr("r", 0)
+                    .attr("fill", d => nodeColor(d))
+                    .style("opacity", 0)
+                    .style("cursor", d =>
+                        d.type === "symptoms" || d.type === "risk"
+                            ? "pointer"
+                            : "default"
+                    )
+                    .on("click", (event, d) => {
+                        if (d.type === "symptoms") toggleSymptoms();
+                        if (d.type === "risk") toggleRiskFactors();
+                    })
+                    .on("mouseover", (event, d) => {
+                        // show tooltip only for children & no-data nodes
+                        if (
+                            d.type === "symptomDetail" ||
+                            d.type === "riskDetail" ||
+                            d.type === "noSymptoms" ||
+                            d.type === "noRisks"
+                        ) {
+                            tooltip
+                                .style("opacity", 1)
+                                .html(d.name);
+                        }
+                    })
+                    .on("mousemove", (event) => {
+                        tooltip
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 10) + "px");
+                    })
+                    .on("mouseout", () => {
+                        tooltip.style("opacity", 0);
+                    })
+                    .call(drag);
 
-    // Update labels
+                c.transition()
+                    .duration(400)
+                    .attr("r", d => nodeRadius(d))
+                    .style("opacity", 1);
+
+                return c;
+            },
+            update => update.transition()
+                .duration(300)
+                .attr("fill", d => nodeColor(d))
+                .attr("r", d => nodeRadius(d)),
+            exit => exit.transition()
+                .duration(250)
+                .attr("r", 0)
+                .style("opacity", 0)
+                .remove()
+        );
+
+    // labels ONLY for main + category nodes
+    const labelData = nodes.filter(d =>
+        d.type === "disease" || d.type === "symptoms" || d.type === "risk"
+    );
+
     label = labelGroup.selectAll("text")
-        .data(nodes)
-        .join("text")
-        .text(d => d.name)
-        .attr("font-size", "13px")
-        .attr("text-anchor", "middle")
-        .attr("dy", 4);
+        .data(labelData, d => d.name)
+        .join(
+            enter => enter.append("text")
+                .text(d => d.name)
+                .attr("font-size", d => d.type === "disease" ? "18px" : "14px")
+                .attr("font-weight", d => d.type === "disease" ? "bold" : "normal")
+                .attr("text-anchor", "middle")
+                .attr("dy", 5)
+                .style("opacity", 0)
+                .transition().duration(400)
+                .style("opacity", 1),
+            update => update,
+            exit => exit.transition().duration(250)
+                .style("opacity", 0)
+                .remove()
+        );
 
-    // Restart simulation
+    // restart simulation with new data
     sim.nodes(nodes);
     sim.force("link").links(links);
     sim.alpha(1).restart();
