@@ -41,13 +41,13 @@ async function fetchRiskFactors(diseaseName) {
 }
 
 // Create base nodes
-const nodes = [
+let nodes = [
     { name: diseaseName, type: "disease" },
     { name: "Symptoms", type: "symptoms" },
     { name: "Risk Factors", type: "risk" }
 ];
 
-const links = [
+let links = [
     { source: diseaseName, target: "Symptoms" },
     { source: diseaseName, target: "Risk Factors" }
 ];
