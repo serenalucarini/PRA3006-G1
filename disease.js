@@ -13,16 +13,13 @@ async function fetchSymptoms(diseaseName) {
       ?disease wdt:P780 ?symptom.
       SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
     }`;
-
     const res = await fetch(
         "https://query.wikidata.org/sparql?query=" + encodeURIComponent(query),
         { headers: { "Accept": "application/sparql-results+json" } }
     );
-
     const data = await res.json();
     return data.results.bindings.map(b => b.symptomLabel.value);
 }
-
 async function fetchRiskFactors(diseaseName) {
     const query = `
     SELECT ?factorLabel WHERE {
@@ -30,12 +27,10 @@ async function fetchRiskFactors(diseaseName) {
       ?disease wdt:P5642 ?factor.
       SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
     }`;
-
     const res = await fetch(
         "https://query.wikidata.org/sparql?query=" + encodeURIComponent(query),
         { headers: { "Accept": "application/sparql-results+json" } }
     );
-
     const data = await res.json();
     return data.results.bindings.map(b => b.factorLabel.value);
 }
@@ -257,4 +252,3 @@ sim.on("tick", () => {
         .attr("x", d => d.x)
         .attr("y", d => d.y - 28);
 });
-
