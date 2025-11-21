@@ -1,16 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--
+        BarFactors.html
+        Visualization: Diseases per Risk Factor (bar chart)
+        - Added inline comments throughout (HTML/CSS/JS) as requested.
+        - Adjusted layout using CSS variables and viewport-based heights so the x-axis labels are always rendered inside the scrolling body (and do not get cut by the fixed footer).
+        - Chart sizing is now computed from the container size so bars and rotated labels stay visible above the footer.
+    -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disease Risk Factors Visualization</title>
+
+    <!-- D3 library for drawing the bar chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
     <style>
+        /* 
+            Use CSS variables for header/footer heights so we can reliably
+            compute body height relative to them and avoid the x-axis being
+            cut by the footer (which is fixed).
+        */
+        :root {
+            --header-height: 15vh; /* header height (viewport-based) */
+            --footer-height: 15vh; /* footer height (viewport-based) */
+            --body-padding: 2rem;  /* internal padding for the scrolling body */
+        }
+
+        /* Header and footer are fixed to the top and bottom respectively */
         .header, .footer {
             position: fixed;
             left: 0;
             width: 100%;
-            height: 15%;
+            height: var(--header-height); /* consistent, viewport-based height */
             background-color: Lavender;
             color: black;
             display: flex;
@@ -19,52 +41,75 @@
             box-sizing: border-box;
         }
         
+        /* Header stays at the top */
         .header {
             top: 0;
             padding: 0 15%;
         }
-        
+
+        /* Footer stays at the bottom and uses the footer variable */
         .footer {
             bottom: 0;
             padding: 0 2%;
+            height: var(--footer-height); /* explicitly set using the variable */
+            box-sizing: border-box;
         }
-        
+
+        /*
+            The body is positioned between header and footer.
+            We use a calc(100vh - header - footer) so it always fits in the remaining viewport
+            and its content (including SVG axes) cannot be hidden behind the footer.
+        */
         .body {
             position: fixed;
-            top: 15%;
+            top: var(--header-height); /* start after the header */
             left: 0;
             width: 100%;
-            height: 70%;
+            height: calc(100vh - var(--header-height) - var(--footer-height)); /* remaining space */
             color: black;
-            padding: 2rem;
-            overflow: auto;
+            padding: var(--body-padding);
+            overflow: auto; /* allow scrolling if chart is taller than the available space */
             display: flex;
             gap: 2rem;
+            box-sizing: border-box;
         }
-        
+
+        /* Title in the header centered horizontally */
         .title {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
             margin: 0;
         }
-        
+
         .footer_date {
             text-align: right;
         }
-        
+
+        /* Loading message shown while SPARQL query runs */
         #loading-message {
             text-align: center;
             font-size: 18px;
             color: #333;
             margin: 20px 0;
         }
-        
+
+        /*
+            barchart-container: holds the SVG.
+            Ensure it doesn't shrink too small with a min-width.
+            Add bottom padding to give visual breathing room within the scrolling body.
+        */
         #barchart-container {
             flex: 1;
             min-width: 500px;
+            padding-bottom: 1rem; /* spacing between SVG and container bottom */
+            box-sizing: border-box;
         }
-        
+
+        /*
+            Right-side panel for listing diseases associated with a chosen factor.
+            Initially hidden and revealed when a bar is clicked.
+        */
         #diseases-panel {
             flex: 0 0 400px;
             background-color: #f5f5f5;
@@ -72,9 +117,10 @@
             border-radius: 8px;
             padding: 20px;
             overflow-y: auto;
-            display: none;
+            display: none; /* hidden by default */
         }
         
+        /* When active, the panel is shown */
         #diseases-panel.active {
             display: block;
         }
@@ -105,6 +151,7 @@
             display: none;
         }
         
+        /* Styling for bars, transitions and hover state */
         .bar {
             transition: opacity 0.3s, fill 0.3s;
             cursor: pointer;
@@ -115,28 +162,47 @@
         }
         
         .bar.active {
-            fill: #FF1493 !important;
+            fill: #FF1493 !important; /* highlight color for active bar */
+        }
+
+        /*
+            Make sure axis labels and lines are legible against the background.
+            All axis text is enforced to use black fill in the script below as well,
+            but we add a CSS fallback here.
+        */
+        .axis text {
+            fill: #000000;
         }
     </style>
 </head>
 <body>
+    <!-- Header with a back link and centered title -->
     <div class="header">
         <div><a href="BarCharts.html">Back</a></div>
         <h1 class="title">Diseases per Risk Factor</h1>
         <div></div>
     </div>
     
+    <!--
+        Main content area (scrollable).
+        Left: chart (takes remaining flex space).
+        Right: optional panel listing diseases when a bar is clicked.
+    -->
     <div class="body">
         <div style="flex: 1;">
+            <!-- Loading text appears while data is being fetched -->
             <div id="loading-message">Loading data...</div>
+            <!-- Container where the chart SVG will be appended by D3 -->
             <div id="barchart-container"></div>
         </div>
-        <div id="diseases-panel">
+        <!-- Panel that lists diseases for the selected factor -->
+        <div id="diseases-panel" aria-hidden="true">
             <div class="diseases-title" id="selected-factor"></div>
             <ul class="diseases-list" id="diseases-list"></ul>
         </div>
     </div>
     
+    <!-- Footer with logo, about link and dates -->
     <div class="footer">
         <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
         <div class="title"><a href="AboutUs.html">About Us</a></div>
@@ -146,196 +212,6 @@
         </small>
     </div>
 
-    <script>
-        // Define the SPARQL endpoint
-        const sparqlEndpoint = "https://query.wikidata.org/sparql";
-        let allData = []; // Store all data globally
-
-        // Function to fetch data from SPARQL endpoint
-        async function fetchData() {
-            const loadingMessage = document.getElementById("loading-message");
-            loadingMessage.classList.remove("hidden");
-
-            const sparqlQuery = `
-            SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
-            WHERE {
-              ?disease wdt:P5642 wd:Q662860.
-              ?disease wdt:P5642 ?factor .
-              ?disease wdt:P780 ?symptoms.
-              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
-            }`;
-
-            try {
-                const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
-                    headers: { Accept: "application/json" },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                }
-
-                const json = await response.json();
-                return json.results.bindings.map((row) => ({
-                    disease: row.disease.value,
-                    diseaseLabel: row.diseaseLabel.value,
-                    factor: row.factor.value,
-                    factorLabel: row.factorLabel.value,
-                }));
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                return [];
-            } finally {
-                loadingMessage.classList.add("hidden");
-            }
-        }
-
-        // Function to prepare data for bar chart
-        function prepareChartData(data) {
-            // Group by risk factor and count unique diseases
-            const groupedByFactor = d3.group(data, (d) => d.factorLabel);
-            
-            return Array.from(groupedByFactor, ([factor, values]) => {
-                // Count unique diseases for this risk factor
-                const uniqueDiseases = new Set(values.map(v => v.disease));
-                return {
-                    factor: factor,
-                    count: uniqueDiseases.size
-                };
-            }).sort((a, b) => b.count - a.count); // Sort by count descending
-        }
-
-        // Function to get diseases by risk factor
-        function getDiseasesByFactor(factorName) {
-            const factorData = allData.filter(d => d.factorLabel === factorName);
-            const uniqueDiseases = [...new Set(factorData.map(d => d.diseaseLabel))];
-            return uniqueDiseases.sort();
-        }
-
-        // Function to display diseases in panel (now includes the count in the title)
-        function displayDiseases(factorName) {
-            const diseases = getDiseasesByFactor(factorName);
-            const panel = document.getElementById("diseases-panel");
-            const titleEl = document.getElementById("selected-factor");
-            const listEl = document.getElementById("diseases-list");
-
-            const count = diseases.length;
-            // Show factor name and the number of linked diseases (with correct pluralization)
-            titleEl.textContent = `${factorName} (${count} ${count === 1 ? 'disease' : 'diseases'})`;
-
-            listEl.innerHTML = "";
-
-            diseases.forEach(disease => {
-                const li = document.createElement("li");
-                li.className = "disease-item";
-                li.textContent = disease;
-                listEl.appendChild(li);
-            });
-
-            panel.classList.add("active");
-        }
-
-        // Function to draw the bar chart
-        function drawChart(chartData) {
-            // Set dimensions and margins
-            const margin = { top: 20, right: 30, bottom: 150, left: 60 };
-            const width = 1000 - margin.left - margin.right;
-            const height = 600 - margin.top - margin.bottom;
-
-            // Create SVG container
-            const svg = d3
-                .select("#barchart-container")
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
-
-            // Define scales
-            const x = d3.scaleBand()
-                .range([0, width])
-                .domain(chartData.map(d => d.factor))
-                .padding(0.2);
-
-            const y = d3.scaleLinear()
-                .range([height, 0])
-                .domain([0, d3.max(chartData, d => d.count)]);
-
-            // Add bars with click interaction
-            svg.selectAll(".bar")
-                .data(chartData)
-                .join("rect")
-                .attr("class", "bar")
-                .attr("x", d => x(d.factor))
-                .attr("y", d => y(d.count))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.count))
-                .attr("fill", "#FF69B4")
-                .on("click", function(event, d) {
-                    // Remove active class from all bars
-                    svg.selectAll(".bar").classed("active", false);
-                    // Add active class to clicked bar
-                    d3.select(this).classed("active", true);
-                    // Display diseases and count
-                    displayDiseases(d.factor);
-                })
-                .append("title")
-                .text(d => `${d.factor}: ${d.count} diseases`);
-
-            // Add X axis
-            svg.append("g")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x))
-                .selectAll("text")
-                .attr("transform", "rotate(-45)")
-                .style("text-anchor", "end")
-                .style("fill", "#000000");
-
-            // Add Y axis
-            svg.append("g")
-                .call(d3.axisLeft(y).ticks(10))
-                .selectAll("text")
-                .style("fill", "#000000");
-
-            // Add Y axis label
-            svg.append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
-                .attr("x", 0 - (height / 2))
-                .attr("dy", "1em")
-                .style("text-anchor", "middle")
-                .style("fill", "#000000")
-                .text("Number of Diseases");
-
-            // Add X axis label
-            svg.append("text")
-                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
-                .style("text-anchor", "middle")
-                .style("fill", "#000000")
-                .text("Risk Factors");
-
-            // Style axis lines
-            svg.selectAll(".domain, .tick line")
-                .style("stroke", "#000000");
-        }
-
-        // Initialize the visualization
-        async function init() {
-            allData = await fetchData();
-            if (allData.length === 0) {
-                console.warn("No data available to display");
-                document.getElementById("loading-message").textContent = "No data available";
-                document.getElementById("loading-message").classList.remove("hidden");
-                return;
-            }
-
-            console.log("Raw Data:", allData);
-            const chartData = prepareChartData(allData);
-            console.log("Chart Data:", chartData);
-            drawChart(chartData);
-        }
-
-        // Start the visualization
-        init();
-    </script>
+    <script src = "BarFactors.js"></script>
 </body>
 </html>
