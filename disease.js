@@ -140,9 +140,9 @@ function collapseChildren(parentLabel) {
 
     // remove links involving those children
     nodes = nodes.filter(n => n.parent !== parentLabel);
-    links = links.filter(1 => {
-        const s = typeof 1.source === "string" ? 1.source : 1.source.name;
-        const t = typeof 1.target === "string" ? 1.target : 1.target.name;
+    links = links.filter(l => {
+        const s = typeof l.source === "string" ? l.source : l.source.name;
+        const t = typeof l.target === "string" ? l.target : l.target.name;
         return !childNames.includes(s) && !childNames.includes(t);
     });
 }
