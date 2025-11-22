@@ -333,9 +333,15 @@ sim.on("tick", () => {
         .attr("y2", d => d.target.y);
 
     node
-        .attr("cx", d => d.x = Math.max(50, Math.min(width - 50, d.x)))
-        .attr("cy", d => d.y = Math.max(50, Math.min(height - 50, d.y)));
-
+        .attr("cx", d => {
+            d.x = Math.max(nodeRadius(d) + 10, Math.min(width - nodeRadius(d) - 10, d.x));
+            return d.x;
+        })
+        .attr("cy", d => {
+            d.y = Math.max(nodeRadius(d) + 10, Math.min(height - nodeRadius(d) - 10, d.y));
+            return d.y;
+        });
+        
     label
         .attr("x", d => d.x)
         .attr("y", d => d.y - 28);
