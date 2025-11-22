@@ -103,7 +103,8 @@ function nodeRadius(d) {
     if (d.type === "disease") return 45;   // big center
     if (d.type === "symptoms" || d.type === "risk") return 35; // category
     return 22; // children
-    
+}
+
 function nodeColor(d) {
     if (d.type === "disease") return "#7393B3";          // steel-ish blue
     if (d.type === "symptoms") return "#00008B";         // dark blue
