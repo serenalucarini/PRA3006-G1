@@ -386,10 +386,9 @@
 
             // SPARQL query: retrieves diseases, their classification factors, and symptoms
             const sparqlQuery = `
-            SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
+            SELECT ?disease ?diseaseLabel ?symptoms ?symptomsLabel
             WHERE {
               ?disease wdt:P5642 wd:Q662860.
-              ?disease wdt:P5642 ?factor .
               ?disease wdt:P780 ?symptoms.
               SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
             }`;
@@ -459,7 +458,7 @@
         function displaySymptoms(diseaseName) {
             // Get all symptoms for this disease
             const symptoms = getSymptomsByDisease(diseaseName);
-            const panel = document.getElementById("diseases-panel");
+            const panel = document.getElementById("symptoms-panel");
             const titleEl = document.getElementById("selected-disease");
             const listEl = document.getElementById("diseases-list");
 
@@ -473,7 +472,7 @@
             // Create a list item for each symptom
             symptoms.forEach(symptom => {
                 const li = document.createElement("li");
-                li.className = "disease-item";
+                li.className = "symptom-item";
                 li.textContent = symptom;
                 listEl.appendChild(li);
             });
@@ -487,7 +486,7 @@
          * Hides the symptoms panel and clears the selected disease
          */
         function hideSymptoms() {
-            const panel = document.getElementById("diseases-panel");
+            const panel = document.getElementById("symptoms-panel");
             panel.classList.remove("active");
             panel.setAttribute("aria-hidden", "true");
             selectedDisease = null;
@@ -550,7 +549,7 @@
                 .attr("y", d => y(d.count))
                 .attr("width", x.bandwidth())
                 .attr("height", d => Math.max(0, height - y(d.count)))
-                .attr("fill", "#FF69B4")
+                .attr("fill", "#E5E1DA")
                 // Click handler: toggle disease selection on/off
                 .on("click", function(event, d) {
                     // If clicking the same bar, deselect it; otherwise select new bar
@@ -564,7 +563,7 @@
                         selectedDisease = d.disease;
                         displaySymptoms(d.disease);
                         // Scroll panel into view smoothly
-                        const panel = document.getElementById("diseases-panel");
+                        const panel = document.getElementById("symptoms-panel");
                         if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
                     }
                 })
