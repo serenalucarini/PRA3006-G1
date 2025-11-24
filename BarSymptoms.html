@@ -452,7 +452,7 @@
             // Convert grouped data into array format with disease name and symptom count
             return Array.from(groupedByDisease, ([disease, values]) => {
                 // Create a Set to count only unique symptoms (removes duplicates)
-                const uniqueSymptoms = new Set(values.map(v => v.symptoms));
+                const uniqueSymptoms = new Set(values.map(v => v.symptomsLabel));
                 return {
                     disease: disease,
                     count: uniqueSymptoms.size
