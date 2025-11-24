@@ -124,6 +124,8 @@ async function draw() { // main function to draw the pie chart
     });
 
     statusEl.textContent = ''; // clears the status message
+    document.getElementById('loading-message').classList.add('hidden'); // REPLACE: Hide the loading message
+
 
     } catch (err) { // catches any error that may occurs during the process
     console.error(err); // log the error to the console for debugging
