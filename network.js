@@ -70,7 +70,7 @@ async function initializeNetwork() {
     const height = window.innerHeight - headerHeight - footerHeight;
 
     // add nodes
-    const svg = d3.select("#circle")
+    const svg = d3.select("#barchart-container")
         .append("svg")
         .attr("width", width)
         .attr("height", height)
