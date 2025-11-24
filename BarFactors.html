@@ -23,60 +23,106 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+            background-color: #FBF9F1;
         }
 
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background-color: Lavender;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 15%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2rem;
+          box-sizing: border-box;
+          z-index: 10;
+        }
+        .header-left,
+        .header-center,
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .header-left { flex: 1; justify-content: flex-start; }
+        .header-center { flex: 1; justify-content: center; }
+        .header-right { flex: 1; justify-content: flex-end; }
         }
 
         .title {
-            flex: 1;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
+          margin: 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+          text-align: center;
+        }
         }
 
-        .header a {
-            color: black;
-            text-decoration: none;
-            font-weight: bold;
+        /* Make anchor look like plain text while remaining clickable */
+        .nav-link {
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          font-size: 1rem;
+        }
+        .nav-link:focus {
+          outline: 2px solid rgba(0,0,0,0.15);
+          outline-offset: 2px;
         }
 
         .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--footer-height);
-            background-color: Lavender;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 100;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+          position: static;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          height: 20%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2%;
+          box-sizing: border-box;
+          z-index: 10;
         }
-
+        .footer > div {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          align-items: center;
+        }
+        .footer .title {
+          margin: 0;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-align: center;
+        }
+        .footer .title p {
+          margin: 0;
+        }    
+        .footer .nav-link {
+          font-size: 0.85rem;
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          pointer-events: auto;
+          display: inline-block;
+          position: relative;
+          z-index: 20;
+        }
+        .footer .nav-link:hover {
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+        }
+        .footer .nav-link.title {
+          font-size: 0.95rem;
+          font-weight: 600;
+        }
         .footer_date {
-            font-size: 12px;
-            text-align: right;
-        }
-
-        .footer_date p {
-            margin: 2px 0;
+          font-size: 0.85rem;
+          text-align: center;
         }
 
         .body {
