@@ -5,26 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bar chart: Diseases vs. Symptoms</title>
 
+    <!-- Load D3.js library from CDN for data visualization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
     <style>
+        /* Reset default browser margins and padding */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Define CSS custom properties (variables) for consistent sizing */
         :root {
             --header-height: 80px;
             --footer-height: 80px;
         }
 
+        /* Make html and body fill the full viewport without scrollbars */
         html, body {
             width: 100%;
             height: 100%;
             overflow: hidden;
         }
 
+        /* Style the fixed header at the top of the page */
         .header {
             position: fixed;
             top: 0;
@@ -41,6 +46,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        /* Center and style the page title */
         .title {
             flex: 1;
             text-align: center;
@@ -48,12 +54,14 @@
             font-weight: bold;
         }
 
+        /* Style header links */
         .header a {
             color: black;
             text-decoration: none;
             font-weight: bold;
         }
 
+        /* Style the fixed footer at the bottom of the page */
         .footer {
             position: fixed;
             bottom: 0;
@@ -70,6 +78,7 @@
             box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
         }
 
+        /* Style the date text in the footer */
         .footer_date {
             font-size: 12px;
             text-align: right;
@@ -79,6 +88,7 @@
             margin: 2px 0;
         }
 
+        /* Style the main content area between header and footer */
         .body {
             position: fixed;
             top: var(--header-height);
@@ -93,6 +103,7 @@
             background-color: #fafafa;
         }
 
+        /* Container for the chart - takes up most of the space */
         #chart-wrapper {
             flex: 1;
             min-width: 600px;
@@ -101,6 +112,7 @@
             gap: 10px;
         }
 
+        /* Loading message styling */
         #loading-message {
             padding: 20px;
             font-size: 16px;
@@ -109,6 +121,7 @@
             text-align: center;
         }
 
+        /* Container where the D3 bar chart will be drawn */
         #barchart-container {
             flex: 1;
             min-height: 400px;
@@ -119,6 +132,7 @@
             overflow: hidden;
         }
 
+        /* Side panel that shows symptoms for selected disease - hidden by default */
         #diseases-panel {
             flex: 0 0 350px;
             background-color: white;
@@ -130,10 +144,12 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
+        /* Show the panel when it has the active class */
         #diseases-panel.active {
             display: block;
         }
 
+        /* Title styling for the diseases panel */
         .diseases-title {
             font-size: 18px;
             font-weight: bold;
@@ -143,12 +159,14 @@
             padding-bottom: 10px;
         }
 
+        /* Remove default list styling */
         .diseases-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
+        /* Individual symptom item styling in the list */
         .disease-item {
             background-color: #f9f9f9;
             padding: 12px;
@@ -159,30 +177,36 @@
             line-height: 1.4;
         }
 
+        /* Smooth transitions and cursor change for bar hover effects */
         .bar {
             transition: opacity 0.3s, fill 0.3s;
             cursor: pointer;
         }
 
+        /* Make bars slightly transparent and brighter on hover */
         .bar:hover {
             opacity: 0.8;
             filter: brightness(1.1);
         }
 
+        /* Highlight the selected bar with a bright color and glow effect */
         .bar.active {
             fill: #FF1493 !important;
             filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.5));
         }
 
+        /* Axis label styling */
         .axis text {
             fill: #000000;
             font-size: 12px;
         }
 
+        /* Axis line styling */
         .axis line, .axis path {
             stroke: #ccc;
         }
 
+        /* Responsive design: stack layout on smaller screens */
         @media (max-width: 1200px) {
             .body {
                 flex-direction: column;
@@ -197,24 +221,29 @@
     </style>
 </head>
 <body>
+    <!-- Header with navigation and title -->
     <div class="header">
         <div><a href="BarCharts.html">← Back</a></div>
         <h1 class="title">Symptoms per disease</h1>
         <div style="width: 60px;"></div>
     </div>
 
+    <!-- Main content area with chart and sidebar -->
     <div class="body">
+        <!-- Left side: chart display area -->
         <div id="chart-wrapper">
             <div id="loading-message">Loading data...</div>
             <div id="barchart-container"></div>
         </div>
 
+        <!-- Right side: disease details panel (shown when a bar is clicked) -->
         <div id="diseases-panel" aria-hidden="true">
             <div class="diseases-title" id="selected-disease"></div>
             <ul class="diseases-list" id="diseases-list"></ul>
         </div>
     </div>
 
+    <!-- Footer with logo, navigation, and dates -->
     <div class="footer">
         <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28" style="opacity:0.5;">
         <div class="title"><a href="AboutUs.html">About Us</a></div>
@@ -225,15 +254,24 @@
     </div>
 
     <script> 
+        // Wikidata SPARQL endpoint URL for querying disease data
         const sparqlEndpoint = "https://query.wikidata.org/sparql";
+        
+        // Store all fetched data for later processing
         let allData = [];
+        
+        // Track which disease is currently selected
         let selectedDisease = null;
 
+        /**
+         * Fetches disease and symptom data from Wikidata using SPARQL query
+         * Returns an array of disease-symptom relationships
+         */
         async function fetchData() {
             const loadingMessage = document.getElementById("loading-message");
             loadingMessage.textContent = "Loading data...";
 
-            // SPARQL query: diseases and their symptoms
+            // SPARQL query: retrieves diseases, their classification factors, and symptoms
             const sparqlQuery = `
             SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
             WHERE {
@@ -244,6 +282,7 @@
             }`;
 
             try {
+                // Fetch data from Wikidata API
                 const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
                     headers: { Accept: "application/json" },
                 });
@@ -252,6 +291,7 @@
                     throw new Error(`Network response was not ok: ${response.statusText}`);
                 }
 
+                // Parse JSON response and extract relevant fields
                 const json = await response.json();
 
                 return json.results.bindings.map((row) => ({
@@ -267,36 +307,57 @@
             }
         }
 
+        /**
+         * Transforms raw data into chart-ready format
+         * Groups data by disease and counts unique symptoms for each
+         * Sorts results by symptom count in descending order
+         */
         function prepareChartData(data) {
-            // Group by disease and count unique symptoms
+            // Use D3's group function to organize data by disease name
             const groupedByDisease = d3.group(data, (d) => d.diseaseLabel);
             
+            // Convert grouped data into array format with disease name and symptom count
             return Array.from(groupedByDisease, ([disease, values]) => {
+                // Create a Set to count only unique symptoms (removes duplicates)
                 const uniqueSymptoms = new Set(values.map(v => v.symptom));
                 return {
                     disease: disease,
                     count: uniqueSymptoms.size
                 };
-            }).sort((a, b) => b.count - a.count);
+            }).sort((a, b) => b.count - a.count); // Sort by count, highest first
         }
 
+        /**
+         * Retrieves all unique symptoms for a specific disease
+         * Returns sorted array of symptom labels
+         */
         function getSymptomsByDisease(diseaseName) {
+            // Filter all data to get only entries for the specified disease
             const diseaseData = allData.filter(d => d.diseaseLabel === diseaseName);
+            // Extract symptom labels and remove duplicates using Set
             const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomLabel))];
-            return uniqueSymptoms.sort();
+            return uniqueSymptoms.sort(); // Alphabetical order
         }
 
+        /**
+         * Updates the side panel to show symptoms for the selected disease
+         * Populates the symptoms list and updates the title
+         */
         function displaySymptoms(diseaseName) {
+            // Get all symptoms for this disease
             const symptoms = getSymptomsByDisease(diseaseName);
             const panel = document.getElementById("diseases-panel");
             const titleEl = document.getElementById("selected-disease");
             const listEl = document.getElementById("diseases-list");
 
+            // Update title with disease name and symptom count
             const count = symptoms.length;
             titleEl.textContent = `${diseaseName} (${count} ${count === 1 ? 'symptom' : 'symptoms'})`;
 
+            // Clear previous symptom list
             listEl.innerHTML = "";
 
+            // Create a list item for each symptom
             symptoms.forEach(symptom => {
                 const li = document.createElement("li");
                 li.className = "disease-item";
@@ -304,10 +365,14 @@
                 listEl.appendChild(li);
             });
 
+            // Show the panel and update accessibility attributes
             panel.classList.add("active");
             panel.setAttribute("aria-hidden", "false");
         }
 
+        /**
+         * Hides the symptoms panel and clears the selected disease
+         */
         function hideSymptoms() {
             const panel = document.getElementById("diseases-panel");
             panel.classList.remove("active");
@@ -315,11 +380,16 @@
             selectedDisease = null;
         }
 
+        /**
+         * Creates and draws the D3 bar chart showing diseases and symptom counts
+         * Handles bar interactions (click to select, hover effects)
+         */
         function drawChart(chartData) {
             const container = document.getElementById("barchart-container");
             const availableWidth = container.clientWidth;
             const availableHeight = container.clientHeight;
 
+            // Define margins around the chart for axes and labels
             const margin = {
                 top: 20,
                 right: 30,
@@ -327,11 +397,14 @@
                 bottom: Math.min(220, Math.max(100, Math.floor(availableHeight * 0.25)))
             };
 
+            // Calculate chart dimensions based on available space
             const width = availableWidth - margin.left - margin.right;
             const height = availableHeight - margin.top - margin.bottom;
 
+            // Clear previous chart content
             container.innerHTML = "";
 
+            // Create SVG element and main group for the chart
             const svg = d3
                 .select("#barchart-container")
                 .append("svg")
@@ -344,15 +417,18 @@
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
+            // Create X-axis scale (categorical, one position per disease)
             const x = d3.scaleBand()
                 .range([0, width])
                 .domain(chartData.map(d => d.disease))
-                .padding(0.2);
+                .padding(0.2); // Space between bars
 
+            // Create Y-axis scale (linear, from 0 to max symptom count)
             const y = d3.scaleLinear()
                 .range([height, 0])
                 .domain([0, d3.max(chartData, d => d.count)]);
 
+            // Create and bind bar rectangles to data
             svg.selectAll(".bar")
                 .data(chartData)
                 .join("rect")
@@ -362,38 +438,46 @@
                 .attr("width", x.bandwidth())
                 .attr("height", d => Math.max(0, height - y(d.count)))
                 .attr("fill", "#FF69B4")
+                // Click handler: toggle disease selection on/off
                 .on("click", function(event, d) {
-                    // Toggle: if clicking the same bar, hide; otherwise show new selection
+                    // If clicking the same bar, deselect it; otherwise select new bar
                     if (selectedDisease === d.disease) {
                         svg.selectAll(".bar").classed("active", false);
                         hideSymptoms();
                     } else {
+                        // Deselect all bars first, then select clicked bar
                         svg.selectAll(".bar").classed("active", false);
                         d3.select(this).classed("active", true);
                         selectedDisease = d.disease;
                         displaySymptoms(d.disease);
+                        // Scroll panel into view smoothly
                         const panel = document.getElementById("diseases-panel");
                         if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
                     }
                 })
+                // Add tooltip showing disease and symptom count
                 .append("title")
                 .text(d => `${d.disease}: ${d.count} symptoms`);
 
+            // Create and style X-axis (disease names)
             const xAxis = svg.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x));
 
+            // Rotate X-axis labels for readability
             xAxis.selectAll("text")
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end")
                 .style("fill", "#000000");
 
+            // Create and style Y-axis (symptom counts)
             const yAxis = svg.append("g")
                 .call(d3.axisLeft(y).ticks(10));
 
             yAxis.selectAll("text")
                 .style("fill", "#000000");
 
+            // Add Y-axis label (rotated text on the left)
             svg.append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 0 - margin.left)
@@ -403,6 +487,7 @@
                 .style("fill", "#000000")
                 .text("Number of Symptoms");
 
+            // Add X-axis label
             svg.append("text")
                 .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
                 .style("text-anchor", "middle")
@@ -410,9 +495,15 @@
                 .text("Diseases");
         }
 
+        /**
+         * Initialization function: fetches data, prepares it, and draws the chart
+         * Sets up window resize listener to redraw chart responsively
+         */
         async function init() {
+            // Fetch data from Wikidata
             allData = await fetchData();
 
+            // Exit if no data available
             if (allData.length === 0) {
                 console.warn("No data available to display");
                 return;
@@ -420,23 +511,28 @@
 
             console.log("Raw Data:", allData);
 
+            // Prepare data for charting (group by disease, count symptoms)
             const chartData = prepareChartData(allData);
             console.log("Chart Data:", chartData);
 
+            // Draw chart if data is available
             if (chartData.length > 0) {
+                // Hide loading message and draw chart
                 document.getElementById("loading-message").style.display = "none";
                 drawChart(chartData);
 
+                // Add event listener for window resize to redraw chart responsively
                 let resizeTimeout;
                 window.addEventListener("resize", () => {
                     clearTimeout(resizeTimeout);
                     resizeTimeout = setTimeout(() => {
                         drawChart(chartData);
-                    }, 200);
+                    }, 200); // Debounce resize events
                 });
             }
         }
 
+        // Start the application
         init();
     </script>
 </body>
