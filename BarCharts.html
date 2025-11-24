@@ -20,98 +20,183 @@
       The page title that appears in the browser tab and search engine results.
     -->
     <style>
-        /*
-          Embedded CSS styles that control layout and appearance.
-          Using embedded styles here keeps the page self-contained.
-        */
-
-        /* Universal selector: remove default margin/padding and use border-box sizing */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
 
-        /* Ensure html and body take up full viewport height and width */
         html, body {
-            height: 100%;
-            width: 100%;
+          height: 100%;
+          width: 100%;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+          background-color: #FBF9F1;
         }
 
-        /*
-          Header and footer common styling:
-          - fixed positioning so they stay visible
-          - span full width
-          - set height to 15% of viewport (can be adjusted)
-          - LavenderBlush background and black text
-          - flex layout to align items and space them apart
-          - z-index to ensure they sit above the body content
-        */
-        .header, .footer {
-            position: fixed;
-            left: 0;
-            width: 100%;
-            height: 15%;
-            background-color: LavenderBlush;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-        
-        /* Header-specific positioning: pinned to top, padding to center content */
+        /* Fixed header */
         .header {
-            top: 0;
-            height: 15%;
-            padding: 0 15%;
-        }
-        
-        /* Footer-specific positioning: pinned to bottom, smaller horizontal padding */
-        .footer {
-            bottom: 0;
-            height: 15%;
-            padding: 0 2%;
-        }
-        
-        /*
-          Main body content area:
-          - fixed positioning between header and footer (top: 15%, height: 70%)
-          - padding to create breathing room
-          - overflow-y allows vertical scrolling when content exceeds available space
-          - overflow-x hidden prevents horizontal scroll caused by wide elements
-        */
-        .body {
-            position: fixed;
-            top: 15%;
-            left: 0;
-            width: 100%;
-            height: 70%;
-            color: black;
-            padding: 2rem;
-            overflow-y: auto;
-            overflow-x: hidden;
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 15%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2rem;
+          box-sizing: border-box;
+          z-index: 10;
         }
 
-        /* Title class positioning hint (used for centering header title visually) */
+        .header-left,
+        .header-center,
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .header-left { flex: 1; justify-content: flex-start; }
+        .header-center { flex: 1; justify-content: center; }
+        .header-right { flex: 1; justify-content: flex-end; }
+
         .title {
-            position: absolute;
-            left: 50%;
-            margin: 0;
+          margin: 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+          text-align: center;
         }
 
-        /* Footer date alignment to the right */
-        .footer_date {
-            text-align: right;
+        /* Make anchor look like plain text while remaining clickable */
+        .nav-link {
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          font-size: 1rem;
         }
-        
-        /*
-          Chart selector container:
-          - uses flexbox to lay out chart buttons side-by-side
-          - gap for spacing, centered alignment
-          - flex-wrap allows wrapping on smaller screens
-        */
+        .nav-link:focus {
+          outline: 2px solid rgba(0,0,0,0.15);
+          outline-offset: 2px;
+        }
+        .body {
+          position: relative;
+          top: 80px;
+          left: 0;
+          width: 100%;
+          height: auto;
+          min-height: calc(100vh - 15% - 20%);
+          color: black;
+          padding: 2rem;
+          padding-bottom: 3.5rem;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+        /* Rounded content box for placing text */
+        .intro-box {
+          max-width: 900px;
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          background: #fff;
+          border-radius: 12px;
+          padding: 1.5rem 1.75rem;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          color: #111;
+        }
+        .intro-box h2 {
+          margin-bottom: 0.5rem;
+          font-size: 1.25rem;
+        }
+        .intro-box p {
+          line-height: 1.5;
+          color: #222;
+        }
+
+        /* Links placed under the box */
+        .body-links {
+          max-width: 900px;
+          margin: 0.25rem auto 2rem auto;
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        .content-link {
+          color: inherit;           /* looks like normal text */
+          text-decoration: none;    /* remove underline by default */
+          padding: 0.25rem 0.5rem;
+          border-radius: 6px;
+          transition: color 120ms ease, background 120ms ease;
+        }
+        .content-link:hover {
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+          background: rgba(118, 97, 97, 0.2); /* 20% opacity */
+        }
+        .content-section {
+          max-width: 900px;
+          margin: 1.5rem auto;
+          display: flex;
+          gap: 1.5rem;
+          align-items: flex-start;
+        }
+        .content-section img {
+          flex-shrink: 0;
+        }
+        .content-section p {
+          margin: 0.5rem 0 0 0;
+        }
+        .footer {
+          position: static;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          height: 20%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2%;
+          box-sizing: border-box;
+          z-index: 10;
+        }
+        .footer > div {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          align-items: center;
+        }
+        .footer .title {
+          margin: 0;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-align: center;
+        }
+        .footer .title p {
+          margin: 0;
+        }    
+        .footer .nav-link {
+          font-size: 0.85rem;
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          pointer-events: auto;
+          display: inline-block;
+          position: relative;
+          z-index: 20;
+        }
+        .footer .nav-link:hover {
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+        }
+        .footer .nav-link.title {
+          font-size: 0.95rem;
+          font-weight: 600;
+        }
+        .footer_date {
+          font-size: 0.85rem;
+          text-align: center;
+        }
+  
         .chart-selector {
             display: flex;
             gap: 2rem;
