@@ -1,162 +1,171 @@
-
-        /*
-         * SPARQL endpoint and global state
-         * We keep allData global so other functions (chart / details panel) can access it easily.
-         */
+// URL for Wikidata SPARQL queries
         const sparqlEndpoint = "https://query.wikidata.org/sparql";
-        let allData = []; // Store all fetched rows here
+        
+        // stores all the disease and symptom data we fetch
+        let allData = [];
+        
+        // keeps track of which disease bar is selected
+        let selectedDisease = null;
 
-        /**
-         * fetchData()
-         * - Fetches data from Wikidata via SPARQL
-         * - Returns an array of simplified objects: { disease, diseaseLabel, symptoms, symptomsLabel }
-         * - Shows the loading message while fetching and hides it on completion/error.
-         */
+        // fetches disease data from Wikidata using SPARQL query
         async function fetchData() {
             const loadingMessage = document.getElementById("loading-message");
-            loadingMessage.classList.remove("hidden");
+            loadingMessage.textContent = "Loading data...";
 
-            // Query: find diseases linked to a smoking factor and their symptoms.
+            // SPARQL query to get smoking-related diseases and their symptoms
+            // wdt:P5642 means "related to" and we link it to smoking (wd:Q662860)
+            // wdt:P780 means "symptoms"
+            // the SERVICE part gets labels in the user's language
             const sparqlQuery = `
-            SELECT ?disease ?diseaseLabel ?factor ?factorLabel ?symptoms ?symptomsLabel
+            SELECT ?disease ?diseaseLabel ?symptoms ?symptomsLabel
             WHERE {
               ?disease wdt:P5642 wd:Q662860.
-              ?disease wdt:P5642 ?factor .
               ?disease wdt:P780 ?symptoms.
               SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
             }`;
 
             try {
-                // Perform the fetch to the SPARQL endpoint with JSON results
+                // send the query to Wikidata API
                 const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
                     headers: { Accept: "application/json" },
                 });
 
+                // check if request worked
                 if (!response.ok) {
-                    // If the response is not OK, throw to be handled in catch
                     throw new Error(`Network response was not ok: ${response.statusText}`);
                 }
 
+                // parse the JSON response
                 const json = await response.json();
 
-                // Map the returned bindings into a simpler structure we use elsewhere
+                // transform the data into a simpler format we can use
+                // map through each result and extract the parts we need
                 return json.results.bindings.map((row) => ({
                     disease: row.disease.value,
                     diseaseLabel: row.diseaseLabel.value,
-                    symptoms: row.symptoms.value,
-                    symptomsLabel: row.symptomsLabel.value,
+                    symptom: row.symptoms.value,
+                    symptomLabel: row.symptomsLabel.value,
                 }));
             } catch (error) {
+                // if something goes wrong, show error message
                 console.error("Error fetching data:", error);
+                loadingMessage.textContent = "Error loading data. Please try again.";
                 return [];
-            } finally {
-                // Always hide the loading message on completion/failure
-                loadingMessage.classList.add("hidden");
             }
         }
 
-        /**
-         * prepareChartData(data)
-         * - Accepts the raw rows from fetchData
-         * - Groups rows by disease label and counts unique symptoms per disease
-         * - Returns an array of { disease, count } sorted by count descending
-         */
+        // takes raw data and organizes it for the chart
+        // groups diseases together and counts how many unique symptoms each has
         function prepareChartData(data) {
-            // Group rows by disease label
+            // group all the data by disease name using D3
             const groupedByDisease = d3.group(data, (d) => d.diseaseLabel);
-
-            // For each disease, compute the number of unique symptom items
+            
+            // convert the grouped data into an array with disease name and symptom count
             return Array.from(groupedByDisease, ([disease, values]) => {
-                const uniqueSymptoms = new Set(values.map(v => v.symptoms));
+                // use a Set to count only unique symptoms (no duplicates)
+                const uniqueSymptoms = new Set(values.map(v => v.symptomLabel));
                 return {
                     disease: disease,
                     count: uniqueSymptoms.size
                 };
-            }).sort((a, b) => b.count - a.count);
+            }).sort((a, b) => b.count - a.count); // sort by count, biggest first
         }
 
-        /**
-         * getSymptomsByDisease(diseaseName)
-         * - Returns a sorted array of unique symptom labels for the given disease label string.
-         */
+        // get all symptoms for a specific disease
+        // returns them as a sorted array
         function getSymptomsByDisease(diseaseName) {
+            // filter to only get data for this disease
             const diseaseData = allData.filter(d => d.diseaseLabel === diseaseName);
-            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomsLabel))];
-            return uniqueSymptoms.sort();
+            // extract symptom names and remove duplicates using Set
+            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomLabel))];
+            return uniqueSymptoms.sort(); // sort alphabetically
         }
 
-        /**
-         * displaySymptoms(diseaseName)
-         * - Populates the right-hand panel with the symptoms for the selected disease
-         * - Shows the panel (adds 'active' class)
-         */
+        // shows symptoms in the side panel when user clicks a disease bar
         function displaySymptoms(diseaseName) {
+            // get the symptoms for this disease
             const symptoms = getSymptomsByDisease(diseaseName);
             const panel = document.getElementById("symptoms-panel");
             const titleEl = document.getElementById("selected-disease");
             const listEl = document.getElementById("symptoms-list");
 
-            // Set title and clear previous list
-            titleEl.textContent = diseaseName;
+            // update the title with disease name and symptom count
+            const count = symptoms.length;
+            titleEl.textContent = `${diseaseName} (${count} ${count === 1 ? 'symptom' : 'symptoms'})`;
+
+            // clear out old symptoms from the list
             listEl.innerHTML = "";
 
-            // Append each symptom as a list item
+            // add each symptom to the list
             symptoms.forEach(symptom => {
                 const li = document.createElement("li");
-                li.className = "symptom-item";
+                li.className = "symptoms-item";
                 li.textContent = symptom;
                 listEl.appendChild(li);
             });
 
-            // Make the panel visible
+            // show the panel
             panel.classList.add("active");
+            panel.setAttribute("aria-hidden", "false");
         }
 
-        /**
-         * drawChart(chartData)
-         * - Draws a bar chart inside #barchart-container using D3
-         * - Dynamically sizes the chart to the container's available size so axis labels remain visible
-         * - Adds click handling to show symptoms in the side panel
-         * - Wraps long x-axis labels into multiple lines so they don't get cut off by the footer
-         */
+        // hide the symptoms panel and deselect the disease
+        function hideSymptoms() {
+            const panel = document.getElementById("symptoms-panel");
+            panel.classList.remove("active");
+            panel.setAttribute("aria-hidden", "true");
+            selectedDisease = null;
+        }
+
+        // creates and draws the D3 bar chart
         function drawChart(chartData) {
-            // Remove any previously-drawn SVG to allow redraw/resizing
-            d3.select("#barchart-container").selectAll("svg").remove();
+            const container = document.getElementById("barchart-container");
+            const availableWidth = container.clientWidth;
+            const availableHeight = container.clientHeight;
 
-            // Margins: leave enough bottom margin for multiple lines of wrapped labels
-            const margin = { top: 20, right: 30, bottom: 150, left: 60 };
+            // set up margins for the chart so axes dont overlap content
+            const margin = {
+                top: 20,
+                right: 30,
+                left: 60,
+                bottom: Math.min(250, Math.max(180, Math.floor(availableHeight * 0.25)))
+            };
 
-            // Determine container size dynamically so we never draw under the footer.
-            const containerEl = document.getElementById("barchart-container");
-            const containerWidth = Math.max(containerEl.clientWidth, 600); // ensure a reasonable minimum width
-            const containerHeight = Math.max(containerEl.clientHeight, 300); // ensure a reasonable minimum height
+            // calculate actual chart size after subtracting margins
+            const width = availableWidth - margin.left - margin.right;
+            const height = availableHeight - margin.top - margin.bottom;
 
-            // Compute inner chart width/height based on measured container dimensions
-            const width = containerWidth - margin.left - margin.right;
-            const height = Math.max(containerHeight - margin.top - margin.bottom, 80); // keep a minimum inner height
+            // delete old chart if it exists
+            container.innerHTML = "";
 
-            // Create SVG sized to the container, including margins
+            // create SVG element and add it to the container
             const svg = d3
                 .select("#barchart-container")
                 .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", `0 0 ${availableWidth} ${availableHeight}`)
+                .attr("role", "img")
+                .attr("aria-label", "Bar chart showing number of symptoms per disease")
+                .style("display", "block")
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            // X scale: band scale for disease names
+            // create x-axis scale (for diseases - categorical)
+            // scaleBand creates evenly spaced positions for each disease name
+            // padding(0.2) adds space between bars
             const x = d3.scaleBand()
                 .range([0, width])
                 .domain(chartData.map(d => d.disease))
                 .padding(0.2);
 
-            // Y scale: linear from 0 up to the max count (fallback to 1)
-            const maxCount = d3.max(chartData, d => d.count) || 1;
+            // create y-axis scale (for symptom counts - linear)
+            // goes from 0 at bottom to the max count at top
             const y = d3.scaleLinear()
                 .range([height, 0])
-                .domain([0, maxCount]);
+                .domain([0, d3.max(chartData, d => d.count)]);
 
-            // Add bars: use .join to properly handle enter/update/exit if redrawn
+            // create the bars
             svg.selectAll(".bar")
                 .data(chartData)
                 .join("rect")
@@ -164,42 +173,48 @@
                 .attr("x", d => x(d.disease))
                 .attr("y", d => y(d.count))
                 .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.count))
-                .attr("fill", "#FF69B4")
+                .attr("height", d => Math.max(0, height - y(d.count)))
+                .attr("fill", "#E5E1DA")
+                // when you click a bar, either select it or deselect if already selected
                 .on("click", function(event, d) {
-                    // Clear active class from all bars, then add to clicked bar
-                    svg.selectAll(".bar").classed("active", false);
-                    d3.select(this).classed("active", true);
-                    // Show the symptoms for the clicked disease
-                    displaySymptoms(d.disease);
+                    // if this bar is already selected, click again to deselect
+                    if (selectedDisease === d.disease) {
+                        svg.selectAll(".bar").classed("active", false);
+                        hideSymptoms();
+                    } else {
+                        // deselect all bars, then select the one we clicked
+                        svg.selectAll(".bar").classed("active", false);
+                        d3.select(this).classed("active", true);
+                        selectedDisease = d.disease;
+                        displaySymptoms(d.disease);
+                        // scroll the symptoms panel into view
+                        const panel = document.getElementById("symptoms-panel");
+                        if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
                 })
-                // Add a title tooltip to each bar for accessibility / hover feedback
+                // show tooltip with disease name and symptom count on hover
                 .append("title")
                 .text(d => `${d.disease}: ${d.count} symptoms`);
 
-            // X Axis
+            // create x-axis (bottom)
             const xAxis = svg.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x));
 
-            // -------------------------------------------------------
-            // Wrap long x-axis labels into multiple lines.
-            // We remove rotation and instead perform word-wrapping into tspans
-            // so labels remain readable and don't get cut by the footer.
-            // -------------------------------------------------------
+            // rotate the disease names on x-axis so they dont overlap
             xAxis.selectAll("text")
-                .attr("y", 0)
-                .style("text-anchor", "middle")
-                .style("fill", "#000000")
-                .call(wrap, x.bandwidth());
-
-            // Y Axis
-            svg.append("g")
-                .call(d3.axisLeft(y).ticks(10))
-                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end")
                 .style("fill", "#000000");
 
-            // Y axis label (rotated)
+            // create y-axis (left side)
+            const yAxis = svg.append("g")
+                .call(d3.axisLeft(y).ticks(10));
+
+            yAxis.selectAll("text")
+                .style("fill", "#000000");
+
+            // add label for y-axis (rotated text on the left)
             svg.append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 0 - margin.left)
@@ -207,93 +222,49 @@
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
                 .style("fill", "#000000")
-                .text("Amount of Symptoms");
+                .text("Number of Symptoms");
 
-            // X axis label
+            // add label for x-axis
             svg.append("text")
                 .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
                 .style("text-anchor", "middle")
                 .style("fill", "#000000")
                 .text("Diseases");
+        }
 
-            // Style axis lines (domain and ticks)
-            svg.selectAll(".domain, .tick line")
-                .style("stroke", "#000000");
+        // main function that runs when the page loads
+        async function init() {
+            // fetch the data from Wikidata
+            allData = await fetchData();
 
-            /**
-             * wrap(textSelection, width)
-             * - For each text element, splits the text into words and creates tspans
-             *   so the text wraps at approximately the given width (px).
-             * - Relies on getComputedTextLength to measure rendered width.
-             */
-            function wrap(textSelection, width) {
-                const lineHeight = 1.1; // ems
-                textSelection.each(function() {
-                    const text = d3.select(this);
-                    const words = text.text().split(/\s+/).reverse();
-                    let word;
-                    const x = text.attr("x");
-                    const y = text.attr("y");
-                    const dy = parseFloat(text.attr("dy")) || 0;
-                    let tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
-                    let line = [];
-                    let lineNumber = 0;
+            // if no data, stop here
+            if (allData.length === 0) {
+                console.warn("No data available to display");
+                return;
+            }
 
-                    while (word = words.pop()) {
-                        line.push(word);
-                        tspan.text(line.join(" "));
-                        // when the tspan is too wide, move the last word to a new line
-                        if (tspan.node().getComputedTextLength && tspan.node().getComputedTextLength() > width) {
-                            line.pop();
-                            tspan.text(line.join(" "));
-                            line = [word];
-                            lineNumber++;
-                            tspan = text.append("tspan")
-                                .attr("x", x)
-                                .attr("y", y)
-                                .attr("dy", (lineNumber * lineHeight + dy) + "em")
-                                .text(word);
-                        }
-                    }
+            console.log("Raw Data:", allData);
+
+            // process the data into chart format
+            const chartData = prepareChartData(allData);
+            console.log("Chart Data:", chartData);
+
+            // if we have data, hide loading message and draw the chart
+            if (chartData.length > 0) {
+                document.getElementById("loading-message").style.display = "none";
+                drawChart(chartData);
+
+                // when the window gets resized, redraw the chart so it fits properly
+                let resizeTimeout;
+                window.addEventListener("resize", () => {
+                    // wait 200ms before redrawing so it doesnt redraw constantly
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        drawChart(chartData);
+                    }, 200);
                 });
             }
         }
 
-        /**
-         * init()
-         * - Entry point when the page loads
-         * - Fetches data, prepares it, and draws the chart
-         * - If there's no data, shows a friendly message instead of a chart
-         */
-        async function init() {
-            // Fetch SPARQL data and store globally
-            allData = await fetchData();
-
-            if (allData.length === 0) {
-                // No data: show message and skip drawing
-                console.warn("No data available to display");
-                const lm = document.getElementById("loading-message");
-                lm.textContent = "No data available";
-                lm.classList.remove("hidden");
-                return;
-            }
-
-            // Prepare data and draw the chart
-            console.log("Raw Data:", allData);
-            const chartData = prepareChartData(allData);
-            console.log("Chart Data:", chartData);
-            drawChart(chartData);
-
-            // Optional: redraw the chart when the window resizes so axes remain visible
-            // (debounce to avoid excessive redraws)
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    drawChart(chartData);
-                }, 200);
-            });
-        }
-
-        // Start the page logic
+        // run the init function when page loads
         init();
