@@ -9,98 +9,179 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
     <style>
-        /* Reset default browser margins and padding */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
 
-        /* Define CSS custom properties (variables) for consistent sizing */
-        :root {
-            --header-height: 80px;
-            --footer-height: 80px;
-        }
-
-        /* Make html and body fill the full viewport without scrollbars */
         html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+          height: 100%;
+          width: 100%;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+          background-color: #FBF9F1;
         }
 
-        /* Style the fixed header at the top of the page */
+        /* Fixed header */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background-color: Lavender;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 10%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2rem;
+          box-sizing: border-box;
+          z-index: 10;
         }
 
-        /* Center and style the page title */
+        .header-left,
+        .header-center,
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .header-left { flex: 1; justify-content: flex-start; }
+        .header-center { flex: 1; justify-content: center; }
+        .header-right { flex: 1; justify-content: flex-end; }
+
         .title {
-            flex: 1;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
+          margin: 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+          text-align: center;
         }
 
-        /* Style header links */
-        .header a {
-            color: black;
-            text-decoration: none;
-            font-weight: bold;
+        /* Make anchor look like plain text while remaining clickable */
+        .nav-link {
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          font-size: 1rem;
         }
-
-        /* Style the fixed footer at the bottom of the page */
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--footer-height);
-            background-color: Lavender;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 100;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        .nav-link:focus {
+          outline: 2px solid rgba(0,0,0,0.15);
+          outline-offset: 2px;
         }
-
-        /* Style the date text in the footer */
-        .footer_date {
-            font-size: 12px;
-            text-align: right;
-        }
-
-        .footer_date p {
-            margin: 2px 0;
-        }
-
-        /* Style the main content area between header and footer */
         .body {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            right: 0;
-            bottom: var(--footer-height);
-            width: 100%;
-            overflow: auto;
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-            background-color: #fafafa;
+          position: relative;
+          top: 80px;
+          left: 0;
+          width: 100%;
+          height: auto;
+          min-height: calc(100vh - 15% - 20%);
+          color: black;
+          padding: 2rem;
+          padding-bottom: 3.5rem;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+        /* Rounded content box for placing text */
+        .intro-box {
+          max-width: 900px;
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          background: #fff;
+          border-radius: 12px;
+          padding: 1.5rem 1.75rem;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          color: #111;
+        }
+        .intro-box h2 {
+          margin-bottom: 0.5rem;
+          font-size: 1.25rem;
+        }
+        .intro-box p {
+          line-height: 1.5;
+          color: #222;
+        }
+
+        /* Links placed under the box */
+        .body-links {
+          max-width: 900px;
+          margin: 0.25rem auto 2rem auto;
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        .content-link {
+          color: inherit;           /* looks like normal text */
+          text-decoration: none;    /* remove underline by default */
+          padding: 0.25rem 0.5rem;
+          border-radius: 6px;
+          transition: color 120ms ease, background 120ms ease;
+        }
+        .content-link:hover {
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+          background: rgba(118, 97, 97, 0.2); /* 20% opacity */
+        }
+        .content-section {
+          max-width: 900px;
+          margin: 1.5rem auto;
+          display: flex;
+          gap: 1.5rem;
+          align-items: flex-start;
+        }
+        .content-section img {
+          flex-shrink: 0;
+        }
+        .content-section p {
+          margin: 0.5rem 0 0 0;
+        }
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          height: 15%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2%;
+          box-sizing: border-box;
+          z-index: 10;
+        }
+        
+        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width=calc(100% / 3); }
+        
+        }
+        .footer .title {
+          margin: 0;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-align: center;
+        }
+        .footer .title p {
+          margin: 0;
+        }    
+        .footer .nav-link {
+          font-size: 0.85rem;
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          pointer-events: auto;
+          display: inline-block;
+          position: relative;
+          z-index: 20;
+        }
+        .footer .nav-link:hover {
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+        }
+        .footer .nav-link.title {
+          font-size: 0.95rem;
+          font-weight: 600;
+        }
+        .footer_date {
+          font-size: 0.85rem;
+          text-align: center;
         }
 
         /* Container for the chart - takes up most of the space */
@@ -221,36 +302,68 @@
     </style>
 </head>
 <body>
-    <!-- Header with navigation and title -->
     <div class="header">
-        <div><a href="BarCharts.html">← Back</a></div>
-        <h1 class="title">Symptoms per disease</h1>
-        <div style="width: 60px;"></div>
-    </div>
-
-    <!-- Main content area with chart and sidebar -->
-    <div class="body">
-        <!-- Left side: chart display area -->
-        <div id="chart-wrapper">
-            <div id="loading-message">Loading data...</div>
-            <div id="barchart-container"></div>
+        <div class="header-left">
+            <a class="nav-link" href="index.html">Back</a>
+            <a class="nav-link" href="AboutUs.html">Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006</a>
         </div>
 
-        <!-- Right side: disease details panel (shown when a bar is clicked) -->
+        <div class="header-center">
+            <h1 class="title">Bar chart showing diseases vs. symptoms</h1>
+        </div>
+
+        <div class="header-right">
+            <img src="um_logo.png" alt="Logo of Maastricht University" width="44.8" height="55">
+        </div>
+    </div>
+
+    <div class="body">
+        <div id="chart-wrapper">
+            <div id="loading-message">Loading data...</div>
+            <div class="intro-box" role="region" aria-label="Introductory text">
+            <h2>Overview</h2>
+            <p>
+                This graph shows this.
+            </p>
+        </div>
+            <div id="barchart-container"></div>
+        <!-- Rounded box for placing a block of explanatory text -->
+        
+        </div>
+
         <div id="diseases-panel" aria-hidden="true">
-            <div class="diseases-title" id="selected-disease"></div>
+            <div class="diseases-title" id="selected-factor"></div>
             <ul class="diseases-list" id="diseases-list"></ul>
         </div>
     </div>
 
-    <!-- Footer with logo, navigation, and dates -->
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28" style="opacity:0.5;">
-        <div class="title"><a href="AboutUs.html">About Us</a></div>
-        <small class="footer_date">
-            <p>created: 31/10/2025</p>
-            <p>last updated: 24/11/2025</p>
+
+      <!-- left section -->
+      <div>
+        <div class="title">Potential effects and risks of smoking</div>
+        <small>
+          <a class="nav-link" href="https://github.com/serenalucarini/PRA3006-G1">Access to Github</a>
         </small>
+      </div>
+
+      <!-- center section -->
+      <div>
+        <div class="title">About:</div>
+        <a class="nav-link" href="AboutUs.html">The Developers</a>
+        <a class="nav-link" href="Course.html">PRA3006 Course</a>
+        <a class="nav-link" href="https://www.maastrichtuniversity.nl/education/bachelor/programmes/maastricht-science-programme">Maastricht Science Programme</a>
+      </div>
+
+      <!-- right section -->
+      <div>
+        <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
+        <div class="footer_date">
+            <p>created: 2025/10/31</p>
+            <p>last updated: 2025/11/21</p>
+        </div>
+      </div> 
     </div>
 
     <script> 
