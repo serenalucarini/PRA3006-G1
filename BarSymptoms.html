@@ -227,6 +227,7 @@
     <script> 
         const sparqlEndpoint = "https://query.wikidata.org/sparql";
         let allData = [];
+        let selectedDisease = null;
 
         async function fetchData() {
             const loadingMessage = document.getElementById("loading-message");
@@ -307,6 +308,13 @@
             panel.setAttribute("aria-hidden", "false");
         }
 
+        function hideSymptoms() {
+            const panel = document.getElementById("diseases-panel");
+            panel.classList.remove("active");
+            panel.setAttribute("aria-hidden", "true");
+            selectedDisease = null;
+        }
+
         function drawChart(chartData) {
             const container = document.getElementById("barchart-container");
             const availableWidth = container.clientWidth;
@@ -355,11 +363,18 @@
                 .attr("height", d => Math.max(0, height - y(d.count)))
                 .attr("fill", "#FF69B4")
                 .on("click", function(event, d) {
-                    svg.selectAll(".bar").classed("active", false);
-                    d3.select(this).classed("active", true);
-                    displaySymptoms(d.disease);
-                    const panel = document.getElementById("diseases-panel");
-                    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    // Toggle: if clicking the same bar, hide; otherwise show new selection
+                    if (selectedDisease === d.disease) {
+                        svg.selectAll(".bar").classed("active", false);
+                        hideSymptoms();
+                    } else {
+                        svg.selectAll(".bar").classed("active", false);
+                        d3.select(this).classed("active", true);
+                        selectedDisease = d.disease;
+                        displaySymptoms(d.disease);
+                        const panel = document.getElementById("diseases-panel");
+                        if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
                 })
                 .append("title")
                 .text(d => `${d.disease}: ${d.count} symptoms`);
