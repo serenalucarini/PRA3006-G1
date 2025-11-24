@@ -159,6 +159,16 @@
           box-sizing: border-box;
           z-index: 10;
         }
+        .footer-left,
+        .footer-center,
+        .footer-right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .footer-left { flex: 1; justify-content: flex-start; }
+        .footer-center { flex: 1; justify-content: center; }
+        .footer-right { flex: 1; justify-content: flex-end; }
         .footer > div {
           display: flex;
           flex-direction: column;
@@ -225,7 +235,7 @@
         .chart-button {
             padding: 1.5rem 2rem;
             font-size: 1.1rem;
-            background-color: #E5E1DA;
+            background-color: #FBF9F1;
             color: black;
             border: none;
             border-radius: 8px;
@@ -237,8 +247,8 @@
         
         /* Hover state for chart button to indicate interactivity */
         .chart-button:hover {
-            background-color: #E5E1DA;
-            color: black;
+            color: rgba(118, 97, 97, 1);
+            background: rgba(118, 97, 97, 0.2);
         }
         
         /* Chart description styling: subdued color, small font, centered, limited width */
@@ -340,7 +350,7 @@
         <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
         <div class="footer_date">
             <p>created: 2025/10/31</p>
-            <p>last updated: 2025/11/21</p>
+            <p>last updated: 2025/11/24</p>
         </div>
       </div> 
   
