@@ -39,7 +39,7 @@
           left: 0;
           top: 0;
           width: 100%;
-          height: 15%;
+          height: 10%;
           background-color: #E5E1DA;
           display: flex;
           align-items: center;
@@ -146,11 +146,11 @@
           margin: 0.5rem 0 0 0;
         }
         .footer {
-          position: static;
+          position: absolute;
           left: 0;
           bottom: 0;
           width: 100%;
-          height: 20%;
+          height: 15%;
           background-color: #E5E1DA;
           display: flex;
           align-items: center;
@@ -225,7 +225,7 @@
         .chart-button {
             padding: 1.5rem 2rem;
             font-size: 1.1rem;
-            background-color: #9370DB;
+            background-color: #E5E1DA;
             color: white;
             border: none;
             border-radius: 8px;
@@ -257,11 +257,18 @@
       Note: the header uses absolute positioning for the title via the .title class.
     -->
     <div class="header">
-        <!-- Homepage link: navigates back to the main index -->
-        <div><a href="index.html">Homepage</a></div>
+        <div class="header-left">
+            <a class="nav-link" href="AboutUs.html">Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006</a>
+        </div>
 
-        <!-- Visual center title; styled/positioned via CSS .title class -->
-        <h1 class="title">Smoking</h1>
+        <div class="header-center">
+            <h1 class="title">Potential effects and risks of smoking</h1>
+        </div>
+
+        <div class="header-right">
+            <img src="um_logo.png" alt="Logo of Maastricht University" width="44.8" height="55">
+        </div>
     </div>
     
     <!--
@@ -269,12 +276,14 @@
       Positioned between the fixed header and footer.
     -->
     <div class="body">
+      <div class="intro-box" role="region" aria-label="Introductory text">
+            <h2>Choose a bar chart</h2>
+            <p>
+                Select the bar chart that you would like to visualise.
+            </p>
+        </div>
         <!-- Page heading for the selection interface -->
-        <h1>Select a Bar Chart</h1>
-
-        <!-- Short explanatory paragraph about what to do -->
-        <p>Choose which bar chart visualization you'd like to explore:</p>
-        
+    
         <!--
           Container that holds the chart selection options.
           Each option contains a button (link styled as a button) and a short description.
@@ -286,7 +295,7 @@
                   Link to the first bar chart page (BarFactors.html).
                   Styled with .chart-button to look like a button.
                 -->
-                <a href="BarFactors.html" class="chart-button">Bar Chart 1</a>
+                <a href="BarFactors.html" class="chart-button">Risk Factors vs. Diseases</a>
 
                 <!-- Short description summarizing the content of Bar Chart 1 -->
                 <p class="chart-description">This bar chart will display the number of diseases related to smoking for each risk factor related to smoking. </p>
@@ -295,7 +304,7 @@
             <!-- Second chart option -->
             <div class="chart-option">
                 <!-- Link to the second bar chart page (BarSymptoms.html) -->
-                <a href="BarSymptoms.html" class="chart-button">Bar Chart 2</a>
+                <a href="BarSymptoms.html" class="chart-button">Diseases vs. Symptoms</a>
 
                 <!-- Description summarizing the content of Bar Chart 2 -->
                 <p class="chart-description">This bar chart will display the number of symptoms related to smoking for each disease related to smoking.</p>
@@ -309,17 +318,30 @@
       - fixed at the bottom of the viewport
     -->
     <div class="footer">
-        <!-- University logo image; dimensions provided inline for consistent display -->
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92px" height="50.28px">
+      <div>
+        <div class="title">Potential effects and risks of smoking</div>
+        <small>
+          <a class="nav-link" href="https://github.com/serenalucarini/PRA3006-G1">Access to Github</a>
+        </small>
+      </div>
 
-        <!-- Link to About Us page; .title class is reused for positioning but could be renamed -->
-        <div class="title"><a href="AboutUs.html">About Us</a></div>
+      <!-- center section -->
+      <div>
+        <div class="title">About:</div>
+        <a class="nav-link" href="AboutUs.html">The Developers</a>
+        <a class="nav-link" href="Course.html">PRA3006 Course</a>
+        <a class="nav-link" href="https://www.maastrichtuniversity.nl/education/bachelor/programmes/maastricht-science-programme">Maastricht Science Programme</a>
+      </div>
 
-        <!-- Small textual metadata about creation and last update dates -->
-        <small class="footer_date">
+      <!-- right section -->
+      <div>
+        <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
+        <div class="footer_date">
             <p>created: 2025/10/31</p>
             <p>last updated: 2025/11/21</p>
-        </small>
+        </div>
+      </div> 
+  
     </div>
 </body>
 </html>
