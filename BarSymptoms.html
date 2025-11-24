@@ -79,6 +79,9 @@
           padding-bottom: 3.5rem;
           overflow-y: auto;
           overflow-x: hidden;
+          padding-bottom: 15%; /*this makes it so that the bottom of the bofy has to be above the footer*/
+          marging: 0; /*this resets the margin for consistent spacing*/
+            
         }
         /* Rounded content box for placing text */
         .intro-box {
@@ -298,6 +301,24 @@
                 min-height: 250px;
                 max-height: 300px;
             }
+            /* Rounded content box for placing text */
+        .intro-box {
+          max-width: 900px;
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          background: #fff;
+          border-radius: 12px;
+          padding: 1.5rem 1.75rem;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          color: #111;
+        }
+        .intro-box h2 {
+          margin-bottom: 0.5rem;
+          font-size: 1.25rem;
+        }
+        .intro-box p {
+          line-height: 1.5;
+          color: #222;
+        }
         }
     </style>
 </head>
@@ -333,8 +354,8 @@
         </div>
 
         <div id="diseases-panel" aria-hidden="true">
-            <div class="diseases-title" id="selected-factor"></div>
-            <ul class="diseases-list" id="diseases-list"></ul>
+            <div class="symptoms-title" id="selected-disease"></div>
+            <ul class="symptoms-list" id="symptoms-list"></ul>
         </div>
     </div>
 
