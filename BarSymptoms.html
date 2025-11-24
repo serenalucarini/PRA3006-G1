@@ -468,7 +468,7 @@
             // Filter all data to get only entries for the specified disease
             const diseaseData = allData.filter(d => d.diseaseLabel === diseaseName);
             // Extract symptom labels and remove duplicates using Set
-            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomsLabel))];
+            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomLabel))];
             return uniqueSymptoms.sort(); // Alphabetical order
         }
 
