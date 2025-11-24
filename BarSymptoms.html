@@ -446,13 +446,13 @@
          * Sorts results by symptom count in descending order
          */
         function prepareChartData(data) {
-            // Use D3's group function to organize data by disease name
+            // group by disease and count unique symptoms
             const groupedByDisease = d3.group(data, (d) => d.diseaseLabel);
             
             // Convert grouped data into array format with disease name and symptom count
             return Array.from(groupedByDisease, ([disease, values]) => {
                 // Create a Set to count only unique symptoms (removes duplicates)
-                const uniqueSymptoms = new Set(values.map(v => v.symptom));
+                const uniqueSymptoms = new Set(values.map(v => v.symptoms));
                 return {
                     disease: disease,
                     count: uniqueSymptoms.size
@@ -468,7 +468,7 @@
             // Filter all data to get only entries for the specified disease
             const diseaseData = allData.filter(d => d.diseaseLabel === diseaseName);
             // Extract symptom labels and remove duplicates using Set
-            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomLabel))];
+            const uniqueSymptoms = [...new Set(diseaseData.map(d => d.symptomsLabel))];
             return uniqueSymptoms.sort(); // Alphabetical order
         }
 
@@ -493,7 +493,7 @@
             // Create a list item for each symptom
             symptoms.forEach(symptom => {
                 const li = document.createElement("li");
-                li.className = "symptom-item";
+                li.className = "symptoms-item";
                 li.textContent = symptom;
                 listEl.appendChild(li);
             });
