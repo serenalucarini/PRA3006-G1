@@ -337,7 +337,7 @@
     <!-- header with navigation and university logo -->
     <div class="header">
         <div class="header-left">
-            <a class="nav-link" href="BarCharts.html">Back</a>
+            <a class="nav-link" href="index.html">Back</a>
             <a class="nav-link" href="AboutUs.html">Developers</a>
             <a class="nav-link" href="Course.html">PRA3006</a>
         </div>
@@ -361,12 +361,13 @@
             <div class="intro-box" role="region" aria-label="Introductory text">
                 <h2>Overview</h2>
                 <p>
-                    This graph shows this.
+                    Select a disease related to smoking and explore its risk factors and symptoms!
                 </p>
             </div>
             
             <!-- the D3 chart will be rendered here -->
             <div id="barchart-container"></div>
+            <script src = "network.js"></script>
         </div>
 
         <!-- side panel that displays diseases related to the selected risk factor -->
@@ -380,7 +381,7 @@
     <div class="footer">
         <!-- left section: project title and github link -->
         <div>
-            <div class="title">Potential effects and risks of smoking</div>
+            <div class="title">Network</div>
             <small>
                 <a class="nav-link" href="https://github.com/serenalucarini/PRA3006-G1">Access to Github</a>
             </small>
@@ -406,6 +407,5 @@
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <!-- Load external JS script -->
-    <script src = "network.js"></script>
 </body>
 </html>
