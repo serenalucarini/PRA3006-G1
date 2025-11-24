@@ -621,11 +621,14 @@
                 .text("Number of Symptoms");
 
             // Add X-axis label
+            const allFactors = chartData.map(d => d.factor).join(", ");
             svg.append("text")
                 .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
                 .style("text-anchor", "middle")
                 .style("fill", "#000000")
-                .text("Diseases");
+                .style("font-size", "12px")
+                .text(allFactors)
+                .style("word-wrap", "break-word");
         }
 
         /**
