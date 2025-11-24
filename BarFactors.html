@@ -264,6 +264,7 @@
 
         // Global storage for all fetched rows (so we can query it later)
         let allData = [];
+        let selectedFactor = null;
 
         /**
          * fetchData
@@ -380,6 +381,17 @@
         }
 
         /**
+         * hideDiseases
+         * - Hides the right-hand panel and resets the selected factor.
+         */
+        function hideDiseases() {
+            const panel = document.getElementById("diseases-panel");
+            panel.classList.remove("active");
+            panel.setAttribute("aria-hidden", "true");
+            selectedFactor = null;
+        }
+
+        /**
          * drawChart
          * - Draws the bar chart inside #barchart-container with D3.
          * - Uses the container's full width and height to fill the available space.
@@ -443,16 +455,20 @@
                 .attr("height", d => Math.max(0, height - y(d.count)))
                 .attr("fill", "#FF69B4")
                 .on("click", function(event, d) {
-                    // On click: clear active class from all bars, set on clicked bar
-                    svg.selectAll(".bar").classed("active", false);
-                    d3.select(this).classed("active", true);
+                    // Toggle: if clicking the same bar, hide; otherwise show new selection
+                    if (selectedFactor === d.factor) {
+                        svg.selectAll(".bar").classed("active", false);
+                        hideDiseases();
+                    } else {
+                        svg.selectAll(".bar").classed("active", false);
+                        d3.select(this).classed("active", true);
+                        selectedFactor = d.factor;
+                        displayDiseases(d.factor);
 
-                    // Display the associated diseases in the right panel
-                    displayDiseases(d.factor);
-
-                    // Scroll the panel into view if it's not fully visible
-                    const panel = document.getElementById("diseases-panel");
-                    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                        // Scroll the panel into view if it's not fully visible
+                        const panel = document.getElementById("diseases-panel");
+                        if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
                 })
                 // Tooltip text for accessibility and hover
                 .append("title")
