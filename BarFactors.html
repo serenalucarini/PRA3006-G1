@@ -193,6 +193,24 @@
                 min-height: 250px;
                 max-height: 300px;
             }
+            /* Rounded content box for placing text */
+        .intro-box {
+          max-width: 900px;
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          background: #fff;
+          border-radius: 12px;
+          padding: 1.5rem 1.75rem;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          color: #111;
+        }
+        .intro-box h2 {
+          margin-bottom: 0.5rem;
+          font-size: 1.25rem;
+        }
+        .intro-box p {
+          line-height: 1.5;
+          color: #222;
+        }
         }
     </style>
 </head>
@@ -206,14 +224,15 @@
     <div class="body">
         <div id="chart-wrapper">
             <div id="loading-message">Loading data...</div>
-            <div id="barchart-container"></div>
-        <!-- Rounded box for placing a block of explanatory text -->
-        <div class="intro-box" role="region" aria-label="Introductory text">
+            <div class="intro-box" role="region" aria-label="Introductory text">
             <h2>Overview</h2>
             <p>
                 This graph shows this.
             </p>
         </div>
+            <div id="barchart-container"></div>
+        <!-- Rounded box for placing a block of explanatory text -->
+        
         </div>
 
         <div id="diseases-panel" aria-hidden="true">
