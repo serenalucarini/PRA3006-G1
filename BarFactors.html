@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Document metadata and page configuration -->
-    <meta charset="UTF-8"> <!-- Ensures proper text encoding -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive design -->
-    <title>Bar chart: Risk Factors vs. Diseases</title> <!-- Page title displayed on browser tab -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar chart: Risk Factors vs. Diseases</title>
 
-    <!-- Load the D3.js library from CDN for rendering visualizations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
     <style>
-        /* Reset default browser padding/margins and apply consistent box-sizing */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Global CSS variables for header and footer heights */
         :root {
             --header-height: 80px;
             --footer-height: 80px;
         }
 
-        /* Full-screen layout, prevent scrolling of entire window */
         html, body {
             width: 100%;
             height: 100%;
             overflow: hidden;
         }
 
-        /* Top navigation/header styling */
         .header {
             position: fixed;
             top: 0;
@@ -43,7 +37,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            z-index: 100; /* Ensures header stays above content */
+            z-index: 100;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
@@ -54,14 +48,12 @@
             font-weight: bold;
         }
 
-        /* Header hyperlink styling */
         .header a {
             color: black;
             text-decoration: none;
             font-weight: bold;
         }
 
-        /* Footer styling at bottom of page */
         .footer {
             position: fixed;
             bottom: 0;
@@ -78,7 +70,6 @@
             box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Footer date formatting */
         .footer_date {
             font-size: 12px;
             text-align: right;
@@ -88,7 +79,6 @@
             margin: 2px 0;
         }
 
-        /* Main content area between header and footer */
         .body {
             position: fixed;
             top: var(--header-height);
@@ -96,14 +86,13 @@
             right: 0;
             bottom: var(--footer-height);
             width: 100%;
-            overflow: auto; /* Scroll chart area if needed */
+            overflow: auto;
             display: flex;
             gap: 20px;
             padding: 20px;
             background-color: #fafafa;
         }
 
-        /* Chart container wrapper */
         #chart-wrapper {
             flex: 1;
             min-width: 600px;
@@ -112,7 +101,6 @@
             gap: 10px;
         }
 
-        /* Loading text before data is retrieved */
         #loading-message {
             padding: 20px;
             font-size: 16px;
@@ -121,7 +109,6 @@
             text-align: center;
         }
 
-        /* Bar chart container box */
         #barchart-container {
             flex: 1;
             min-height: 400px;
@@ -132,7 +119,6 @@
             overflow: hidden;
         }
 
-        /* Diseases panel shown when selecting a bar */
         #diseases-panel {
             flex: 0 0 350px;
             background-color: white;
@@ -140,16 +126,14 @@
             border-radius: 8px;
             padding: 20px;
             overflow-y: auto;
-            display: none; /* Hidden by default */
+            display: none;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Panel becomes visible when "active" */
         #diseases-panel.active {
             display: block;
         }
 
-        /* Panel title styling */
         .diseases-title {
             font-size: 18px;
             font-weight: bold;
@@ -165,7 +149,6 @@
             margin: 0;
         }
 
-        /* Styling for each disease item */
         .disease-item {
             background-color: #f9f9f9;
             padding: 12px;
@@ -176,7 +159,6 @@
             line-height: 1.4;
         }
 
-        /* Bar styling + hover effects */
         .bar {
             transition: opacity 0.3s, fill 0.3s;
             cursor: pointer;
@@ -187,13 +169,11 @@
             filter: brightness(1.1);
         }
 
-        /* Highlight active selected bar */
         .bar.active {
             fill: #FF1493 !important;
             filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.5));
         }
 
-        /* Axis styling */
         .axis text {
             fill: #000000;
             font-size: 12px;
@@ -203,7 +183,6 @@
             stroke: #ccc;
         }
 
-        /* Layout adjustment for small screens */
         @media (max-width: 1200px) {
             .body {
                 flex-direction: column;
@@ -218,30 +197,26 @@
     </style>
 </head>
 <body>
-    <!-- Header with navigation -->
     <div class="header">
         <div><a href="BarCharts.html">← Back</a></div>
         <h1 class="title">Diseases per risk factor</h1>
-        <div style="width: 60px;"></div> <!-- Spacer to balance layout -->
+        <div style="width: 60px;"></div>
     </div>
 
     <div class="body">
-        <!-- Chart section -->
         <div id="chart-wrapper">
-            <div id="loading-message">Loading data...</div> <!-- Initial loading text -->
-            <div id="barchart-container"></div> <!-- D3 renders chart here -->
+            <div id="loading-message">Loading data...</div>
+            <div id="barchart-container"></div>
         </div>
 
-        <!-- Diseases panel dynamically updated when clicking a factor -->
         <div id="diseases-panel" aria-hidden="true">
             <div class="diseases-title" id="selected-factor"></div>
             <ul class="diseases-list" id="diseases-list"></ul>
         </div>
     </div>
 
-    <!-- Footer section -->
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28" style="opacity:0.5;"> <!-- University logo -->
+        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28" style="opacity:0.5;">
         <div class="title"><a href="AboutUs.html">About Us</a></div>
         <small class="footer_date">
             <p>created: 31/10/2025</p>
@@ -249,33 +224,25 @@
         </small>
     </div>
 
-    <script>
-        /*===========================================
-          GLOBAL VARIABLES
-        ===========================================*/
-        const sparqlEndpoint = "https://query.wikidata.org/sparql"; // Wikidata API endpoint
-        let allData = [];   // Storage for all retrieved raw data
-        let selectedFactor = null; // Currently active/selected risk factor
+    <script> 
+        const sparqlEndpoint = "https://query.wikidata.org/sparql";
+        let allData = [];
+        let selectedFactor = null;
 
-
-        /*===========================================
-          FUNCTION: Fetch SPARQL Data
-        ===========================================*/
         async function fetchData() {
             const loadingMessage = document.getElementById("loading-message");
             loadingMessage.textContent = "Loading data...";
 
-            // SPARQL query: retrieves diseases and associated risk factors
+            // SPARQL query: diseases and their risk factors
             const sparqlQuery = `
             SELECT ?disease ?diseaseLabel ?factor ?factorLabel
             WHERE {
-              ?disease wdt:P5642 wd:Q662860.  /* Select diseases with risk factor */
-              ?disease wdt:P5642 ?factor .    /* Retrieve risk factors */
-              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". }
+              ?disease wdt:P5642 wd:Q662860.
+              ?disease wdt:P5642 ?factor .
+              SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". } 
             }`;
 
             try {
-                // Perform HTTP GET request to Wikidata API
                 const response = await fetch(`${sparqlEndpoint}?query=${encodeURIComponent(sparqlQuery)}`, {
                     headers: { Accept: "application/json" },
                 });
@@ -286,7 +253,6 @@
 
                 const json = await response.json();
 
-                // Transform results into clean JS objects
                 return json.results.bindings.map((row) => ({
                     disease: row.disease.value,
                     diseaseLabel: row.diseaseLabel.value,
@@ -300,38 +266,25 @@
             }
         }
 
-
-        /*===========================================
-          FUNCTION: Prepare chart data
-        ===========================================*/
         function prepareChartData(data) {
-            // Group entries by factor label
+            // Group by risk factor and count unique diseases
             const groupedByFactor = d3.group(data, (d) => d.factorLabel);
-
-            // Convert grouped map into array of objects
+            
             return Array.from(groupedByFactor, ([factor, values]) => {
                 const uniqueDiseases = new Set(values.map(v => v.disease));
                 return {
                     factor: factor,
                     count: uniqueDiseases.size
                 };
-            }).sort((a, b) => b.count - a.count); // Sort descending by number of diseases
+            }).sort((a, b) => b.count - a.count);
         }
 
-
-        /*===========================================
-          FUNCTION: Get diseases by risk factor
-        ===========================================*/
         function getDiseasesByFactor(factorName) {
             const factorData = allData.filter(d => d.factorLabel === factorName);
             const uniqueDiseases = [...new Set(factorData.map(d => d.diseaseLabel))];
             return uniqueDiseases.sort();
         }
 
-
-        /*===========================================
-          FUNCTION: Display diseases in side panel
-        ===========================================*/
         function displayDiseases(factorName) {
             const diseases = getDiseasesByFactor(factorName);
             const panel = document.getElementById("diseases-panel");
@@ -341,10 +294,8 @@
             const count = diseases.length;
             titleEl.textContent = `${factorName} (${count} ${count === 1 ? 'disease' : 'diseases'})`;
 
-            // Clear previous list
             listEl.innerHTML = "";
 
-            // Populate with new diseases
             diseases.forEach(disease => {
                 const li = document.createElement("li");
                 li.className = "disease-item";
@@ -356,10 +307,6 @@
             panel.setAttribute("aria-hidden", "false");
         }
 
-
-        /*===========================================
-          FUNCTION: Hide diseases panel
-        ===========================================*/
         function hideDiseases() {
             const panel = document.getElementById("diseases-panel");
             panel.classList.remove("active");
@@ -367,16 +314,11 @@
             selectedFactor = null;
         }
 
-
-        /*===========================================
-          FUNCTION: Draw bar chart using D3.js
-        ===========================================*/
         function drawChart(chartData) {
             const container = document.getElementById("barchart-container");
             const availableWidth = container.clientWidth;
             const availableHeight = container.clientHeight;
 
-            // Define margins dynamically based on viewport
             const margin = {
                 top: 20,
                 right: 30,
@@ -387,10 +329,8 @@
             const width = availableWidth - margin.left - margin.right;
             const height = availableHeight - margin.top - margin.bottom;
 
-            // Clear any existing SVG before re-rendering
             container.innerHTML = "";
 
-            // Create root SVG element
             const svg = d3
                 .select("#barchart-container")
                 .append("svg")
@@ -403,18 +343,15 @@
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            // X-axis: categorical scale for factors
             const x = d3.scaleBand()
                 .range([0, width])
                 .domain(chartData.map(d => d.factor))
                 .padding(0.2);
 
-            // Y-axis: linear scale for disease counts
             const y = d3.scaleLinear()
                 .range([height, 0])
                 .domain([0, d3.max(chartData, d => d.count)]);
 
-            // Draw bars
             svg.selectAll(".bar")
                 .data(chartData)
                 .join("rect")
@@ -423,9 +360,9 @@
                 .attr("y", d => y(d.count))
                 .attr("width", x.bandwidth())
                 .attr("height", d => Math.max(0, height - y(d.count)))
-                .attr("fill", "#FF69B4") /* Default pink fill */
+                .attr("fill", "#FF69B4")
                 .on("click", function(event, d) {
-                    // Toggle selection behavior
+                    // Toggle: if clicking the same bar, hide; otherwise show new selection
                     if (selectedFactor === d.factor) {
                         svg.selectAll(".bar").classed("active", false);
                         hideDiseases();
@@ -438,28 +375,24 @@
                         if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
                     }
                 })
-                .append("title") // Tooltip on hover
+                .append("title")
                 .text(d => `${d.factor}: ${d.count} diseases`);
 
-            // Add X-axis
             const xAxis = svg.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x));
 
-            // Rotate labels for readability
             xAxis.selectAll("text")
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end")
                 .style("fill", "#000000");
 
-            // Add Y-axis
             const yAxis = svg.append("g")
                 .call(d3.axisLeft(y).ticks(10));
 
             yAxis.selectAll("text")
                 .style("fill", "#000000");
 
-            // Y-axis title
             svg.append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 0 - margin.left)
@@ -469,7 +402,6 @@
                 .style("fill", "#000000")
                 .text("Number of Diseases");
 
-            // X-axis title
             svg.append("text")
                 .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
                 .style("text-anchor", "middle")
@@ -477,12 +409,8 @@
                 .text("Risk Factors");
         }
 
-
-        /*===========================================
-          INITIALIZE PAGE
-        ===========================================*/
         async function init() {
-            allData = await fetchData(); // Load data
+            allData = await fetchData();
 
             if (allData.length === 0) {
                 console.warn("No data available to display");
@@ -495,11 +423,9 @@
             console.log("Chart Data:", chartData);
 
             if (chartData.length > 0) {
-                // Hide loading message once ready
                 document.getElementById("loading-message").style.display = "none";
                 drawChart(chartData);
 
-                // Redraw chart on window resize (debounced)
                 let resizeTimeout;
                 window.addEventListener("resize", () => {
                     clearTimeout(resizeTimeout);
@@ -510,7 +436,6 @@
             }
         }
 
-        // Run initialization
         init();
     </script>
 </body>
