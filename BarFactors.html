@@ -549,14 +549,21 @@
                 .style("fill", "#000000")
                 .text("Number of Diseases");
 
+            // X-axis title showing all factor names
             const allFactors = chartData.map(d => d.factor).join(", ");
-            svg.append("text")
-                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+            // X-axis title showing all factor names
+            const allFactors = chartData.map(d => d.factor).join(", ");
+            const xAxisTitle = svg.append("g")
+                .attr("transform", `translate(0, ${height + 20})`);
+            
+            xAxisTitle.append("text")
                 .style("text-anchor", "middle")
                 .style("fill", "#000000")
-                .style("font-size", "12px")
-                .text(allFactors)
-                .style("word-wrap", "break-word");
+                .style("font-size", "13px")
+                .style("font-weight", "500")
+                .attr("x", width / 2)
+                .attr("y", margin.bottom - 30)
+                .text(allFactors);
         }
 
         async function init() {
