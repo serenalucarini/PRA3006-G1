@@ -134,7 +134,7 @@
           margin: 0.5rem 0 0 0;
         }
         .footer {
-          position: absolute;
+          position: fixed;
           left: 0;
           bottom: 0;
           width: 100%;
@@ -306,9 +306,19 @@
 </head>
 <body>
     <div class="header">
-        <div><a href="BarCharts.html">← Back</a></div>
-        <h1 class="title">Diseases per risk factor</h1>
-        <div style="width: 60px;"></div>
+        <div class="header-left">
+            <a class="nav-link" href="index.html">Back</a>
+            <a class="nav-link" href="AboutUs.html">Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006</a>
+        </div>
+
+        <div class="header-center">
+            <h1 class="title">Bar chart showing risk factors vs. diseases</h1>
+        </div>
+
+        <div class="header-right">
+            <img src="um_logo.png" alt="Logo of Maastricht University" width="44.8" height="55">
+        </div>
     </div>
 
     <div class="body">
@@ -332,12 +342,31 @@
     </div>
 
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28" style="opacity:0.5;">
-        <div class="title"><a href="AboutUs.html">About Us</a></div>
-        <small class="footer_date">
-            <p>created: 31/10/2025</p>
-            <p>last updated: 24/11/2025</p>
+
+      <!-- left section -->
+      <div>
+        <div class="title">Potential effects and risks of smoking</div>
+        <small>
+          <a class="nav-link" href="https://github.com/serenalucarini/PRA3006-G1">Access to Github</a>
         </small>
+      </div>
+
+      <!-- center section -->
+      <div>
+        <div class="title">About:</div>
+        <a class="nav-link" href="AboutUs.html">The Developers</a>
+        <a class="nav-link" href="Course.html">PRA3006 Course</a>
+        <a class="nav-link" href="https://www.maastrichtuniversity.nl/education/bachelor/programmes/maastricht-science-programme">Maastricht Science Programme</a>
+      </div>
+
+      <!-- right section -->
+      <div>
+        <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
+        <div class="footer_date">
+            <p>created: 2025/10/31</p>
+            <p>last updated: 2025/11/21</p>
+        </div>
+      </div> 
     </div>
 
     <script> 
