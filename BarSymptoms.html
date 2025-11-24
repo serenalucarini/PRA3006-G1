@@ -23,35 +23,37 @@
             box-sizing: border-box;
         }
 
-        /* Header sits at the top of the viewport */
-        .header {
-            top: 0;
-            padding: 0 15%;
-        }
+        :root {
+    --header-height: 80px;
+    --footer-height: 80px;
+    }
 
-        /* Footer sits at the bottom of the viewport */
-        .footer {
-            bottom: 0;
-            padding: 0 2%;
-        }
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        z-index: 100;
+    }
 
-        /* 
-         Main body area: instead of fixing a height, anchor the bottom to
-         the top of the footer (bottom: 15%). This ensures the body
-         always fits between header and footer and prevents overlap.
-        */
-        .body {
-            position: fixed;
-            top: 15%;
-            bottom: 15%;
-            left: 0;
-            width: 100%;
-            color: black;
-            padding: 2rem;
-            overflow: auto;
-            display: flex;
-            gap: 2rem;
-        }
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--footer-height);
+        z-index: 100;
+    }
+
+    .body {
+        position: fixed;
+        top: var(--header-height);
+        bottom: var(--footer-height);
+        left: 0;
+        width: 100%;
+    }
+    
 
         /* Centered title inside the header */
         .title {
