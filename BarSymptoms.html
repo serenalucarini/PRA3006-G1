@@ -152,7 +152,7 @@
           z-index: 10;
         }
         
-        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width=calc(100% / 3); }
+        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width:calc(100% / 3); }
         
         }
         .footer .title {
@@ -296,7 +296,7 @@
                 flex-direction: column;
             }
 
-            #diseases-panel {
+            #symptoms-panel {
                 flex: 0 0 auto;
                 min-height: 250px;
                 max-height: 300px;
@@ -452,7 +452,7 @@
             // Convert grouped data into array format with disease name and symptom count
             return Array.from(groupedByDisease, ([disease, values]) => {
                 // Create a Set to count only unique symptoms (removes duplicates)
-                const uniqueSymptoms = new Set(values.map(v => v.symptomsLabel));
+                const uniqueSymptoms = new Set(values.map(v => v.symptomLabel));
                 return {
                     disease: disease,
                     count: uniqueSymptoms.size
