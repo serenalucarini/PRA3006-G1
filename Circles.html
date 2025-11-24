@@ -334,30 +334,74 @@
 </head>
     
 <body>
+    <!-- header with navigation and university logo -->
     <div class="header">
-        <div><a href="index.html">Homepage</a></div>
-        <h1 class="title">Smoking circles</h1>
-        <div></div>
-    </div>
-    
-    <div class="body">
-        <div id="loading-message">Loading data...</div>
-        <h1>Smoking circles</h1>
-        <p>Here we put the graphs.</p>
-        <p>Here we explain how the graphs work.</p>
+        <div class="header-left">
+            <a class="nav-link" href="BarCharts.html">Back</a>
+            <a class="nav-link" href="AboutUs.html">Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006</a>
+        </div>
+
+        <div class="header-center">
+            <h1 class="title">Bar chart showing risk factors vs. diseases</h1>
+        </div>
+
+        <div class="header-right">
+            <img src="um_logo.png" alt="Logo of Maastricht University" width="44.8" height="55">
+        </div>
     </div>
 
-    <div id="circle" class="circle">
-        <div id="tooltip" class="tooltip"></div>
+    <!-- main content area containing chart and side panel -->
+    <div class="body">
+        <div id="chart-wrapper">
+            <!-- loading message displayed while fetching data -->
+            <div id="loading-message">Loading data...</div>
+            
+            <!-- introductory information about the chart -->
+            <div class="intro-box" role="region" aria-label="Introductory text">
+                <h2>Overview</h2>
+                <p>
+                    This graph shows this.
+                </p>
+            </div>
+            
+            <!-- the D3 chart will be rendered here -->
+            <div id="barchart-container"></div>
+        </div>
+
+        <!-- side panel that displays diseases related to the selected risk factor -->
+        <div id="diseases-panel" aria-hidden="true">
+            <div class="diseases-title" id="selected-factor"></div>
+            <ul class="diseases-list" id="diseases-list"></ul>
+        </div>
     </div>
-    
+
+    <!-- footer with project information and links -->
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
-        <div class="title"><a href="AboutUs.html">About Us</a></div>
-        <small class="footer_date">
-            <p>created: 2025/10/31</p>
-            <p>last updated: 2025/11/21</p>
-        </small>
+        <!-- left section: project title and github link -->
+        <div>
+            <div class="title">Potential effects and risks of smoking</div>
+            <small>
+                <a class="nav-link" href="https://github.com/serenalucarini/PRA3006-G1">Access to Github</a>
+            </small>
+        </div>
+
+        <!-- center section: about links -->
+        <div>
+            <div class="title">About:</div>
+            <a class="nav-link" href="AboutUs.html">The Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006 Course</a>
+            <a class="nav-link" href="https://www.maastrichtuniversity.nl/education/bachelor/programmes/maastricht-science-programme">Maastricht Science Programme</a>
+        </div>
+
+        <!-- right section: disclaimer and creation dates -->
+        <div>
+            <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
+            <div class="footer_date">
+                <p>created: 2025/10/31</p>
+                <p>last updated: 2025/11/24</p>
+            </div>
+        </div> 
     </div>
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
