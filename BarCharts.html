@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<!--
-  Document type declaration: HTML5.
-  Tells the browser to render the page in standards mode.
--->
+<!-- HTML5 document type declaration - tells browser to use modern standards -->
 <html lang="en">
-<!--
-  Root html element. lang="en" signals that the primary language is English.
--->
+<!-- Root element with lang="en" to indicate page is in English -->
 <head>
-    <!--
-      Document head: contains metadata, title, styles, and other resources.
-    -->
+    <!-- Head section contains metadata, title, and styles -->
     <meta charset="utf-8">
-    <!--
-      Character encoding declaration: UTF-8 to support most characters.
-    -->
+    <!-- Character encoding set to UTF-8 to support most international characters -->
     <title>Select Bar Chart - Diseases and risk factors related to smoking</title>
-    <!--
-      The page title that appears in the browser tab and search engine results.
-    -->
+    <!-- Page title that shows in browser tab and search results -->
     <style>
+        /* reset all default margins and padding for consistent styling */
         * {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
         }
 
+        /* make html and body fill entire screen and set background color */
         html, body {
           height: 100%;
           width: 100%;
@@ -33,7 +24,7 @@
           background-color: #FBF9F1;
         }
 
-        /* Fixed header */
+        /* header stays at top and doesnt scroll with content */
         .header {
           position: fixed;
           left: 0;
@@ -49,6 +40,7 @@
           z-index: 10;
         }
 
+        /* divides header into 3 equal sections: left nav, center title, right logo */
         .header-left,
         .header-center,
         .header-right {
@@ -60,6 +52,7 @@
         .header-center { flex: 1; justify-content: center; }
         .header-right { flex: 1; justify-content: flex-end; }
 
+        /* styling for the main title in header */
         .title {
           margin: 0;
           font-size: 1.1rem;
@@ -67,7 +60,7 @@
           text-align: center;
         }
 
-        /* Make anchor look like plain text while remaining clickable */
+        /* navigation links styled to look like plain text but are clickable */
         .nav-link {
           color: inherit;
           text-decoration: none;
@@ -78,6 +71,8 @@
           outline: 2px solid rgba(0,0,0,0.15);
           outline-offset: 2px;
         }
+
+        /* main content area positioned below header and above footer */
         .body {
           position: relative;
           top: 80px;
@@ -91,10 +86,11 @@
           overflow-y: auto;
           overflow-x: hidden;
         }
-        /* Rounded content box for placing text */
+
+        /* rounded box for intro text at top of page */
         .intro-box {
           max-width: 900px;
-          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          margin: 0 auto 1.25rem auto; /* centers horizontally */
           background: #fff;
           border-radius: 12px;
           padding: 1.5rem 1.75rem;
@@ -110,7 +106,7 @@
           color: #222;
         }
 
-        /* Links placed under the box */
+        /* styling for optional navigation links under the intro box */
         .body-links {
           max-width: 900px;
           margin: 0.25rem auto 2rem auto;
@@ -121,8 +117,8 @@
           flex-wrap: wrap;
         }
         .content-link {
-          color: inherit;           /* looks like normal text */
-          text-decoration: none;    /* remove underline by default */
+          color: inherit;
+          text-decoration: none;
           padding: 0.25rem 0.5rem;
           border-radius: 6px;
           transition: color 120ms ease, background 120ms ease;
@@ -130,8 +126,10 @@
         .content-link:hover {
           text-decoration: underline;
           color: rgba(118, 97, 97, 1);
-          background: rgba(118, 97, 97, 0.2); /* 20% opacity */
+          background: rgba(118, 97, 97, 0.2);
         }
+
+        /* styling for content sections with images and text */
         .content-section {
           max-width: 900px;
           margin: 1.5rem auto;
@@ -145,6 +143,8 @@
         .content-section p {
           margin: 0.5rem 0 0 0;
         }
+
+        /* footer positioned at bottom of page */
         .footer {
           position: absolute;
           left: 0;
@@ -160,9 +160,10 @@
           z-index: 10;
         }
         
-        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width=calc(100% / 3); }
+        /* divide footer into 3 equal columns */
+        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width: calc(100% / 3); }
         
-        }
+        /* styling for footer text */
         .footer .title {
           margin: 0;
           font-size: 0.95rem;
@@ -195,6 +196,7 @@
           text-align: center;
         }
   
+        /* container that holds all the chart selection options */
         .chart-selector {
             display: flex;
             gap: 2rem;
@@ -203,7 +205,7 @@
             flex-wrap: wrap;
         }
         
-        /* Each chart option stacks the button and description vertically */
+        /* each chart option is a column containing a button and description */
         .chart-option {
             display: flex;
             flex-direction: column;
@@ -211,15 +213,12 @@
             gap: 1rem;
         }
         
-        /*
-          Chart button base styles:
-          - padding for a larger click target
-          - legible font size
-          - purple background with white text
-          - rounded corners and pointer cursor for affordance
-          - transitions for a subtle hover effect
-          - displayed as inline-block to respect padding and size when used as an anchor
-        */
+        /* styling for the chart buttons
+           - padding makes them larger and easier to click
+           - light background with rounded corners
+           - pointer cursor shows it's clickable
+           - transitions create smooth hover animation
+           - inline-block so padding and sizing work properly */
         .chart-button {
             padding: 1.5rem 2rem;
             font-size: 1.1rem;
@@ -233,13 +232,16 @@
             display: inline-block;
         }
         
-        /* Hover state for chart button to indicate interactivity */
+        /* button hover state - background becomes slightly darker to show interactivity */
         .chart-button:hover {
             color: black;
             background: rgba(118, 97, 97, 0.2);
         }
         
-        /* Chart description styling: subdued color, small font, centered, limited width */
+        /* styling for the description text under each button
+           - gray color and small font so it doesnt distract from button
+           - limited width so text doesnt stretch too wide
+           - centered alignment to match button layout */
         .chart-description {
             color: #666;
             font-size: 0.9rem;
@@ -249,75 +251,61 @@
     </style>
 </head>
 <body>
-    <!--
-      Page header:
-      - left side contains a link to the homepage (index.html)
-      - center (visually) contains the main title "Smoking"
-      Note: the header uses absolute positioning for the title via the .title class.
-    -->
+    <!-- header section with navigation and logo -->
     <div class="header">
         <div class="header-left">
+            <!-- links to go back to home page and other info pages -->
             <a class="nav-link" href="index.html">Back</a>
             <a class="nav-link" href="AboutUs.html">Developers</a>
             <a class="nav-link" href="Course.html">PRA3006</a>
         </div>
 
+        <!-- main page title -->
         <div class="header-center">
             <h1 class="title">Bar charts</h1>
         </div>
 
+        <!-- university logo on right side -->
         <div class="header-right">
             <img src="um_logo.png" alt="Logo of Maastricht University" width="44.8" height="55">
         </div>
     </div>
     
-    <!--
-      Main scrollable content area where users choose which bar chart to view.
-      Positioned between the fixed header and footer.
-    -->
+    <!-- main content area where users select which chart to view -->
     <div class="body">
+      <!-- intro text explaining the page purpose -->
       <div class="intro-box" role="region" aria-label="Introductory text">
             <h2>Choose a bar chart</h2>
             <p>
                 Select the bar chart that you would like to visualise.
             </p>
         </div>
-        <!-- Page heading for the selection interface -->
     
-        <!--
-          Container that holds the chart selection options.
-          Each option contains a button (link styled as a button) and a short description.
-        -->
+        <!-- container holding both chart selection options -->
         <div class="chart-selector">
-            <!-- First chart option -->
+            <!-- FIRST CHART OPTION: Risk Factors vs. Diseases -->
             <div class="chart-option">
-                <!--
-                  Link to the first bar chart page (BarFactors.html).
-                  Styled with .chart-button to look like a button.
-                -->
+                <!-- link to risk factors chart page styled as a button -->
                 <a href="BarFactors.html" class="chart-button">Risk Factors vs. Diseases</a>
 
-                <!-- Short description summarizing the content of Bar Chart 1 -->
+                <!-- description explaining what this chart shows -->
                 <p class="chart-description">This bar chart will display the number of diseases related to smoking for each risk factor related to smoking. </p>
             </div>
             
-            <!-- Second chart option -->
+            <!-- SECOND CHART OPTION: Diseases vs. Symptoms -->
             <div class="chart-option">
-                <!-- Link to the second bar chart page (BarSymptoms.html) -->
+                <!-- link to symptoms chart page styled as a button -->
                 <a href="BarSymptoms.html" class="chart-button">Diseases vs. Symptoms</a>
 
-                <!-- Description summarizing the content of Bar Chart 2 -->
+                <!-- description explaining what this chart shows -->
                 <p class="chart-description">This bar chart will display the number of symptoms related to smoking for each disease related to smoking.</p>
             </div>
         </div>
     </div>
     
-    <!--
-      Page footer:
-      - contains an image (university logo), a link to About Us, and timestamps
-      - fixed at the bottom of the viewport
-    -->
+    <!-- footer with project info and important links -->
     <div class="footer">
+      <!-- left section: project title and github link -->
       <div>
         <div class="title">Potential effects and risks of smoking</div>
         <small>
@@ -325,7 +313,7 @@
         </small>
       </div>
 
-      <!-- center section -->
+      <!-- center section: about page links -->
       <div>
         <div class="title">About:</div>
         <a class="nav-link" href="AboutUs.html">The Developers</a>
@@ -333,7 +321,7 @@
         <a class="nav-link" href="https://www.maastrichtuniversity.nl/education/bachelor/programmes/maastricht-science-programme">Maastricht Science Programme</a>
       </div>
 
-      <!-- right section -->
+      <!-- right section: disclaimer and dates -->
       <div>
         <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
         <div class="footer_date">
