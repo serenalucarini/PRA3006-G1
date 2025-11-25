@@ -103,7 +103,8 @@ function nodeRadius(d) {
     if (d.type === "disease") return 45;   // big center
     if (d.type === "symptoms" || d.type === "risk") return 35; // category
     return 22; // children
-    
+}
+
 function nodeColor(d) {
     if (d.type === "disease") return "#7393B3";          // steel-ish blue
     if (d.type === "symptoms") return "#00008B";         // dark blue
@@ -133,26 +134,19 @@ const drag = d3.drag()
 
 // Functions to expand graph
 function collapseChildren(parentLabel) {
-    // get all children for removal
-    const children = nodes.filter(n => n.parent === parentLabel);
-    // remove child nodes safely
-    children.forEach(child => {
-        const index = nodes.indexOf(child);
-        if (index !== -1) {
-            nodes.splice(index, 1);
-        }
-    });
+    const childNames = nodes
+        .filter(n => n.parent === parentLabel)
+        .map(n => n.name);
 
     // remove links involving those children
-    for (let i = links.length - 1; i >= 0; i--) {
-        const s = typeof links[i].source === "string" ? links[i].source : links[i].source.name;
-        const t = typeof links[i].target === "string" ? links[i].target : links[i].target.name;
-
-        if (children.some(c => c.name === s || c.name === t)) {
-            links.splice(i, 1);
-        }
-    }
+    nodes = nodes.filter(n => n.parent !== parentLabel);
+    links = links.filter(l => {
+        const s = typeof l.source === "string" ? l.source : l.source.name;
+        const t = typeof l.target === "string" ? l.target : l.target.name;
+        return !childNames.includes(s) && !childNames.includes(t);
+    });
 }
+
 // Symptoms toggle
 async function toggleSymptoms() {
     // COLLAPSE
@@ -164,7 +158,6 @@ async function toggleSymptoms() {
     }
     // EXPAND
     expandedSymptoms = true;
-
     const symptoms = await fetchSymptoms(diseaseName);
 
     if (symptoms.length === 0) {
@@ -217,107 +210,109 @@ async function toggleRiskFactors() {
 // Re-render everything after expanding (smooth animations)
 
 function restartSimulation() {
+    // update link force with current links array
+    sim.force("link").links(links);
 
-    // update links
+    // LINKS
     link = linkGroup.selectAll("line")
-        .data(links)
-        .join(
-            enter => enter.append("line")
-                .attr("stroke", "#ccc")
-                .attr("stroke-opacity", 0)
-                .call(enter => enter.transition().duration(300)
-                    .attr("stroke-opacity", 1)),
-            update => update,
-            exit => exit.transition().duration(250)
-                .attr("stroke-opacity", 0)
-                .remove()
-        );
+        .data(links, d => {
+            const s = typeof d.source === "string" ? d.source : d.source.name;
+            const t = typeof d.target === "string" ? d.target : d.target.name;
+            return s + "->" + t;
+        });
 
-    // update nodes
+    link.exit().remove();
+
+    const linkEnter = link.enter()
+        .append("line")
+        .attr("stroke", "#ccc")
+        .attr("stroke-opacity", 0);
+
+    linkEnter.transition().duration(300)
+        .attr("stroke-opacity", 1);
+
+    link = linkEnter.merge(link);
+
+    // NODES
     node = nodeGroup.selectAll("circle")
-        .data(nodes, d => d.name)
-        .join(
-            enter => {
-                const c = enter.append("circle")
-                    .attr("r", 0)
-                    .attr("fill", d => nodeColor(d))
-                    .style("opacity", 0)
-                    .style("cursor", d =>
-                        d.type === "symptoms" || d.type === "risk"
-                            ? "pointer"
-                            : "default"
-                    )
-                    .on("click", (event, d) => {
-                        if (d.type === "symptoms") toggleSymptoms();
-                        if (d.type === "risk") toggleRiskFactors();
-                    })
-                    .on("mouseover", (event, d) => {
-                        // show tooltip only for children & no-data nodes
-                        if (
-                            d.type === "symptomDetail" ||
-                            d.type === "riskDetail" ||
-                            d.type === "noSymptoms" ||
-                            d.type === "noRisks"
-                        ) {
-                            tooltip
-                                .style("opacity", 1)
-                                .html(d.name);
-                        }
-                    })
-                    .on("mousemove", (event) => {
-                        tooltip
-                            .style("left", (event.pageX + 10) + "px")
-                            .style("top", (event.pageY - 10) + "px");
-                    })
-                    .on("mouseout", () => {
-                        tooltip.style("opacity", 0);
-                    })
-                    .call(drag);
+        .data(nodes, d => d.name);
 
-                c.transition()
-                    .duration(400)
-                    .attr("r", d => nodeRadius(d))
-                    .style("opacity", 1);
+    node.exit()
+        .transition().duration(250)
+        .attr("r", 0)
+        .style("opacity", 0)
+        .remove();
 
-                return c;
-            },
-            update => update.transition()
-                .duration(300)
-                .attr("fill", d => nodeColor(d))
-                .attr("r", d => nodeRadius(d)),
-            exit => exit.transition()
-                .duration(250)
-                .attr("r", 0)
-                .style("opacity", 0)
-                .remove()
-        );
+    const nodeEnter = node.enter()
+        .append("circle")
+        .attr("r", 0)
+        .attr("fill", d => nodeColor(d))
+        .style("opacity", 0)
+        .style("cursor", d =>
+            d.type === "symptoms" || d.type === "risk" ? "pointer" : "default"
+        )
+        .on("click", (event, d) => {
+            if (d.type === "symptoms") toggleSymptoms();
+            if (d.type === "risk") toggleRiskFactors();
+        })
+        .on("mouseover", (event, d) => {
+            if (
+                d.type === "symptomDetail" ||
+                d.type === "riskDetail" ||
+                d.type === "noSymptoms" ||
+                d.type === "noRisks"
+            ) {
+                tooltip
+                    .style("opacity", 1)
+                    .html(d.name);
+            }
+        })
+        .on("mousemove", (event) => {
+            tooltip
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", () => {
+            tooltip.style("opacity", 0);
+        })
+        .call(drag);
 
-    // labels ONLY for main + category nodes
+    nodeEnter.transition().duration(400)
+        .attr("r", d => nodeRadius(d))
+        .style("opacity", 1);
+
+    node = nodeEnter.merge(node)
+        .attr("fill", d => nodeColor(d));
+
+    // LABELS – only for main + category nodes
     const labelData = nodes.filter(d =>
         d.type === "disease" || d.type === "symptoms" || d.type === "risk"
     );
 
     label = labelGroup.selectAll("text")
-        .data(labelData, d => d.name)
-        .join(
-            enter => enter.append("text")
-                .text(d => d.name)
-                .attr("font-size", d => d.type === "disease" ? "18px" : "14px")
-                .attr("font-weight", d => d.type === "disease" ? "bold" : "normal")
-                .attr("text-anchor", "middle")
-                .attr("dy", 5)
-                .style("opacity", 0)
-                .transition().duration(400)
-                .style("opacity", 1),
-            update => update,
-            exit => exit.transition().duration(250)
-                .style("opacity", 0)
-                .remove()
-        );
+        .data(labelData, d => d.name);
 
-    // restart simulation with new data
+    label.exit()
+        .transition().duration(250)
+        .style("opacity", 0)
+        .remove();
+
+    const labelEnter = label.enter()
+        .append("text")
+        .text(d => d.name)
+        .attr("font-size", d => d.type === "disease" ? "18px" : "14px")
+        .attr("font-weight", d => d.type === "disease" ? "bold" : "normal")
+        .attr("text-anchor", "middle")
+        .attr("dy", 5)
+        .style("opacity", 0);
+
+    labelEnter.transition().duration(400)
+        .style("opacity", 1);
+
+    label = labelEnter.merge(label);
+
+    // update simulation with new nodes
     sim.nodes(nodes);
-    sim.force("link").links(links);
     sim.alpha(1).restart();
 }
 
@@ -332,9 +327,15 @@ sim.on("tick", () => {
         .attr("y2", d => d.target.y);
 
     node
-        .attr("cx", d => d.x = Math.max(50, Math.min(width - 50, d.x)))
-        .attr("cy", d => d.y = Math.max(50, Math.min(height - 50, d.y)));
-
+        .attr("cx", d => {
+            d.x = Math.max(nodeRadius(d) + 10, Math.min(width - nodeRadius(d) - 10, d.x));
+            return d.x;
+        })
+        .attr("cy", d => {
+            d.y = Math.max(nodeRadius(d) + 10, Math.min(height - nodeRadius(d) - 10, d.y));
+            return d.y;
+        });
+        
     label
         .attr("x", d => d.x)
         .attr("y", d => d.y - 28);

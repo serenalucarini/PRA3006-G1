@@ -3,186 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disease Risk Factors Visualization</title>
+    <title>Bar chart: Diseases vs. Symptoms</title>
 
-    <!-- Include D3.js from CDN -->
+    <!-- Load D3.js library from CDN for data visualization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
     <style>
-        /* Page header and footer share some common styles (fixed, full width) */
-        .header, .footer {
-            position: fixed;
-            left: 0;
-            width: 100%;
-            height: 15%;
-            background-color: Lavender;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-sizing: border-box;
+        /* reset margins and padding to start fresh */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
 
-        /* Header sits at the top of the viewport */
+        /* make html and body fill entire screen */
+        html, body {
+          height: 100%;
+          width: 100%;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+          background-color: #FBF9F1;
+        }
+
+        /* header stays at top of page, doesnt scroll */
         .header {
-            top: 0;
-            padding: 0 15%;
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 10%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2rem;
+          box-sizing: border-box;
+          z-index: 10;
         }
 
-        /* Footer sits at the bottom of the viewport */
-        .footer {
-            bottom: 0;
-            padding: 0 2%;
+        /* divides header into 3 equal parts for nav, title, and logo */
+        .header-left,
+        .header-center,
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
         }
+        .header-left { flex: 1; justify-content: flex-start; }
+        .header-center { flex: 1; justify-content: center; }
+        .header-right { flex: 1; justify-content: flex-end; }
 
-        /* 
-         Main body area: instead of fixing a height, anchor the bottom to
-         the top of the footer (bottom: 15%). This ensures the body
-         always fits between header and footer and prevents overlap.
-        */
-        .body {
-            position: fixed;
-            top: 15%;
-            bottom: 15%;
-            left: 0;
-            width: 100%;
-            color: black;
-            padding: 2rem;
-            overflow: auto;
-            display: flex;
-            gap: 2rem;
-        }
-
-        /* Centered title inside the header */
+        /* title styling */
         .title {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            margin: 0;
+          margin: 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+          text-align: center;
         }
 
-        /* Small right-aligned footer date column */
+        /* links look like normal text but are clickable */
+        .nav-link {
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          font-size: 1rem;
+        }
+        .nav-link:focus {
+          outline: 2px solid rgba(0,0,0,0.15);
+          outline-offset: 2px;
+        }
+
+        /* main content area - starts below header, stays above footer */
+        .body {
+          position: relative;
+          top: 80px;
+          left: 0;
+          width: 100%;
+          height: auto;
+          min-height: calc(100vh - 15% - 20%);
+          color: black;
+          padding: 2rem;
+          padding-bottom: 3.5rem;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding-bottom: 15%;
+          marging: 0;
+        }
+
+        /* box at top with description text */
+        .intro-box {
+          max-width: 900px;
+          margin: 0 auto 1.25rem auto;
+          background: #fff;
+          border-radius: 12px;
+          padding: 1.5rem 1.75rem;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+          color: #111;
+        }
+        .intro-box h2 {
+          margin-bottom: 0.5rem;
+          font-size: 1.25rem;
+        }
+        .intro-box p {
+          line-height: 1.5;
+          color: #222;
+        }
+
+        /* styling for navigation links under the intro box */
+        .body-links {
+          max-width: 900px;
+          margin: 0.25rem auto 2rem auto;
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        .content-link {
+          color: inherit;
+          text-decoration: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 6px;
+          transition: color 120ms ease, background 120ms ease;
+        }
+        .content-link:hover {
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+          background: rgba(118, 97, 97, 0.2);
+        }
+
+        /* styling for content sections */
+        .content-section {
+          max-width: 900px;
+          margin: 1.5rem auto;
+          display: flex;
+          gap: 1.5rem;
+          align-items: flex-start;
+        }
+        .content-section img {
+          flex-shrink: 0;
+        }
+        .content-section p {
+          margin: 0.5rem 0 0 0;
+        }
+
+        /* footer stays at bottom, doesnt scroll */
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          height: 15%;
+          background-color: #E5E1DA;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2%;
+          box-sizing: border-box;
+          z-index: 10;
+        }
+        
+        /* divide footer into 3 equal columns */
+        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width:calc(100% / 3); }
+        
+        /* footer text styling */
+        .footer .title {
+          margin: 0;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-align: center;
+        }
+        .footer .title p {
+          margin: 0;
+        }    
+        .footer .nav-link {
+          font-size: 0.85rem;
+          color: inherit;
+          text-decoration: none;
+          cursor: pointer;
+          pointer-events: auto;
+          display: inline-block;
+          position: relative;
+          z-index: 20;
+        }
+        .footer .nav-link:hover {
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+        }
+        .footer .nav-link.title {
+          font-size: 0.95rem;
+          font-weight: 600;
+        }
         .footer_date {
-            text-align: right;
+          font-size: 0.85rem;
+          text-align: center;
         }
 
-        /* Loading message shown while fetching data */
+        /* flex container for chart - takes up most of the space */
+        #chart-wrapper {
+            flex: 1;
+            min-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* shows while waiting for data to load */
         #loading-message {
+            padding: 20px;
+            font-size: 16px;
+            background-color: white;
+            border-radius: 8px;
             text-align: center;
-            font-size: 18px;
-            color: #333;
-            margin: 20px 0;
         }
 
-        /* Container that will hold the chart SVG */
+        /* where the actual D3 chart gets drawn */
         #barchart-container {
             flex: 1;
-            min-width: 500px;
-            /* ensure that the container allows space for axis labels */
-            padding-bottom: 1rem;
+            min-height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
-        /* Side panel that lists symptoms for the selected disease */
+        /* side panel that shows symptoms - hidden until you click a bar */
         #symptoms-panel {
-            flex: 0 0 400px;
-            background-color: #f5f5f5;
+            flex: 0 0 350px;
+            background-color: white;
             border: 2px solid #FF69B4;
             border-radius: 8px;
             padding: 20px;
             overflow-y: auto;
             display: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Activate the panel when a disease is selected */
+        /* make panel visible when a disease is selected */
         #symptoms-panel.active {
             display: block;
         }
 
+        /* styling for the title in symptoms panel */
         .symptoms-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #FF69B4;
             margin-bottom: 15px;
+            border-bottom: 2px solid #FF69B4;
+            padding-bottom: 10px;
         }
 
+        /* remove the bullet points from the list */
         .symptoms-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .symptom-item {
-            background-color: white;
-            padding: 10px 12px;
+        /* styling for each symptom item in the list */
+        .symptoms-item {
+            background-color: #f9f9f9;
+            padding: 12px;
             margin-bottom: 8px;
             border-left: 4px solid #FF69B4;
             border-radius: 4px;
             font-size: 14px;
+            line-height: 1.4;
         }
 
-        /* Utility class to hide elements */
-        .hidden {
-            display: none;
-        }
-
-        /* Bar styling and hover effects */
+        /* bars have smooth transitions and change cursor on hover */
         .bar {
             transition: opacity 0.3s, fill 0.3s;
             cursor: pointer;
         }
 
+        /* bars get slightly transparent on hover */
         .bar:hover {
             opacity: 0.8;
+            filter: brightness(1.1);
         }
 
-        /* Active bar highlight */
+        /* selected bar gets highlighted in bright pink with a glow */
         .bar.active {
             fill: #FF1493 !important;
+            filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.5));
         }
 
-        /* Ensure axis text remains visible on dark/light backgrounds */
-        svg text {
+        /* styling for the axis labels and lines */
+        .axis text {
             fill: #000000;
+            font-size: 12px;
+        }
+
+        .axis line, .axis path {
+            stroke: #ccc;
+        }
+
+        /* responsive design - stack layout on smaller screens */
+        @media (max-width: 1200px) {
+            .body {
+                flex-direction: column;
+            }
+
+            #symptoms-panel {
+                flex: 0 0 auto;
+                min-height: 250px;
+                max-height: 300px;
+            }
+            .intro-box {
+              max-width: 900px;
+              margin: 0 auto 1.25rem auto;
+              background: #fff;
+              border-radius: 12px;
+              padding: 1.5rem 1.75rem;
+              box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+              color: #111;
+            }
+            .intro-box h2 {
+              margin-bottom: 0.5rem;
+              font-size: 1.25rem;
+            }
+            .intro-box p {
+              line-height: 1.5;
+              color: #222;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header: back link, descriptive paragraph, and centered title -->
+    <!-- header with navigation -->
     <div class="header">
-        <div><a href="BarCharts.html">Back</a></div>
-        <p>For each disease linked to smoking, all the symptoms of that disease were extracted. Each symptom is linked to multiple disease. Click on a disease to see its symptoms.</p>
-        <h1 class="title">Symptoms per Disease</h1>
-        <div></div>
+        <div class="header-left">
+            <a class="nav-link" href="BarCharts.html">Back</a>
+            <a class="nav-link" href="AboutUs.html">Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006</a>
+        </div>
+
+        <div class="header-center">
+            <h1 class="title">Bar chart showing diseases vs. symptoms</h1>
+        </div>
+
+        <div class="header-right">
+            <img src="um_logo.png" alt="Logo of Maastricht University" width="44.8" height="55">
+        </div>
     </div>
 
-    <!--
-      Body: left side contains the chart, right side contains the symptoms list.
-      Because .body is anchored with top:15% and bottom:15%, it will not be overlapped by header/footer.
-    -->
+    <!-- main content -->
     <div class="body">
-        <div style="flex: 1;">
-            <!-- Loading message while SPARQL fetch runs -->
+        <div id="chart-wrapper">
+            <!-- shows while loading data -->
             <div id="loading-message">Loading data...</div>
-            <!-- Chart will be inserted into this container -->
+            
+            <!-- intro text -->
+            <div class="intro-box" role="region" aria-label="Introductory text">
+                <h2>Overview</h2>
+                <p>
+                    This graph shows this.
+                </p>
+            </div>
+            
+            <!-- chart goes here -->
             <div id="barchart-container"></div>
         </div>
 
-        <!-- Sidebar panel that shows symptoms for a selected disease -->
-        <div id="symptoms-panel">
+        <!-- side panel that shows symptoms for selected disease -->
+        <div id="symptoms-panel" aria-hidden="true">
             <div class="symptoms-title" id="selected-disease"></div>
             <ul class="symptoms-list" id="symptoms-list"></ul>
         </div>
     </div>
 
-    <!-- Footer: simple logo, about link, and timestamps -->
+    <!-- footer with links and info -->
     <div class="footer">
-        <img src="um_logo.png" alt="Logo of Maastricht University" width="44.92" height="50.28">
-        <div class="title"><a href="AboutUs.html">About Us</a></div>
-        <small class="footer_date">
-            <p>created: 2025/31/10</p>
-            <p>last updated: 2025/11/21</p>
-        </small>
+        <div>
+            <div class="title">Potential effects and risks of smoking</div>
+            <small>
+                <a class="nav-link" href="https://github.com/serenalucarini/PRA3006-G1">Access to Github</a>
+            </small>
+        </div>
+
+        <div>
+            <div class="title">About:</div>
+            <a class="nav-link" href="AboutUs.html">The Developers</a>
+            <a class="nav-link" href="Course.html">PRA3006 Course</a>
+            <a class="nav-link" href="https://www.maastrichtuniversity.nl/education/bachelor/programmes/maastricht-science-programme">Maastricht Science Programme</a>
+        </div>
+
+        <div>
+            <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
+            <div class="footer_date">
+                <p>created: 2025/10/31</p>
+                <p>last updated: 2025/11/21</p>
+            </div>
+        </div> 
     </div>
-    <script src="BarSymptoms.js"></script>
+
+    <script src = "BarSymptoms.js"></script>
 </body>
 </html>

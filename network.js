@@ -69,12 +69,14 @@ async function initializeNetwork() {
     const width = window.innerWidth * 0.8;
     const height = window.innerHeight - headerHeight - footerHeight;
 
-    // add nodes
-    const svg = d3.select("#circle")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .style("margin-top", headerHeight + "px");
+    // add nodes + make sure the circle is centered within the barchart
+    const svg = d3.select("#barchart-container")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("display", "flex")
+    .style("justify-content", "center")
+    .style("align-items", "center");
 
     // add links
         const link = svg
@@ -94,6 +96,7 @@ async function initializeNetwork() {
         .attr("fill", d => d.isMain ? "#c5c5ffff" : "#e6e6fa") // color nodes, smoking vs diseases
         .style("cursor", d => d.isMain ? "default" : "pointer") //pointer only on diseases
 
+        /*NATALIA HERE i added this part so that we see the name when we hover over the disease*/
         // Interactive Hover
         .on("mouseover", (event, d) => {
             if (!d.isMain) {
@@ -101,11 +104,15 @@ async function initializeNetwork() {
                 d3.select(event.currentTarget)
                     .attr("fill", "#936bffff") // change colour
                     .attr("r", 20); // increase size
-                tooltip.style("opacity", 1).html(d.name); // show tooltip
+                const tooltip = d3.select("#tooltip");
+        tooltip
+            .style("opacity", 1)
+            .html(d.name)
+            .style("pointer-events", "none");
             }
         })
         .on("mousemove", (event) => { // move tooltip with mouse
-            tooltip
+            d3.select("#tooltip")
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 15) + "px");
         })
@@ -115,9 +122,10 @@ async function initializeNetwork() {
                     .attr("fill", "#e6e6fa")
                     .attr("r", 15);
             }   
-            tooltip.style("opacity", 0);
+            d3.select("#tooltip").style("opacity", 0);
              
         })
+        
     // Interactive click: go to disease page
     .on("click", (event, d) => {
         if (!d.isMain) {
