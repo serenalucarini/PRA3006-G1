@@ -95,7 +95,7 @@ async function draw() { // main function to draw the pie chart
             data: counts,
             backgroundColor: colors,
             borderColor: '#fff',
-            borderWidth: 1
+            borderWidth: 0.5
         }]
         },
         options: { // adds legend, tooltip and title to the pie chart
