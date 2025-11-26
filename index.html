@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Effects and risks of smoking</title> <!-- Page title shown in browser tab -->
+    <title>Effects and risks of smoking</title> <!-- page title shown in browser tab -->
     <style>
         /* asterisk is the universal selector */
         * { 
@@ -47,6 +47,14 @@
         .header-center { flex: 1; justify-content: center; } /* align to center */
         .header-right { flex: 1; justify-content: flex-end; } /* align to right */
 
+        .nav-link {
+          color: inherit; /* uses the color of the parent element */
+          text-decoration: none; 
+          /* makes hyperlink look like plain text while remaining clickable */
+          cursor: pointer; /* on hover, shows pointer cursor */
+          font-size: 1rem;
+        }
+
         .header .nav-link:hover { /* hover effect for links in header */
           text-decoration: underline;
           color: rgba(118, 97, 97, 1);
@@ -54,7 +62,6 @@
 
         .body {
           position: relative; /* relative between header and footer */
-          /*top: 15%; /* starts below the header */
           width: 100%;
           height: auto; /* full height minus header and footer */
           color: black; /* default text color */
@@ -69,14 +76,6 @@
           font-size: 1.25rem; /* makes font 125% of root font size */
           font-weight: 500; /* medium weight, looks bold */
           text-align: center;
-        }
-
-        .nav-link {
-          color: inherit; /* uses the color of the parent element */
-          text-decoration: none; 
-          /* makes hyperlink look like plain text while remaining clickable */
-          cursor: pointer; /* on hover, shows pointer cursor */
-          font-size: 1rem;
         }
 
         .intro-box { /* rounded content box */
@@ -252,7 +251,7 @@
         <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
         <div class="footer_date">
             <p>created: 2025/10/31</p>
-            <p>last updated: 2025/11/21</p>
+            <p>last updated: 2025/11/26</p>
         </div>
       </div>   
         
