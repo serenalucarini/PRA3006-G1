@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<!-- HTML5 document type declaration - tells browser to use modern standards -->
-<html lang="en">
-<!-- Root element with lang="en" to indicate page is in English -->
-<head>
-    <!-- Head section contains metadata, title, and styles -->
-    <meta charset="utf-8">
-    <!-- Character encoding set to UTF-8 to support most international characters -->
-    <title>Bar charts</title>
-    <!-- Page title that shows in browser tab and search results -->
+<!DOCTYPE html> <!-- HTML5 document type declaration - tells browser to use modern standards -->
+<html lang="en"> <!-- root element with lang="en" to indicate page is in English -->
+<head> <!-- head section contains metadata, title, and styles -->
+    <meta charset="utf-8"> <!-- character encoding set to UTF-8 to support most international characters -->
+    <title>Bar charts</title> <!-- page title that shows in browser tab and search results -->
     <style>
         /* reset all default margins and padding for consistent styling */
         * {
@@ -24,124 +19,128 @@
           background-color: #FBF9F1;
         }
 
-        /* header stays at top and doesnt scroll with content */
-        .header {
-          position: fixed;
-          left: 0;
+        .header { 
+          position: fixed; /* stays at the top when scrolling */
           top: 0;
           width: 100%;
-          height: 10%;
+          height: 15%; /* sets header to 15% of viewport height */
           background-color: #E5E1DA;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 2rem;
-          box-sizing: border-box;
-          z-index: 10;
+          display: flex; /* useful for horizontal layouts, makes responsive layots simpler */
+          align-items: center; /* vertically center items */
+          justify-content: space-between; /* distribute items with max space between */
+          padding: 0 2%; /* horizontal padding of 2 (1 rem = root font size) */
+          box-sizing: border-box; /* include padding in width calculation */
+          z-index: 100; /* ensures header is above other content */
         }
 
-        /* divides header into 3 equal sections: left nav, center title, right logo */
-        .header-left,
-        .header-center,
-        .header-right {
+        /*creates three sections within the header*/
+        .header-left, .header-center, .header-right {
+          /* each section takes equal space */
           display: flex;
           align-items: center;
           gap: 1rem;
         }
-        .header-left { flex: 1; justify-content: flex-start; }
-        .header-center { flex: 1; justify-content: center; }
-        .header-right { flex: 1; justify-content: flex-end; }
+        .header-left { flex: 1; justify-content: flex-start; } /* align to left */
+        .header-center { flex: 1; justify-content: center; } /* align to center */
+        .header-right { flex: 1; justify-content: flex-end; } /* align to right */
 
-        /* styling for the main title in header */
-        .title {
+        .nav-link {
+          color: inherit; /* uses the color of the parent element */
+          text-decoration: none; 
+          /* makes hyperlink look like plain text while remaining clickable */
+          cursor: pointer; /* on hover, shows pointer cursor */
+          font-size: 1rem;
+        }
+
+        .header .nav-link:hover { /* hover effect for links in header */
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+        }
+
+        .body {/* main content area positioned below header and above footer */
+          position: relative; /* relative between header and footer */
+          width: 100%;
+          height: auto; /* full height minus header and footer */
+          color: black; /* default text color */
+          padding: 1rem; /* padding around content */
+          padding-top: 10%; /* padding to avoid overlap with fixed header */
+          overflow-y: auto; /* vertical scrollbar if content overflows */
+          overflow-x: hidden; /* hide horizontal overflow */
+        }
+
+        .title { /* style for page title */
           margin: 0;
-          font-size: 1.1rem;
-          font-weight: 600;
+          font-size: 1.25rem; /* makes font 125% of root font size */
+          font-weight: 500; /* medium weight, looks bold */
           text-align: center;
         }
 
-        /* navigation links styled to look like plain text but are clickable */
-        .nav-link {
-          color: inherit;
-          text-decoration: none;
-          cursor: pointer;
-          font-size: 1rem;
-        }
-        .nav-link:focus {
-          outline: 2px solid rgba(0,0,0,0.15);
-          outline-offset: 2px;
-        }
-
-        /* main content area positioned below header and above footer */
-        .body {
-          position: relative;
-          top: 80px;
-          left: 0;
-          width: 100%;
-          height: auto;
-          min-height: calc(100vh - 15% - 20%);
-          color: black;
-          padding: 2rem;
-          padding-bottom: 3.5rem;
-          overflow-y: auto;
-          overflow-x: hidden;
-        }
-
-        /* rounded box for intro text at top of page */
-        .intro-box {
-          max-width: 900px;
-          margin: 0 auto 1.25rem auto; /* centers horizontally */
+        .intro-box { /* rounded content box */
+          max-width: 60%; /* limits box width to 60% of body */
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
           background: #fff;
-          border-radius: 12px;
-          padding: 1.5rem 1.75rem;
+          border-radius: 12px; /* rounded corners */
+          padding: 1.5rem 1.75rem; /* padding inside the box */
           box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-          color: #111;
         }
-        .intro-box h2 {
-          margin-bottom: 0.5rem;
+        .intro-box h2 { /* heading inside the box */
+          margin-bottom: 0.5rem; /* space below heading */
           font-size: 1.25rem;
         }
-        .intro-box p {
-          line-height: 1.5;
-          color: #222;
+        .intro-box p { /* paragraph inside the box */
+          line-height: 1.5; /* interline spacing for better readability */
         }
 
-        /* styling for optional navigation links under the intro box */
-        .body-links {
-          max-width: 900px;
-          margin: 0.25rem auto 2rem auto;
-          display: flex;
-          gap: 1rem;
-          justify-content: center;
-          align-items: center;
-          flex-wrap: wrap;
+        /* container that holds all the chart selection options */
+        .chart-selector {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap; /* allows options to wrap to next line on small screens */
         }
-        .content-link {
-          color: inherit;
-          text-decoration: none;
-          padding: 0.25rem 0.5rem;
-          border-radius: 6px;
-          transition: color 120ms ease, background 120ms ease;
-        }
-        .content-link:hover {
-          text-decoration: underline;
-          color: rgba(118, 97, 97, 1);
-          background: rgba(118, 97, 97, 0.2);
+        /* each chart option is a column containing a button and description */
+        .chart-option {
+            display: flex;
+            flex-direction: column; /* stack button and description vertically */
+            align-items: center;
+            gap: 1rem;
         }
 
-        /* styling for content sections with images and text */
-        .content-section {
-          max-width: 900px;
-          margin: 1.5rem auto;
-          display: flex;
-          gap: 1.5rem;
-          align-items: flex-start;
+        /* styling for the chart buttons
+           - padding makes them larger and easier to click
+           - light background with rounded corners
+           - pointer cursor shows it's clickable
+           - transitions create smooth hover animation
+           - inline-block so padding and sizing work properly */
+        .chart-button {
+            padding: 1.5rem 2rem;
+            font-size: 1.1rem;
+            background-color: #FBF9F1;
+            color: black;
+            border: black;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
-        .content-section img {
-          flex-shrink: 0;
+        
+        /* button hover state - background becomes slightly darker to show interactivity */
+        .chart-button:hover {
+            color: black; /* keep text black on hover */
+            background: rgba(118, 97, 97, 0.2);
         }
-        .content-section p {
-          margin: 0.5rem 0 0 0;
+        
+        /* styling for the description text under each button
+           - gray color and small font so it doesnt distract from button
+           - limited width so text doesnt stretch too wide
+           - centered alignment to match button layout */
+        .chart-description {
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+            max-width: 200px; /* px instead of % to fix it */
         }
 
         /* footer positioned at bottom of page */
@@ -194,60 +193,7 @@
         .footer_date {
           font-size: 0.85rem;
           text-align: center;
-        }
-  
-        /* container that holds all the chart selection options */
-        .chart-selector {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        /* each chart option is a column containing a button and description */
-        .chart-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        /* styling for the chart buttons
-           - padding makes them larger and easier to click
-           - light background with rounded corners
-           - pointer cursor shows it's clickable
-           - transitions create smooth hover animation
-           - inline-block so padding and sizing work properly */
-        .chart-button {
-            padding: 1.5rem 2rem;
-            font-size: 1.1rem;
-            background-color: #FBF9F1;
-            color: black;
-            border: black;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        /* button hover state - background becomes slightly darker to show interactivity */
-        .chart-button:hover {
-            color: black;
-            background: rgba(118, 97, 97, 0.2);
-        }
-        
-        /* styling for the description text under each button
-           - gray color and small font so it doesnt distract from button
-           - limited width so text doesnt stretch too wide
-           - centered alignment to match button layout */
-        .chart-description {
-            color: #666;
-            font-size: 0.9rem;
-            text-align: center;
-            max-width: 200px;
-        }
+        }        
     </style>
 </head>
 <body>
@@ -326,7 +272,7 @@
         <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
         <div class="footer_date">
             <p>created: 2025/10/31</p>
-            <p>last updated: 2025/11/24</p>
+            <p>last updated: 2025/11/26</p>
         </div>
       </div> 
   
