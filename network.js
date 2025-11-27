@@ -92,8 +92,8 @@ async function initializeNetwork() {
         .selectAll("circle")
         .data(network.nodes)
         .join("circle")
-        .attr("r", 15)
-        .attr("fill", d => d.isMain ? "#c5c5ffff" : "#e6e6fa") // color nodes, smoking vs diseases
+        .attr("r",d => d.isMain ? 28 : 15)
+        .attr("fill", d => d.isMain ? "#ff6666" : "#e6e6fa") // color nodes, smoking vs diseases
         .style("cursor", d => d.isMain ? "default" : "pointer") //pointer only on diseases
 
         /*NATALIA HERE i added this part so that we see the name when we hover over the disease*/
