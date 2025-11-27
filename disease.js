@@ -102,7 +102,7 @@ const sim = d3.forceSimulation(nodes)
 function nodeRadius(d) {
     if (d.type === "disease") return 45;   // big center
     if (d.type === "symptoms" || d.type === "risk") return 35; // category
-    if (d.type === "labelSymptoms" || d.type === "labelRisks") return 12;
+    if (d.type === "labelSymptoms" || d.type === "labelRisks") return 10;
     return 22; // children
 }
 
@@ -113,7 +113,7 @@ function nodeColor(d) {
     if (d.type === "symptomDetail") return "#CCCCFF";    // light lavender
     if (d.type === "riskDetail") return "#008080";       // teal
     if (d.type === "noSymptoms" || d.type === "noRisks") return "#bfbfbf"; // grey
-    if (d.type === "labelSymptoms" || d.type === "labelRisks") return "f2f2f2";
+    if (d.type === "labelSymptoms" || d.type === "labelRisks") return "e8e8e8";
     return "gray";
 }
     
