@@ -102,6 +102,7 @@ const sim = d3.forceSimulation(nodes)
 function nodeRadius(d) {
     if (d.type === "disease") return 45;   // big center
     if (d.type === "symptoms" || d.type === "risk") return 35; // category
+    if (d.type === "labelSymptoms" || d.type === "labelRisks") return 12;
     return 22; // children
 }
 
@@ -112,6 +113,7 @@ function nodeColor(d) {
     if (d.type === "symptomDetail") return "#CCCCFF";    // light lavender
     if (d.type === "riskDetail") return "#008080";       // teal
     if (d.type === "noSymptoms" || d.type === "noRisks") return "#bfbfbf"; // grey
+    if (d.type === "labelSymptoms" || d.type === "labelRisks") return "f2f2f2";
     return "gray";
 }
     
@@ -161,6 +163,7 @@ async function toggleSymptoms() {
     const symptoms = await fetchSymptoms(diseaseName);
 
     if (symptoms.length === 0) {
+        // grey "no symptoms" bubble
         const obj = {
             name: "No symptoms available",
             type: "noSymptoms",
@@ -168,12 +171,28 @@ async function toggleSymptoms() {
         };
         nodes.push(obj);
         links.push({ source: "Symptoms", target: obj.name });
+        // label
+        const labelNode = {
+            name: "No Known Symptoms",
+            type: "labelSymptoms",
+            parent: "Symptoms"
+        };
+        nodes.push(labelNode);
+        links.push({ source: "Symptoms", target: labelNode.name });
+        
     } else {
         symptoms.forEach(sym => {
             const obj = { name: sym, type: "symptomDetail", parent: "Symptoms" };
             nodes.push(obj);
             links.push({ source: "Symptoms", target: sym });
         });
+        const labelNode = {
+            name: "Click a symptom for details",
+            type: "labelSymptoms",
+            parent: "Symptoms"
+        };
+        nodes.push(labelNode);
+        links.push({ source: "Symptoms", target: labelNode.name });
     }
     restartSimulation();
 }
@@ -186,9 +205,10 @@ async function toggleRiskFactors() {
         restartSimulation();
         return;
     }
-    // EXPAND
+     // EXPAND
     expandedRisks = true;
     const risks = await fetchRiskFactors(diseaseName);
+
     if (risks.length === 0) {
         const obj = {
             name: "No risk factors available",
@@ -197,15 +217,36 @@ async function toggleRiskFactors() {
         };
         nodes.push(obj);
         links.push({ source: "Risk Factors", target: obj.name });
+
+        // label node
+        const labelNode = {
+            name: "No Additional Risk Factors",
+            type: "labelRisks",
+            parent: "Risk Factors"
+        };
+        nodes.push(labelNode);
+        links.push({ source: "Risk Factors", target: labelNode.name });
+
     } else {
         risks.forEach(risk => {
             const obj = { name: risk, type: "riskDetail", parent: "Risk Factors" };
             nodes.push(obj);
             links.push({ source: "Risk Factors", target: risk });
         });
+
+        // label node
+        const labelNode = {
+            name: "Click a risk factor for details",
+            type: "labelRisks",
+            parent: "Risk Factors"
+        };
+        nodes.push(labelNode);
+        links.push({ source: "Risk Factors", target: labelNode.name });
     }
+
     restartSimulation();
 }
+
 
 // Re-render everything after expanding (smooth animations)
 
@@ -250,6 +291,11 @@ function restartSimulation() {
         .style("opacity", 0)
         .style("cursor", d =>
             d.type === "symptoms" || d.type === "risk" ? "pointer" : "default"
+        )
+        .style("pointer-events", d=>
+            d.type === "labelsymptoms" || d.type === "labelRisks"
+            ? "none"
+            : "auto"
         )
         .on("click", (event, d) => {
             if (d.type === "symptoms") toggleSymptoms();
