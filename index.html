@@ -117,19 +117,25 @@
         .content-section { /* section for each visualisation link with image and description */
           max-width: 65%; /* limits section width to 65% of body */
           margin: 1.5rem auto; /* center horizontally and add vertical spacing */
-          display: flex;
+          display: grid; /* basically a table */
+          grid-template-columns: auto 1fr;
+          align-items: start; /* text starts at the same place */
           gap: 2rem; /* space between image and text */
-          align-items: center;
-          flex-direction: column;
         }
         .content-section img { /* image in each section */
           flex-shrink: 0; /* prevents image from shrinking */
-          align-self: flex-start; /* keeps the image aligned to the top */
-          margin-top: 0.25rem; /* fine-tune vertical centering */
-        
+          grid-column: 1  /* remember the display grid above? well this is us putting the image in the 1st column */
+          width: 100%  /* takes the full column */
         }
-        .content-section p { /* description paragraph */
-          margin: 0rem 0 0 0;
+        .content-section h3 {
+          /* title in each section */
+          grid-column: 2; /* title in second column */
+          margin: 0 0 0.5rem 0; /* space below title */
+        }
+        .content-section p {
+          /* description paragraph */
+          grid-column: 2; /* text in second column */
+          margin: 0; /* remove default margins */
         }
 
         .footer {
@@ -264,6 +270,7 @@
 
 </body>
 </html>
+
 
 
 
