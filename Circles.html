@@ -374,7 +374,21 @@
                     Select a disease related to smoking and explore its risk factors and symptoms!
                 </p>
             </div>
-            
+            <!-- LEGEND inside graph area -->
+<div class="legend-box">
+    <div class="legend-item">
+        <span class="legend-circle main"></span>
+        <p>Main node: <strong>Smoking</strong></p>
+    </div>
+    <div class="legend-item">
+        <span class="legend-circle disease"></span>
+        <p>Disease related to smoking</p>
+    </div>
+</div>
+<!-- the D3 chart will be rendered here -->
+<div id="barchart-container"></div>
+<script src="network.js"></script>
+
             <!-- the D3 chart will be rendered here -->
             <div id="barchart-container"></div>
             <script src = "network.js"></script>
