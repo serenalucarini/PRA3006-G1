@@ -3,8 +3,6 @@
 ------------------------------------------------------- */
 const params = new URLSearchParams(window.location.search);
 const diseaseName = params.get("name") || "Unknown disease";
-const titleEl = document.getElementById("title");
-if (titleEl) titleEl.textContent = diseaseName;
 document.getElementById("headerDiseaseName").textContent = diseaseName;
 
 /* -------------------------------------------------------
