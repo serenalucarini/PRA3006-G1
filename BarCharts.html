@@ -159,38 +159,45 @@
           z-index: 10;
         }
         
-        /* divide footer into 3 equal columns */
-        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width: calc(100% / 3); }
-        
-        /* styling for footer text */
-        .footer .title {
+        .footer { /* different from other pages, less content in the body */
+          position: fixed; /* fixed at the bottom of the page */
+          bottom: 0;
+          width: 100%;
+          height: 20%; /* sets footer to 20% of window height */
+          background-color: #E5E1DA;
+          display: flex; /* useful for horizontal layouts */
+          align-items: center;
+          justify-content: space-between; /* distribute items with max space between */
+          padding: 0 2%; /* horizontal padding of 2% */
+          box-sizing: border-box; /* include padding in width calculation */
+        }
+        .footer > div { /* makes three sections in the footer */
+          display: flex;
+          flex-direction: column; /* stack items vertically */
+          align-items: center;
+        }
+        .footer .title { /* title style in footer */
           margin: 0;
-          font-size: 0.95rem;
-          font-weight: 600;
+          font-size: 0.95rem; /* makes the titles in the footer slightly smaller */
+          font-weight: 500; /* makes the titles in the footer also bold */
           text-align: center;
         }
-        .footer .title p {
-          margin: 0;
-        }    
-        .footer .nav-link {
+        .footer .nav-link { /* style for links in footer */
           font-size: 0.85rem;
           color: inherit;
-          text-decoration: none;
-          cursor: pointer;
-          pointer-events: auto;
-          display: inline-block;
-          position: relative;
-          z-index: 20;
+          text-decoration: none; /* looks like plain text */
+          cursor: pointer; /* pointer cursor on hover */
+          pointer-events: auto; /* ensures links are clickable */
         }
-        .footer .nav-link:hover {
+        .footer .nav-link:hover { /* hover effect for links in footer */
           text-decoration: underline;
           color: rgba(118, 97, 97, 1);
         }
-        .footer .nav-link.title {
+        .footer .nav-link.title { /* makes the disclaimer link in footer look like a title */
           font-size: 0.95rem;
-          font-weight: 600;
+          font-weight: 500;
         }
-        .footer_date {
+        .footer_date { /* style for date text in footer */
           font-size: 0.85rem;
           text-align: center;
         }        
