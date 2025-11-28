@@ -85,21 +85,21 @@ Here the webpage navigates to the following:
 - Course **(Course.html)**- situates the project within PRA3006
 - Disclaimer **(Disclaimer.html)**- clarifies that the website is for educational purposes and it is NOT medical advice.
 
-# 4 Future work
+# 4. Future work
 **Extented Comparison Visualisations**
 Exploring additional comparison options, for example:
      - grouping diseases by type or severity  
      - adding filters for specific risk factors or symptom categories  
 This will deepen the analysis of similarities between diseases and their underlying causes.
 
-# 5 What we Used 
+# 5. What we Used 
 - HTML to structure the pages
 - CSS for styling and layout
 - JavaScript for data handling and interactivity
 - D3.js for network, pie charts and all necessary visualisations
 - SPARQL for query WikiData
 
-# 6 Done! Now you can try to navigate the website 
+# 6. Done! Now you can try to navigate the website 
 Clone the repository or download it as a ZIP:
 
    ```bash
