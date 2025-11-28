@@ -339,6 +339,43 @@
               color: #222;
             }
         }
+        /* Legend inside graph area */
+    .legend-box {
+        width: fit-content;
+        background: #fff;
+        border-radius: 10px;
+        padding: 0.8rem 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin: 0 auto 1rem auto; /* center above graph */
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .legend-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .legend-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: inline-block;
+}
+
+    /* Colors matching your graph */
+    .legend-circle.main {
+        background-color: #4634b3; /* same as smoking node */
+}
+
+    .legend-circle.disease {
+        background-color: #e6e6fa; /* same as disease nodes */
+}
+
     </style>
 </head>
     
