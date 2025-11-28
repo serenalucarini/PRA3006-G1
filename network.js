@@ -154,6 +154,6 @@ async function initializeNetwork() {
             .attr("cy", d => Math.max(20, Math.min(height - 20, d.y))); 
     }
 }
-
 // Call initialization when page loads
 document.addEventListener("DOMContentLoaded", initializeNetwork);
+
