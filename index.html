@@ -69,6 +69,7 @@
           padding-top: 10%; /* padding to avoid overlap with fixed header */
           overflow-y: auto; /* vertical scrollbar if content overflows */
           overflow-x: hidden; /* hide horizontal overflow */
+          padding-bottom: 10%; /* leave space for footer */
         }
 
         .title {
@@ -113,20 +114,6 @@
           background: rgba(118, 97, 97, 0.2); /* 20% opacity, same colour of the text */
         }
 
-        .content-section { /* section for each visualisation link with image and description */
-          max-width: 65%; /* limits section width to 65% of body */
-          margin: 1.5rem auto; /* center horizontally and add vertical spacing */
-          display: flex;
-          gap: 2rem; /* space between image and text */
-          align-items: flex-start;
-        }
-        .content-section img { /* image in each section */
-          flex-shrink: 0; /* prevents image from shrinking */
-        }
-        .content-section p { /* description paragraph */
-          margin: 0.5rem 0 0 0;
-        }
-
         .footer {
           position: static; /* stays at the bottom of the page */
           bottom: 0;
@@ -136,7 +123,7 @@
           display: flex; /* useful for horizontal layouts */
           align-items: center;
           justify-content: space-between; /* distribute items with max space between */
-          padding: 0 2%; /* horizontal padding of 2% */
+          padding: 2% 2%; /* horizontal padding of 2% */
           box-sizing: border-box; /* include padding in width calculation */
         }
         .footer > div { /* makes three sections in the footer */
@@ -199,36 +186,51 @@
             </p>
         </div>
 
-        <!-- Network link -->
-        <div class="content-section">
-          <img src="network.png" alt="Network Graphic" width="50" height="50">
-          <nav class="body-links">
-              <a class="content-link" href="Circles.html">Network</a>
-          </nav>
-          <p>Explore all the diseases that can be caused by smoking, with all their risk factors and symptoms.</p>
-        </div>
+        <table>
+            <tr>
+                <td>
+                    <img src="network.png" alt="Network Graphic" width="50" height="50">
+                </td>
+                <td>
+                    <nav class="body-links">
+                          <a class="content-link" href="Circles.html">Network</a>
+                    </nav>
+                </td>
+                <td>
+                    <p>Explore all the diseases that can be caused by smoking, with all their risk factors and symptoms.</p>
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    <img src="bar.png" alt="Bar Chart Graphic" width="50" height="50"></td>
+                <td>
+                    <nav class="body-links" aria-label="Visualizations links">
+                      <a class="content-link" href="BarCharts.html">Bar Charts</a>
+                   </nav>
+                </td>
+                <td>
+                    <p>Explore more quantifiable information on the diseases caused by smoking.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="pie.png" alt="Pie Chart Graphic" width="50" height="50">
+                </td>
+                <td>
+                    <nav class="body-links" aria-label="Visualizations links">
+                      <a class="content-link" href="pie.html">Pie chart</a>
+                    </nav>
+                </td>
+                <td>
+                    <p>Explore how frequent symptoms are amongst all diseases caused by smoking.</p>
+                </td>
+            </tr>
+        </table>
 
-        <!-- Bar Chart link -->
-        <div class="content-section">
-          <img src="bar.png" alt="Bar Chart Graphic" width="50" height="50">
-          <nav class="body-links" aria-label="Visualizations links">
-              <a class="content-link" href="BarCharts.html">Bar Charts</a>
-          </nav>
-          <p>Explore more quantifiable information on the diseases caused by smoking.</p>
-        </div>
-
-        <!-- Pie Chart link -->
-        <div class="content-section">
-          <img src="pie.png" alt="Pie Chart Graphic" width="50" height="50">
-          <nav class="body-links" aria-label="Visualizations links">
-              <a class="content-link" href="pie.html">Pie chart</a>
-          </nav>
-          <p>Explore how frequent symptoms are amongst all diseases caused by smoking.</p>
-        </div>
 
     </div>
     
-    <div class="footer">
+    <div class="footer"> <!-- note that some people will see a gap at the bottom of the page and some won't --!>
 
       <!-- left section -->
       <div>
@@ -259,6 +261,20 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

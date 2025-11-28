@@ -93,7 +93,7 @@ async function initializeNetwork() {
         .data(network.nodes)
         .join("circle")
         .attr("r",d => d.isMain ? 28 : 15)
-        .attr("fill", d => d.isMain ? "#ff6666" : "#e6e6fa") // color nodes, smoking vs diseases
+        .attr("fill", d => d.isMain ? "#483D8B" : "#e6e6fa") // color nodes, smoking vs diseases
         .style("cursor", d => d.isMain ? "default" : "pointer") //pointer only on diseases
 
         /*NATALIA HERE i added this part so that we see the name when we hover over the disease*/
@@ -154,6 +154,6 @@ async function initializeNetwork() {
             .attr("cy", d => Math.max(20, Math.min(height - 20, d.y))); 
     }
 }
-
 // Call initialization when page loads
 document.addEventListener("DOMContentLoaded", initializeNetwork);
+

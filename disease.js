@@ -86,7 +86,6 @@ svg.call(
         .scaleExtent([0.5, 4])
         .on("zoom", event => zoomGroup.attr("transform", event.transform))
 ).on("wheel.zoom",null); // disables scroll zoom so page can scroll 
-);
 
 /* Force Simulation */
 const sim = d3.forceSimulation(nodes)
