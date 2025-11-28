@@ -1,29 +1,24 @@
-/* -------------------------------------------------------
-   Get disease name from URL
-------------------------------------------------------- */
-const params = new URLSearchParams(window.location.search);
-const diseaseName = params.get("name") || "Unknown disease";
-document.getElementById("headerDiseaseName").textContent = diseaseName;
+// Get disease name from URL 
+const params = new URLSearchParams(window.location.search); // Parse URL parameters (e.g., ?name=Asthma)
+const diseaseName = params.get("name") || "Unknown disease"; // Get "name" parameter or default to fallback text
+document.getElementById("headerDiseaseName").textContent = diseaseName; // Put the disease name into the page header
 
-/* -------------------------------------------------------
-   SPARQL Queries
-------------------------------------------------------- */
-async function fetchSymptoms(diseaseName) {
-    const query = `
+// SPARQL Queries 
+async function fetchSymptoms(diseaseName) { // Get symptoms for this specific disease from Wikidata
+    const query = `      // Get all symptoms (P780) for disease with this label 
     SELECT ?symptomLabel WHERE {
       ?disease rdfs:label "${diseaseName}"@en.
       ?disease wdt:P780 ?symptom.
       SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
     }`;
-    const res = await fetch(
+    const res = await fetch(    // Send query to Wikidata endpoint
         "https://query.wikidata.org/sparql?query=" + encodeURIComponent(query),
         { headers: { "Accept": "application/sparql-results+json" } }
     );
-    const data = await res.json();
-    return data.results.bindings.map(b => b.symptomLabel.value);
+    const data = await res.json();   // Convert SPARQL results to JSON
+    return data.results.bindings.map(b => b.symptomLabel.value);   // Extract just the symptom labels
 }
-
-async function fetchRiskFactors(diseaseName) {
+async function fetchRiskFactors(diseaseName) {   // Get risk factors for the disease (P5642)
     const query = `
     SELECT ?factorLabel WHERE {
       ?disease rdfs:label "${diseaseName}"@en.
@@ -35,91 +30,85 @@ async function fetchRiskFactors(diseaseName) {
         { headers: { "Accept": "application/sparql-results+json" } }
     );
     const data = await res.json();
-    return data.results.bindings.map(b => b.factorLabel.value);
+    return data.results.bindings.map(b => b.factorLabel.value);   // Extract risk factor labels
 }
 
-/* -------------------------------------------------------
-   Base Nodes + Links
-------------------------------------------------------- */
-let nodes = [
+// Base Nodes + Links
+let nodes = [   // Starting nodes: the main disease + two expandable categories
     { name: diseaseName, type: "disease" },
     { name: "Symptoms", type: "symptoms" },
     { name: "Risk Factors", type: "risk" }
 ];
 
-let links = [
+let links = [      // Default links: disease - symptoms and disease - risk factors
     { source: diseaseName, target: "Symptoms" },
     { source: diseaseName, target: "Risk Factors" }
 ];
-
+// Track expansion rate
 let expandedSymptoms = false;
 let expandedRisks = false;
 
-/* Text labels for cases with no data */
+// If "no symptoms available" or "no risks" text - keep reference
 let symptomsTextLabel = null;
 let riskTextLabel = null;
 
-/* -------------------------------------------------------
-   SVG + Groups
-------------------------------------------------------- */
-const width = window.innerWidth;
+// SVG + Groups
+// Full-page force-directed graph
+const width = window.innerWidth;   
 const height = window.innerHeight;
 
+// Create SVG container
 const svg = d3.select("#graph")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
     .style("overflow", "visible");
 
+// Group for zoom/pan
 const zoomGroup = svg.append("g");
+// Subgroups: links, nodes, and labels
 const linkGroup = zoomGroup.append("g");
 const nodeGroup = zoomGroup.append("g");
 const labelGroup = zoomGroup.append("g");
 
-let link = linkGroup.selectAll("line");
-let node = nodeGroup.selectAll("circle");
-let label = labelGroup.selectAll("text");
-
-/* Zoom */
+// Enable zoom/pan but disable scroll zoom (so page scroll works normally) 
 svg.call(
     d3.zoom()
         .scaleExtent([0.5, 4])
         .on("zoom", event => zoomGroup.attr("transform", event.transform))
 ).on("wheel.zoom",null); // disables scroll zoom so page can scroll 
 
-/* Force Simulation */
+// Force Simulation
 const sim = d3.forceSimulation(nodes)
     .force("link", d3.forceLink(links).id(d => d.name).distance(200))
     .force("charge", d3.forceManyBody().strength(-400))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("collide", d3.forceCollide(35));
 
-/* -------------------------------------------------------
-   Visual Settings
-------------------------------------------------------- */
+// Visual Settings
+// Node sizes
 function nodeRadius(d) {
     if (d.type === "disease") return 45;
     if (d.type === "symptoms" || d.type === "risk") return 35;
     return 22; // children
 }
-
+// Node colors by category 
 function nodeColor(d) {
     if (d.type === "disease") return "#7393B3";
     if (d.type === "symptoms") return "#00008B";
     if (d.type === "risk") return "#5D3FD3";
-    if (d.type === "symptomDetail") return "#CCCCFF";
-    if (d.type === "riskDetail") return "#008080";
+    if (d.type === "symptomDetail") return "#CCCCFF"; // symptoms
+    if (d.type === "riskDetail") return "#008080"; // risk factors
     if (d.type === "noSymptoms" || d.type === "noRisks") return "#bfbfbf";
     return "gray";
 }
 
-/* -------------------------------------------------------
-   Drag behaviour
-------------------------------------------------------- */
+// Drag behaviour
 const drag = d3.drag()
     .on("start", (event, d) => {
+       // Increase simulation energy when dragging begins
         if (!event.active) sim.alphaTarget(0.3).restart();
-        d.fx = d.x;
+        d.fx = d.x; // Fix position to cursor
         d.fy = d.y;
     })
     .on("drag", (event, d) => {
