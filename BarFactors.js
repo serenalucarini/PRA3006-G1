@@ -115,7 +115,7 @@
             // create a list item for each disease
             diseases.forEach(disease => {
                 const li = document.createElement("li");
-                li.className = "disease-item";  // apply the disease-item styling class
+                li.className = "diseases-item";  // apply the disease-item styling class
                 li.textContent = disease;        // set disease name as the text
                 listEl.appendChild(li);          // add the item to the list
             });
@@ -198,7 +198,7 @@
                 .attr("y", d => y(d.count))                            // position from top
                 .attr("width", x.bandwidth())                          // bar width (all equal)
                 .attr("height", d => Math.max(0, height - y(d.count))) // bar height based on count
-                .attr("fill", "#FF69B4")                               // initial bar color (pink)
+                .attr("fill", "#E5E1DA")                               // initial bar color (pink)
                 
                 // click handler: toggle selection when bar is clicked
                 .on("click", function(event, d) {

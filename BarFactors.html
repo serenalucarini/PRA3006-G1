@@ -2,21 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bar chart: Risk Factors vs. Diseases</title>
 
     <!-- Load D3.js library from CDN for creating the interactive chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
-    <style>
-        /* reset all default browser styles for consistency */
+<style>
+        /* reset all default margins and padding for consistent styling */
         * {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
         }
 
-        /* make the page fill the entire viewport */
+        /* make html and body fill entire screen and set background color */
         html, body {
           height: 100%;
           width: 100%;
@@ -24,315 +23,220 @@
           background-color: #FBF9F1;
         }
 
-        /* header stays at the top and doesn't scroll with content */
-        .header {
-          position: fixed;
-          left: 0;
+        .header { 
+          position: fixed; /* stays at the top when scrolling */
           top: 0;
           width: 100%;
-          height: 10%;
+          height: 15%; /* sets header to 15% of viewport height */
           background-color: #E5E1DA;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 2rem;
-          box-sizing: border-box;
-          z-index: 10;
+          display: flex; /* useful for horizontal layouts, makes responsive layots simpler */
+          align-items: center; /* vertically center items */
+          justify-content: space-between; /* distribute items with max space between */
+          padding: 0 2%; /* horizontal padding of 2 (1 rem = root font size) */
+          box-sizing: border-box; /* include padding in width calculation */
+          z-index: 100; /* ensures header is above other content */
         }
 
-        /* split header into three equal sections: left nav, center title, right logo */
-        .header-left,
-        .header-center,
-        .header-right {
+        /*creates three sections within the header*/
+        .header-left, .header-center, .header-right {
+          /* each section takes equal space */
           display: flex;
           align-items: center;
           gap: 1rem;
         }
-        .header-left { flex: 1; justify-content: flex-start; }
-        .header-center { flex: 1; justify-content: center; }
-        .header-right { flex: 1; justify-content: flex-end; }
+        .header-left { flex: 1; justify-content: flex-start; } /* align to left */
+        .header-center { flex: 1; justify-content: center; } /* align to center */
+        .header-right { flex: 1; justify-content: flex-end; } /* align to right */
 
-        /* styling for the main page title */
-        .title {
-          margin: 0;
-          font-size: 1.1rem;
-          font-weight: 600;
-          text-align: center;
-        }
-
-        /* make links look like regular text but still clickable */
         .nav-link {
-          color: inherit;
-          text-decoration: none;
-          cursor: pointer;
+          color: inherit; /* uses the color of the parent element */
+          text-decoration: none; 
+          /* makes hyperlink look like plain text while remaining clickable */
+          cursor: pointer; /* on hover, shows pointer cursor */
           font-size: 1rem;
         }
-        .nav-link:focus {
-          outline: 2px solid rgba(0,0,0,0.15);
-          outline-offset: 2px;
+
+        .header .nav-link:hover { /* hover effect for links in header */
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
         }
 
-        /* main content area - positioned below header and above footer */
-        .body {
-          position: relative;
-          top: 80px;
-          left: 0;
+        .body {/* main content area positioned below header and above footer */
+          position: relative; /* relative between header and footer */
           width: 100%;
-          height: auto;
-          min-height: calc(100vh - 15% - 20%);
-          color: black;
-          padding: 2rem;
-          padding-bottom: 3.5rem;
-          overflow-y: auto;
-          overflow-x: hidden;
-          padding-bottom: 15%; /* reserves space for footer */
-          margin: 0;
+          height: auto; /* full height minus header and footer */
+          color: black; /* default text color */
+          padding: 1rem; /* padding around content */
+          padding-top: 10%; /* padding to avoid overlap with fixed header */
+          overflow-y: auto; /* vertical scrollbar if content overflows */
+          overflow-x: hidden; /* hide horizontal overflow */
         }
 
-        /* rounded box for the introductory text at the top */
-        .intro-box {
-          max-width: 900px;
-          margin: 0 auto 1.25rem auto; /* centers horizontally and adds space below */
-          background: #fff;
-          border-radius: 12px;
-          padding: 1.5rem 1.75rem;
-          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-          color: #111;
+        .title { /* style for page title */
+          margin: 0;
+          font-size: 1.25rem; /* makes font 125% of root font size */
+          font-weight: 500; /* medium weight, looks bold */
+          text-align: center;
         }
-        .intro-box h2 {
-          margin-bottom: 0.5rem;
+
+        .intro-box { /* rounded content box */
+          max-width: 60%; /* limits box width to 60% of body */
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          background: #fff;
+          border-radius: 12px; /* rounded corners */
+          padding: 1.5rem 1.75rem; /* padding inside the box */
+          box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+        .intro-box h2 { /* heading inside the box */
+          margin-bottom: 0.5rem; /* space below heading */
           font-size: 1.25rem;
         }
-        .intro-box p {
-          line-height: 1.5;
-          color: #222;
+        .intro-box p { /* paragraph inside the box */
+          line-height: 1.5; /* interline spacing for better readability */
         }
 
-        /* styling for navigation links under intro box */
-        .body-links {
-          max-width: 900px;
-          margin: 0.25rem auto 2rem auto;
-          display: flex;
-          gap: 1rem;
-          justify-content: center;
-          align-items: center;
-          flex-wrap: wrap;
-        }
-        .content-link {
-          color: inherit;
-          text-decoration: none;
-          padding: 0.25rem 0.5rem;
-          border-radius: 6px;
-          transition: color 120ms ease, background 120ms ease;
-        }
-        .content-link:hover {
-          text-decoration: underline;
-          color: rgba(118, 97, 97, 1);
-          background: rgba(118, 97, 97, 0.2);
-        }
-
-        /* styling for content sections with images and text */
-        .content-section {
-          max-width: 900px;
-          margin: 1.5rem auto;
-          display: flex;
-          gap: 1.5rem;
-          align-items: flex-start;
-        }
-        .content-section img {
-          flex-shrink: 0;
-        }
-        .content-section p {
-          margin: 0.5rem 0 0 0;
-        }
-
-        /* footer stays at bottom and doesn't scroll */
-        .footer {
-          position: fixed;
-          left: 0;
-          bottom: 0;
-          width: 100%;
-          height: 15%;
-          background-color: #E5E1DA;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 2%;
-          box-sizing: border-box;
-          z-index: 10;
-        }
-        
-        /* divide footer into 3 equal columns */
-        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width: calc(100% / 3); }
-        
-        /* styling for footer text and links */
-        .footer .title {
-          margin: 0;
-          font-size: 0.95rem;
-          font-weight: 600;
-          text-align: center;
-        }
-        .footer .title p {
-          margin: 0;
-        }    
-        .footer .nav-link {
-          font-size: 0.85rem;
-          color: inherit;
-          text-decoration: none;
-          cursor: pointer;
-          pointer-events: auto;
-          display: inline-block;
-          position: relative;
-          z-index: 20;
-        }
-        .footer .nav-link:hover {
-          text-decoration: underline;
-          color: rgba(118, 97, 97, 1);
-        }
-        .footer .nav-link.title {
-          font-size: 0.95rem;
-          font-weight: 600;
-        }
-        .footer_date {
-          font-size: 0.85rem;
-          text-align: center;
-        }
-
-        /* flex container that holds the chart and side panel */
+        /* flex container for chart - takes up most of the space */
         #chart-wrapper {
-            flex: 1;
-            min-width: 600px;
+            flex: 1; /* allows it to fill available space */
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex-direction: column; /* stack content vertically */
+            gap: 2rem;
         }
 
-        /* shows while the data is being loaded from Wikidata */
-        #loading-message {
-            font-size: 16px;
+        #loading-message { /* shows while the data is being loaded from Wikidata */
+            font-size: 1rem;
             border-radius: 12px;
             text-align: center;
-            max-width: 900px;
-            margin: 0 auto 1.25rem auto;
-            padding: 1.5rem 1.75rem;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            color: black;
+            max-width: 65%;
+            margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+            padding: 1.5rem; /* padding inside the box */
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            color: black; /* default text color */
             background: #fff; 
         }
 
-        /* container where the D3 bar chart SVG is rendered */
+        /* where the actual D3 chart gets drawn */
         #barchart-container {
             flex: 1;
-            min-height: 400px;
-            background-color: white;
+            min-height: 400px; /* ensures chart has minimum height */
+            background-color: #fff;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
-        /* side panel that displays diseases - hidden by default */
+        /* side panel that shows diseases - hidden until you click a bar */
         #diseases-panel {
-            flex: 0 0 350px;
-            background-color: white;
-            border: 2px solid #FF69B4;
+            background-color: #fff;
+            border: 2px solid rgba(118, 97, 97, 1); /* dark brown border */
             border-radius: 8px;
             padding: 20px;
-            overflow-y: auto;
-            display: none;
+            overflow-y: auto; /* vertical scrollbar if content overflows */
+            display: none; /* hidden by default */
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* show the diseases panel when a risk factor is selected */
+        /* make panel visible when a risk factor is selected */
         #diseases-panel.active {
             display: block;
         }
 
-        /* styling for the title of the diseases list in the panel */
+        /* styling for the title in diseases panel */
         .diseases-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #FF69B4;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #FF69B4;
-            padding-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 500; /* looks bold */
+            color: black;
+            border-bottom: 2px solid rgba(118, 97, 97, 1); /* underline */
+            margin-bottom: 15px; /* space below underline */
         }
 
-        /* remove bullet points from the diseases list */
+        /* remove the bullet points from the list */
         .diseases-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        /* styling for each individual disease item in the list */
-        .disease-item {
-            background-color: #f9f9f9;
+        /* styling for each diseases item in the list */
+        .diseases-item {
+            background-color: #fff;
             padding: 12px;
             margin-bottom: 8px;
-            border-left: 4px solid #FF69B4;
+            border-left: 4px solid #E5E1DA; /* subtle left border */
             border-radius: 4px;
             font-size: 14px;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
-        /* bars have smooth animation transitions and change cursor on hover */
+        /* bars have smooth transitions and change cursor on hover */
         .bar {
             transition: opacity 0.3s, fill 0.3s;
             cursor: pointer;
         }
 
-        /* bars become slightly transparent and brighter on hover */
+        /* bars get brighter and slightly transparent on hover */
         .bar:hover {
             opacity: 0.8;
             filter: brightness(1.1);
         }
 
-        /* highlight the selected bar with bright pink and add a glow effect */
+        /* selected bar gets highlighted in accent color with shadow */
         .bar.active {
-            fill: #FF1493 !important;
-            filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.5));
+            fill: rgba(118, 97, 97, 1);
+            filter: drop-shadow(0 0 4px rgba(118, 97, 97, 0.5));
         }
 
-        /* styling for the axis text labels */
+        /* styling for the axis labels and lines */
         .axis text {
-            fill: #000000;
-            font-size: 12px;
+            fill: black;
+            font-size: 1rem;
         }
-
-        /* styling for the axis lines and paths */
         .axis line, .axis path {
-            stroke: #ccc;
+            stroke: #E5E1DA;
         }
 
-        /* responsive design - adjust layout on smaller screens */
-        @media (max-width: 1200px) {
-            .body {
-                flex-direction: column;
-            }
-
-            #diseases-panel {
-                flex: 0 0 auto;
-                min-height: 250px;
-                max-height: 300px;
-            }
-            .intro-box {
-              max-width: 900px;
-              margin: 0 auto 1.25rem auto;
-              background: #fff;
-              border-radius: 12px;
-              padding: 1.5rem 1.75rem;
-              box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-              color: #111;
-            }
-            .intro-box h2 {
-              margin-bottom: 0.5rem;
-              font-size: 1.25rem;
-            }
-            .intro-box p {
-              line-height: 1.5;
-              color: #222;
-            }
+        .footer {
+          position: static; /* stays at the bottom of the page */
+          bottom: 0;
+          width: 100%;
+          height: 20%; /* sets footer to 20% of window height */
+          background-color: #E5E1DA;
+          display: flex; /* useful for horizontal layouts */
+          align-items: center;
+          justify-content: space-between; /* distribute items with max space between */
+          padding: 0 2%; /* horizontal padding of 2% */
+          box-sizing: border-box; /* include padding in width calculation */
+        }
+        .footer > div { /* makes three sections in the footer */
+          display: flex;
+          flex-direction: column; /* stack items vertically */
+          align-items: center;
+        }
+        .footer .title { /* title style in footer */
+          margin: 0;
+          font-size: 0.95rem; /* makes the titles in the footer slightly smaller */
+          font-weight: 500; /* makes the titles in the footer also bold */
+          text-align: center;
+        }
+        .footer .nav-link { /* style for links in footer */
+          font-size: 0.85rem;
+          color: inherit;
+          text-decoration: none; /* looks like plain text */
+          cursor: pointer; /* pointer cursor on hover */
+          pointer-events: auto; /* ensures links are clickable */
+        }
+        .footer .nav-link:hover { /* hover effect for links in footer */
+          text-decoration: underline;
+          color: rgba(118, 97, 97, 1);
+        }
+        .footer .nav-link.title { /* makes the disclaimer link in footer look like a title */
+          font-size: 0.95rem;
+          font-weight: 500;
+        }
+        .footer_date { /* style for date text in footer */
+          font-size: 0.85rem;
+          text-align: center;
         }
     </style>
 </head>
@@ -361,10 +265,10 @@
             <div id="loading-message">Loading data...</div>
             
             <!-- introductory information about the chart -->
-            <div class="intro-box" role="region" aria-label="Introductory text">
+            <div class="intro-box">
                 <h2>Overview</h2>
                 <p>
-                    This graph shows this.
+                    Bar chart of risk factors and how many disease it can cause. Click on a bar to see the diseases associated with that risk factor.
                 </p>
             </div>
             
@@ -402,7 +306,7 @@
             <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
             <div class="footer_date">
                 <p>created: 2025/10/31</p>
-                <p>last updated: 2025/11/21</p>
+                <p>last updated: 2025/11/28</p>
             </div>
         </div> 
     </div>
