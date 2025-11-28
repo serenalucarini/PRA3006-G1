@@ -69,7 +69,6 @@
           padding-top: 10%; /* padding to avoid overlap with fixed header */
           overflow-y: auto; /* vertical scrollbar if content overflows */
           overflow-x: hidden; /* hide horizontal overflow */
-          padding-bottom: 10%; /* leave space for footer */
         }
 
         .title {
@@ -93,6 +92,20 @@
         }
         .intro-box p { /* paragraph inside the box */
           line-height: 1.5; /* interline spacing for better readability */
+        }
+
+        table {
+          margin: 0 auto; /* center table horizontally */
+        }
+
+        table td {
+          vertical-align: top; /* aligns first two rows of the cell at the top */
+          padding: 1rem; /* padding around each cell */
+        }
+
+        table td p {
+          margin-top: 0.5rem; /* space above paragraph, to align the third column */
+          vertical-align: bottom; /* aligns link at the bottom of the cell, to align the third column */
         }
 
         .body-links { /* links for visualisations, centered and aligned */
@@ -253,7 +266,7 @@
         <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
         <div class="footer_date">
             <p>created: 2025/10/31</p>
-            <p>last updated: 2025/11/26</p>
+            <p>last updated: 2025/11/28</p>
         </div>
       </div>   
         
