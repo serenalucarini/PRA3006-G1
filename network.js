@@ -70,7 +70,7 @@ async function initializeNetwork() {
     const height = window.innerHeight - headerHeight - footerHeight;
 
     // add nodes + make sure the circle is centered within the barchart
-    const svg = d3.select("#barchart-container")
+    const svg = d3.select("#network-container")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
