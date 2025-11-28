@@ -339,6 +339,49 @@
               color: #222;
             }
         }
+        /* Legend inside graph area */
+        #barchart-container {
+            position: relative; 
+        }
+        
+    .legend-box {
+        position: absolute;
+        top: 20px;    /* distance from top inside graph box */
+        left: 20px;   /* distance from left inside graph box */
+        background: #fff;
+        border-radius: 10px;
+        padding: 0.8rem 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        z-index: 10 /* sits above graph */
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .legend-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .legend-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: inline-block;
+}
+
+    /* Colors matching your graph */
+    .legend-circle.main {
+        background-color: #4634b3; /* same as smoking node */
+}
+
+    .legend-circle.disease {
+        background-color: #e6e6fa; /* same as disease nodes */
+}
+
     </style>
 </head>
     
@@ -374,10 +417,21 @@
                     Select a disease related to smoking and explore its risk factors and symptoms!
                 </p>
             </div>
-            
-            <!-- the D3 chart will be rendered here -->
             <div id="barchart-container"></div>
-            <script src = "network.js"></script>
+            <!-- LEGEND inside graph area -->
+                <div class="legend-box">
+                    <div class="legend-item">
+                        <span class="legend-circle main"></span>
+                        <p>Main node: <strong>Smoking</strong></p>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-circle disease"></span>
+                        <p>Disease related to smoking</p>
+                    </div>
+                </div>
+
+            <script src="network.js"></script>
+
         </div>
 
         <!-- side panel that displays diseases related to the selected risk factor -->

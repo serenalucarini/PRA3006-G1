@@ -69,6 +69,7 @@
           padding-top: 10%; /* padding to avoid overlap with fixed header */
           overflow-y: auto; /* vertical scrollbar if content overflows */
           overflow-x: hidden; /* hide horizontal overflow */
+          padding-bottom: 10%; /* leave space for footer */
         }
 
         .title {
@@ -116,15 +117,24 @@
         .content-section { /* section for each visualisation link with image and description */
           max-width: 65%; /* limits section width to 65% of body */
           margin: 1.5rem auto; /* center horizontally and add vertical spacing */
-          display: flex;
+          display: grid; /* basically a table */
+          grid-template-columns: auto 1fr;
+          align-items: start; /* text starts at the same place */
           gap: 2rem; /* space between image and text */
-          align-items: flex-start;
         }
         .content-section img { /* image in each section */
           flex-shrink: 0; /* prevents image from shrinking */
+          grid-column: 1  /* remember the display grid above? well this is us putting the image in the 1st column */
         }
-        .content-section p { /* description paragraph */
-          margin: 0.5rem 0 0 0;
+        .content-section h3 {
+          /* title in each section */
+          grid-column: 2; /* title in second column */
+          margin: 0 0 0.5rem 0; /* space below title */
+        }
+        .content-section p {
+          /* description paragraph */
+          grid-column: 3; /* text in second column */
+          margin: 0; /* remove default margins */
         }
 
         .footer {
@@ -136,7 +146,7 @@
           display: flex; /* useful for horizontal layouts */
           align-items: center;
           justify-content: space-between; /* distribute items with max space between */
-          padding: 0 2%; /* horizontal padding of 2% */
+          padding: 2% 2%; /* horizontal padding of 2% */
           box-sizing: border-box; /* include padding in width calculation */
         }
         .footer > div { /* makes three sections in the footer */
@@ -228,7 +238,7 @@
 
     </div>
     
-    <div class="footer">
+    <div class="footer"> <!-- note that some people will see a gap at the bottom of the page and some won't --!>
 
       <!-- left section -->
       <div>
@@ -259,6 +269,17 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
