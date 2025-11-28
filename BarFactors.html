@@ -260,9 +260,6 @@
 
     <!-- main content area containing chart and side panel -->
     <div class="body">
-        <div id="chart-wrapper">
-            <!-- loading message displayed while fetching data -->
-            <div id="loading-message">Loading data...</div>
             
             <!-- introductory information about the chart -->
             <div class="intro-box">
@@ -271,9 +268,13 @@
                     Bar chart of risk factors and how many disease it can cause. Click on a bar to see the diseases associated with that risk factor.
                 </p>
             </div>
+
+           <div id="chart-wrapper">
+            <!-- loading message displayed while fetching data -->
+                <div id="loading-message">Loading data...</div>
             
             <!-- the D3 chart will be rendered here -->
-            <div id="barchart-container"></div>
+          <div id="barchart-container"></div>
         </div>
 
         <!-- side panel that displays diseases related to the selected risk factor -->
