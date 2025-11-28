@@ -5,6 +5,24 @@
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <title>Disease details</title> <!-- page title shown in browser tab -->
   <style>
+    /* asterisk is the universal selector */
+        * { 
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box; 
+          /* border-box makes width and height include padding and border */
+          /* easier to control layouts, prevents element overflow issues */
+        } 
+
+        html, body {
+          height: 100%;
+          width: 100%;
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
+          /* tries the fonts from left to right until it finds one available on the system */
+          /* fonts in quotes are those with spaces in their name */
+          background-color: #FBF9F1;
+        }
+    
       .header { 
         position: fixed; /* stays at the top when scrolling */
         top: 0;
@@ -50,35 +68,29 @@
         text-align: center;
     }
 
-    body { /* I MIGHT TURN THIS INTO THE HTML, BODY THING */
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      background-color: #FBF9F1;
-      margin: 0;
-      padding: 0;
-    }
-
     /* Push graph down below fixed header */
     #graph {
       margin-top: 20px;
     }
+    
     .intro-box-disease {
-    max-width: 60%;
-    margin: 140px auto 2rem auto; /* pushes below header */
-    background: #fff;
-    border-radius: 12px;
-    padding: 1.5rem 1.75rem;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
+        max-width: 60%; /* limits box width to 60% of body */
+        margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+        background: #fff;
+        border-radius: 12px; /* rounded corners */
+        padding: 1.5rem 1.75rem; /* padding inside the box */
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
 
-.intro-box-disease h2 {
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-}
+  .intro-box-disease h2 {
+        margin-bottom: 0.5rem; /* space below heading */
+        font-size: 1.2rem;
+  }
 
-.intro-box-disease p {
-    line-height: 1.5;
-    font-size: 1rem;
-}
+  .intro-box-disease p {
+     line-height: 1.5; /* interline spacing for better readability */
+     font-size: 1rem;
+  }
 </style>
 
 </head>
@@ -106,7 +118,7 @@
     <p>
         This interactive network shows how this disease relates to its known symptoms 
         and risk factors based on WikiData information. Click “Symptoms” or 
-        “Risk Factors” to explore additional details.
+        “Risk Factors” to explore additional details. Experiment the interactivity of the network by moving the nodes.
     </p>
 </div>
 
