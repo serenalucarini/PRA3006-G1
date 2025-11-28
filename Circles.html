@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>Smoking circles</title>
-    <!--link rel="stylesheet" href= "design.css"-->
     <style>
         /* reset all default browser styles for consistency */
         * {
@@ -20,176 +19,117 @@
           background-color: #FBF9F1;
         }
 
-        /* header stays at the top and doesn't scroll with content */
-        .header {
-          position: fixed;
-          left: 0;
+        .header { 
+          position: fixed; /* stays at the top when scrolling */
           top: 0;
           width: 100%;
-          height: 10%;
+          height: 15%; /* sets header to 15% of viewport height */
           background-color: #E5E1DA;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 2rem;
-          box-sizing: border-box;
-          z-index: 10;
+          display: flex; /* useful for horizontal layouts, makes responsive layots simpler */
+          align-items: center; /* vertically center items */
+          justify-content: space-between; /* distribute items with max space between */
+          padding: 0 2%; /* horizontal padding of 2 (1 rem = root font size) */
+          box-sizing: border-box; /* include padding in width calculation */
+          z-index: 100; /* ensures header is above other content */
         }
 
-        /* split header into three equal sections: left nav, center title, right logo */
-        .header-left,
-        .header-center,
-        .header-right {
+        /*creates three sections within the header*/
+        .header-left, .header-center, .header-right {
+          /* each section takes equal space */
           display: flex;
           align-items: center;
           gap: 1rem;
         }
-        .header-left { flex: 1; justify-content: flex-start; }
-        .header-center { flex: 1; justify-content: center; }
-        .header-right { flex: 1; justify-content: flex-end; }
+        .header-left { flex: 1; justify-content: flex-start; } /* align to left */
+        .header-center { flex: 1; justify-content: center; } /* align to center */
+        .header-right { flex: 1; justify-content: flex-end; } /* align to right */
 
-        /* styling for the main page title */
-        .title {
-          margin: 0;
-          font-size: 1.1rem;
-          font-weight: 600;
-          text-align: center;
-        }
-
-        /* make links look like regular text but still clickable */
         .nav-link {
-          color: inherit;
-          text-decoration: none;
-          cursor: pointer;
+          color: inherit; /* uses the color of the parent element */
+          text-decoration: none; 
+          /* makes hyperlink look like plain text while remaining clickable */
+          cursor: pointer; /* on hover, shows pointer cursor */
           font-size: 1rem;
         }
-        .nav-link:focus {
-          outline: 2px solid rgba(0,0,0,0.15);
-          outline-offset: 2px;
-        }
 
-        /* main content area - positioned below header and above footer */
-        .body {
-          position: relative;
-          top: 80px;
-          left: 0;
-          width: 100%;
-          height: auto;
-          min-height: calc(100vh - 15% - 20%);
-          color: black;
-          padding: 2rem;
-          padding-bottom: 3.5rem;
-          overflow-y: auto;
-          overflow-x: hidden;
-          padding-bottom: 15%; /* reserves space for footer */
-          margin: 0;
-        }
-
-        /* rounded box for the introductory text at the top */
-        .intro-box {
-          max-width: 900px;
-          margin: 0 auto 1.25rem auto; /* centers horizontally and adds space below */
-          background: #fff;
-          border-radius: 12px;
-          padding: 1.5rem 1.75rem;
-          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-          color: #111;
-        }
-        .intro-box h2 {
-          margin-bottom: 0.5rem;
-          font-size: 1.25rem;
-        }
-        .intro-box p {
-          line-height: 1.5;
-          color: #222;
-        }
-
-        /* styling for navigation links under intro box */
-        .body-links {
-          max-width: 900px;
-          margin: 0.25rem auto 2rem auto;
-          display: flex;
-          gap: 1rem;
-          justify-content: center;
-          align-items: center;
-          flex-wrap: wrap;
-        }
-        .content-link {
-          color: inherit;
-          text-decoration: none;
-          padding: 0.25rem 0.5rem;
-          border-radius: 6px;
-          transition: color 120ms ease, background 120ms ease;
-        }
-        .content-link:hover {
+        .header .nav-link:hover { /* hover effect for links in header */
           text-decoration: underline;
           color: rgba(118, 97, 97, 1);
-          background: rgba(118, 97, 97, 0.2);
         }
 
-        /* styling for content sections with images and text */
-        .content-section {
-          max-width: 900px;
-          margin: 1.5rem auto;
-          display: flex;
-          gap: 1.5rem;
-          align-items: flex-start;
-        }
-        .content-section img {
-          flex-shrink: 0;
-        }
-        .content-section p {
-          margin: 0.5rem 0 0 0;
-        }
-
-        /* footer stays at bottom and doesn't scroll */
-        .footer {
-          position: fixed;
-          left: 0;
-          bottom: 0;
+        .body {
+          position: relative; /* relative between header and footer */
           width: 100%;
-          height: 15%;
-          background-color: #E5E1DA;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 2%;
-          box-sizing: border-box;
-          z-index: 10;
+          height: auto; /* full height minus header and footer */
+          color: black; /* default text color */
+          padding: 1rem; /* padding around content */
+          padding-top: 10%; /* padding to avoid overlap with fixed header */
+          overflow-y: auto; /* vertical scrollbar if content overflows */
+          overflow-x: hidden; /* hide horizontal overflow */
         }
-        
-        /* divide footer into 3 equal columns */
-        .footer > div { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width: calc(100% / 3); }
-        
-        /* styling for footer text and links */
-        .footer .title {
+
+        .title {
           margin: 0;
-          font-size: 0.95rem;
-          font-weight: 600;
+          font-size: 1.25rem; /* makes font 125% of root font size */
+          font-weight: 500; /* medium weight, looks bold */
           text-align: center;
         }
-        .footer .title p {
+
+        .intro-box { /* rounded content box */
+          max-width: 60%; /* limits box width to 60% of body */
+          margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+          background: #fff;
+          border-radius: 12px; /* rounded corners */
+          padding: 1.5rem 1.75rem; /* padding inside the box */
+          box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
+        .intro-box h2 { /* heading inside the box */
+          margin-bottom: 0.5rem; /* space below heading */
+          font-size: 1.25rem;
+        }
+        .intro-box p { /* paragraph inside the box */
+          line-height: 1.5; /* interline spacing for better readability */
+        }
+       
+        .footer {
+          position: static; /* stays at the bottom of the page */
+          bottom: 0;
+          width: 100%;
+          height: 20%; /* sets footer to 20% of window height */
+          background-color: #E5E1DA;
+          display: flex; /* useful for horizontal layouts */
+          align-items: center;
+          justify-content: space-between; /* distribute items with max space between */
+          padding: 2% 2%; /* horizontal padding of 2% */
+          box-sizing: border-box; /* include padding in width calculation */
+        }
+        .footer > div { /* makes three sections in the footer */
+          display: flex;
+          flex-direction: column; /* stack items vertically */
+          align-items: center;
+        }
+        .footer .title { /* title style in footer */
           margin: 0;
-        }    
-        .footer .nav-link {
+          font-size: 0.95rem; /* makes the titles in the footer slightly smaller */
+          font-weight: 500; /* makes the titles in the footer also bold */
+          text-align: center;
+        }
+        .footer .nav-link { /* style for links in footer */
           font-size: 0.85rem;
           color: inherit;
-          text-decoration: none;
-          cursor: pointer;
-          pointer-events: auto;
-          display: inline-block;
-          position: relative;
-          z-index: 20;
+          text-decoration: none; /* looks like plain text */
+          cursor: pointer; /* pointer cursor on hover */
+          pointer-events: auto; /* ensures links are clickable */
         }
-        .footer .nav-link:hover {
+        .footer .nav-link:hover { /* hover effect for links in footer */
           text-decoration: underline;
           color: rgba(118, 97, 97, 1);
         }
-        .footer .nav-link.title {
+        .footer .nav-link.title { /* makes the disclaimer link in footer look like a title */
           font-size: 0.95rem;
-          font-weight: 600;
+          font-weight: 500;
         }
-        .footer_date {
+        .footer_date { /* style for date text in footer */
           font-size: 0.85rem;
           text-align: center;
         }
@@ -203,25 +143,23 @@
             gap: 10px;
         }
 
-        /* shows while the data is being loaded from Wikidata */
-        #loading-message {
-            font-size: 16px;
+        #loading-message { /* shows while the data is being loaded from Wikidata */
+            font-size: 1rem;
             border-radius: 12px;
             text-align: center;
-            max-width: 900px;
-            margin: 0 auto 1.25rem auto;
-            padding: 1.5rem 1.75rem;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            color: black;
+            max-width: 65%;
+            margin: 0 auto 1.25rem auto; /* center horizontally and add space below */
+            padding: 1.5rem; /* padding inside the box */
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            color: black; /* default text color */
             background: #fff; 
         }
-        
         .hidden {
-    display: none; /* this is to define what hidden means so that it hides the loading message*/
-}
+            display: none; /* this is to define what hidden means, so that it hides the loading message*/
+        }
 
         /* container where the D3 bar chart SVG is rendered */
-        #barchart-container {
+        #network-container {
             flex: 1;
             min-height: 400px;
             background-color: white;
@@ -231,156 +169,60 @@
             overflow: hidden;
         }
             
-            #barchart-container svg {
-    display: block;
-    margin: 0 auto;
+        #network-container svg { /* makes the SVG take full width of container */
+            display: block; /* removes unwanted space below SVG */
+            margin: 0 auto; /* centers SVG horizontally */
         }
 
-        /* side panel that displays diseases - hidden by default */
-        #diseases-panel {
-            flex: 0 0 350px;
-            background-color: white;
-            border: 2px solid #FF69B4;
-            border-radius: 8px;
-            padding: 20px;
-            overflow-y: auto;
-            display: none;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        /* show the diseases panel when a risk factor is selected */
-        #diseases-panel.active {
-            display: block;
-        }
-
-        /* styling for the title of the diseases list in the panel */
-        .diseases-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #FF69B4;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #FF69B4;
-            padding-bottom: 10px;
-        }
-
-        /* remove bullet points from the diseases list */
-        .diseases-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* styling for each individual disease item in the list */
-        .disease-item {
-            background-color: #f9f9f9;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-left: 4px solid #FF69B4;
-            border-radius: 4px;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        /* bars have smooth animation transitions and change cursor on hover */
-        .bar {
-            transition: opacity 0.3s, fill 0.3s;
-            cursor: pointer;
-        }
-
-        /* bars become slightly transparent and brighter on hover */
-        .bar:hover {
-            opacity: 0.8;
-            filter: brightness(1.1);
-        }
-
-        /* highlight the selected bar with bright pink and add a glow effect */
-        .bar.active {
-            fill: #FF1493 !important;
-            filter: drop-shadow(0 0 4px rgba(255, 20, 147, 0.5));
-        }
-
-        /* styling for the axis text labels */
-        .axis text {
-            fill: #000000;
-            font-size: 12px;
-        }
-
-        /* styling for the axis lines and paths */
-        .axis line, .axis path {
-            stroke: #ccc;
-        }
-
-        /* responsive design - adjust layout on smaller screens */
-        @media (max-width: 1200px) {
-            .body {
-                flex-direction: column;
-            }
-
-            #diseases-panel {
-                flex: 0 0 auto;
-                min-height: 250px;
-                max-height: 300px;
-            }
-            .intro-box {
-              max-width: 900px;
-              margin: 0 auto 1.25rem auto;
-              background: #fff;
-              border-radius: 12px;
-              padding: 1.5rem 1.75rem;
-              box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-              color: #111;
-            }
-            .intro-box h2 {
-              margin-bottom: 0.5rem;
-              font-size: 1.25rem;
-            }
-            .intro-box p {
-              line-height: 1.5;
-              color: #222;
-            }
-        }
-        /* Legend inside graph area */
-        #barchart-container {
+        #network-container { /* to position legend inside graph area */
             position: relative; 
         }
         
-    .legend-box {
-        position: absolute;
-        top: 20px;    /* distance from top inside graph box */
-        left: 20px;   /* distance from left inside graph box */
-        background: #fff;
-        border-radius: 10px;
-        padding: 0.8rem 1.2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        z-index: 3 /* sits above graph */
-    }
+        .legend-box {
+            position: absolute;
+            top: 20px;    /* distance from top inside graph box */
+            left: 20px;   /* distance from left inside graph box */
+            background: #fff;
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 3 /* sits above graph */
+        }
 
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        margin-bottom: 0.4rem;
-    }
+        .legend-item { /* individual legend entry */
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.4rem;
+        }
 
-    .legend-item:last-child {
-        margin-bottom: 0;
-    }
+        .legend-circle { /* colored circle in legend */
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-block; /* makes it a block element */
+        }
 
-    .legend-circle {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        display: inline-block;
-}
+        /* colors need to match the network */
+        .legend-circle.main {
+            background-color: #4634b3; /* same as smoking node */
+        }
+        .legend-circle.disease {
+            background-color: #e6e6fa; /* same as disease nodes */
+        }
 
-    /* Colors matching your graph */
-    .legend-circle.main {
-        background-color: #4634b3; /* same as smoking node */
-}
-
-    .legend-circle.disease {
-        background-color: #e6e6fa; /* same as disease nodes */
-}
+        #tooltip { /* tooltip for node details on hover */
+            position: absolute; 
+            padding: 10px; 
+            background-color: black; 
+            color: #fff; 
+            border-radius: 12px; 
+            font-size: 14px; 
+            pointer-events: none; /* allows mouse events to pass through */
+            opacity: 0; 
+            transition: opacity 0.3s;
+            z-index: 3; /* sits above graph */
+        }
 
     </style>
 </head>
@@ -405,19 +247,19 @@
 
     <!-- main content area containing chart and side panel -->
     <div class="body">
-         <div id="tooltip" style="position: absolute; padding: 8px 12px; background-color: #333; color: white; border-radius: 6px; font-size: 14px; pointer-events: none; opacity: 0; transition: opacity 0.3s;"></div>
-        <div id="chart-wrapper">
-            <!-- loading message displayed while fetching data -->
-            <div id="loading-message">Loading data...</div>
-            
+        <div id="tooltip"></div>
+        <div id="chart-wrapper">            
             <!-- introductory information about the chart -->
-            <div class="intro-box" role="region" aria-label="Introductory text">
+            <div class="intro-box">
                 <h2>Overview</h2>
                 <p>
                     Select a disease related to smoking and explore its risk factors and symptoms!
                 </p>
             </div>
-            <div id="barchart-container">
+            <!-- loading message displayed while fetching data -->
+            <div id="loading-message">Loading data...</div>
+            <!-- container for the network -->
+            <div id="network-container">
             <!-- LEGEND inside graph area -->
                 <div class="legend-box">
                     <div class="legend-item">
@@ -430,14 +272,8 @@
                     </div>
                 </div>
 
-            <script src="network.js"></script>
-
-        </div>
-
-        <!-- side panel that displays diseases related to the selected risk factor -->
-        <div id="diseases-panel" aria-hidden="true">
-            <div class="diseases-title" id="selected-factor"></div>
-            <ul class="diseases-list" id="diseases-list"></ul>
+            <script src="network.js"></script> <!-- link to the script for the network -->
+            </div>
         </div>
     </div>
 
@@ -464,12 +300,11 @@
             <a class="nav-link title" href="Disclaimer.html">Disclaimer</a>
             <div class="footer_date">
                 <p>created: 2025/10/31</p>
-                <p>last updated: 2025/11/24</p>
+                <p>last updated: 2025/11/28</p>
             </div>
         </div> 
     </div>
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <!-- Load external JS script -->
 </body>
 </html>
