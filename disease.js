@@ -112,24 +112,25 @@ const drag = d3.drag()
         d.fy = d.y;
     })
     .on("drag", (event, d) => {
-        d.fx = event.x;
+        d.fx = event.x; // Node follows the mouse
         d.fy = event.y;
     })
     .on("end", (event, d) => {
+        // Release fixed position 
         if (!event.active) sim.alphaTarget(0);
         d.fx = null;
         d.fy = null;
     });
 
-/* -------------------------------------------------------
-   Remove children of parent
-------------------------------------------------------- */
+// Remove children of parent
 function collapseChildren(parentLabel) {
+    // Get names of all nodes whose parent = this node
     const childNames = nodes
         .filter(n => n.parent === parentLabel)
         .map(n => n.name);
-
+    // Remove child nodes
     nodes = nodes.filter(n => n.parent !== parentLabel);
+    // Remove links involving children
     links = links.filter(l => {
         const s = typeof l.source === "string" ? l.source : l.source.name;
         const t = typeof l.target === "string" ? l.target : l.target.name;
@@ -137,128 +138,103 @@ function collapseChildren(parentLabel) {
     });
 }
 
-/* -------------------------------------------------------
-   TOGGLE SYMPTOMS
-------------------------------------------------------- */
+// TOGGLE SYMPTOMS
 async function toggleSymptoms() {
-
-    // COLLAPSE
+    // If already expanded, be able to collapse
     if (expandedSymptoms) {
         expandedSymptoms = false;
         collapseChildren("Symptoms");
-
+        // Remove "no symptoms available" text if present
         if (symptomsTextLabel) {
             symptomsTextLabel.remove();
             symptomsTextLabel = null;
         }
-
         restartSimulation();
         return;
     }
 
-    // EXPAND
+    // Otherwise expand
     expandedSymptoms = true;
     const symptoms = await fetchSymptoms(diseaseName);
-
+    // If no symptoms exist, show label "no symptoms available"
     if (symptoms.length === 0) {
-
         symptomsTextLabel = labelGroup.append("text")
             .text("No symptoms available")
             .attr("font-size", "14px")
             .attr("text-anchor", "middle")
             .style("fill", "#444")
             .style("opacity", 0);
-
         symptomsTextLabel.transition().duration(250).style("opacity", 1);
 
     } else {
-
+        // Otherwise add nodes for each symptom
         symptoms.forEach(sym => {
             nodes.push({ name: sym, type: "symptomDetail", parent: "Symptoms" });
             links.push({ source: "Symptoms", target: sym });
         });
     }
-
     restartSimulation();
 }
 
-/* -------------------------------------------------------
-   TOGGLE RISK FACTORS
-------------------------------------------------------- */
+// TOGGLE RISK FACTORS
 async function toggleRiskFactors() {
-
-    // COLLAPSE
     if (expandedRisks) {
         expandedRisks = false;
         collapseChildren("Risk Factors");
-
         if (riskTextLabel) {
             riskTextLabel.remove();
             riskTextLabel = null;
         }
-
         restartSimulation();
         return;
     }
 
-    // EXPAND
     expandedRisks = true;
     const risks = await fetchRiskFactors(diseaseName);
-
     if (risks.length === 0) {
-
         riskTextLabel = labelGroup.append("text")
             .text("No risk factors available")
             .attr("font-size", "14px")
             .attr("text-anchor", "middle")
             .style("fill", "#444")
             .style("opacity", 0);
-
         riskTextLabel.transition().duration(250).style("opacity", 1);
 
     } else {
-
         risks.forEach(risk => {
             nodes.push({ name: risk, type: "riskDetail", parent: "Risk Factors" });
             links.push({ source: "Risk Factors", target: risk });
         });
     }
-
     restartSimulation();
 }
 
-/* -------------------------------------------------------
-   RENDER
-------------------------------------------------------- */
+// RENDER
 function restartSimulation() {
-
+    // Update link force with new links
     sim.force("link").links(links);
-
-    /* LINKS */
+    // Links
     link = linkGroup.selectAll("line")
         .data(links, d => (d.source.name ?? d.source) + "->" + (d.target.name ?? d.target));
-
     link.exit().remove();
-
     const linkEnter = link.enter()
         .append("line")
         .attr("stroke", "#ccc")
         .attr("stroke-opacity", 0);
 
     linkEnter.transition().duration(300).attr("stroke-opacity", 1);
-
     link = linkEnter.merge(link);
 
-    /* NODES */
+    // NODES
     node = nodeGroup.selectAll("circle")
         .data(nodes, d => d.name);
-
+    // Remove disappearing nodes
     node.exit()
         .transition().duration(200)
         .attr("r", 0)
         .style("opacity", 0)
         .remove();
-
+    // New nodes
     const nodeEnter = node.enter()
         .append("circle")
         .attr("r", 0)
@@ -278,10 +254,7 @@ function restartSimulation() {
 
     node = nodeEnter.merge(node);
 
-    /* MAIN LABELS:
-       Disease — BELOW the bubble (1B)
-       Symptoms / Risk — ABOVE their bubbles
-    */
+    // Main labels
     const labelData = nodes.filter(
         d => d.type === "disease" || d.type === "symptoms" || d.type === "risk"
     );
@@ -304,7 +277,7 @@ function restartSimulation() {
 
     label = labelEnter.merge(label);
 
-    /* CHILD LABELS — always above child nodes */
+    // CHILD LABELS — always above child nodes
     const childLabelData = nodes.filter(
         d => d.type === "symptomDetail" || d.type === "riskDetail"
     );
@@ -331,34 +304,34 @@ function restartSimulation() {
     sim.alpha(1).restart();
 }
 
-/* INITIAL DRAW */
+// INITIAL DRAW 
 restartSimulation();
 
-/* -------------------------------------------------------
-   SIMULATION TICK
-------------------------------------------------------- */
+// SIMULATION TICK: move elements every frame
 sim.on("tick", () => {
-
+    
+    // Move links
     link
         .attr("x1", d => d.source.x)
         .attr("y1", d => d.source.y)
         .attr("x2", d => d.target.x)
         .attr("y2", d => d.target.y);
-
+    
+    // Move node cirlces
     node
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
 
-    /* MAIN LABELS POSITIONING */
+    // Position main labels above/below
     labelGroup.selectAll("text.mainlabel")
         .attr("x", d => d.x)
         .attr("y", d =>
             d.type === "disease"
-                ? d.y + nodeRadius(d) + 20      // disease name BELOW (1B)
-                : d.y - nodeRadius(d) - 20      // symptoms & risk ABOVE
+                ? d.y + nodeRadius(d) + 20      // disease name below
+                : d.y - nodeRadius(d) - 20      // symptoms & risk above
         );
 
-    /* No symptoms text */
+    // "No symptoms" text follows the Symptoms node
     if (symptomsTextLabel) {
         const symNode = nodes.find(n => n.name === "Symptoms");
         if (symNode) {
@@ -368,7 +341,7 @@ sim.on("tick", () => {
         }
     }
 
-    /* No risk factors text */
+    // "No risk factors" text follows Risk Factors node
     if (riskTextLabel) {
         const riskNode = nodes.find(n => n.name === "Risk Factors");
         if (riskNode) {
@@ -378,7 +351,7 @@ sim.on("tick", () => {
         }
     }
 
-    /* CHILD LABELS ABOVE EACH CHILD NODE */
+    // CHILD LABELS ABOVE EACH CHILD NODE
     labelGroup.selectAll("text.childLabel")
         .attr("x", d => d.x)
         .attr("y", d => d.y - nodeRadius(d) - 10);
