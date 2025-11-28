@@ -56,12 +56,12 @@ let links = [
 let expandedSymptoms = false;
 let expandedRisks = false;
 
-/* Floating text labels (NOT nodes) */
+/* Floating parent text labels (NOT nodes) */
 let symptomsTextLabel = null;
 let riskTextLabel = null;
 
 /* -------------------------------------------------------
-   Build SVG + Simulation
+   SVG + Groups + Simulation
 ------------------------------------------------------- */
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -77,18 +77,6 @@ const zoomGroup = svg.append("g");
 const linkGroup = zoomGroup.append("g");
 const nodeGroup = zoomGroup.append("g");
 const labelGroup = zoomGroup.append("g");
-
-/* Tooltip */
-const tooltip = d3.select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("padding", "6px 10px")
-    .style("border-radius", "10px")
-    .style("box-shadow", "0 4px 12px rgba(0,0,0,0.2)")
-    .style("background", "white")
-    .style("font-size", "13px")
-    .style("pointer-events", "none")
-    .style("opacity", 0);
 
 let link = linkGroup.selectAll("line");
 let node = nodeGroup.selectAll("circle");
@@ -114,15 +102,15 @@ const sim = d3.forceSimulation(nodes)
 function nodeRadius(d) {
     if (d.type === "disease") return 45;
     if (d.type === "symptoms" || d.type === "risk") return 35;
-    return 22;
+    return 22; // children
 }
 
 function nodeColor(d) {
-    if (d.type === "disease") return "#7393B3";
-    if (d.type === "symptoms") return "#00008B";
-    if (d.type === "risk") return "#5D3FD3";
-    if (d.type === "symptomDetail") return "#CCCCFF";
-    if (d.type === "riskDetail") return "#008080";
+    if (d.type === "disease") return "#7393B3";   // center
+    if (d.type === "symptoms") return "#00008B";  // dark blue
+    if (d.type === "risk") return "#5D3FD3";      // purple
+    if (d.type === "symptomDetail") return "#CCCCFF"; // light lavender
+    if (d.type === "riskDetail") return "#008080";    // teal
     if (d.type === "noSymptoms" || d.type === "noRisks") return "#bfbfbf";
     return "gray";
 }
@@ -147,10 +135,12 @@ const drag = d3.drag()
     });
 
 /* -------------------------------------------------------
-   Remove children of Symptoms or Risk Factors
+   Remove children of a parent (Symptoms / Risk Factors)
 ------------------------------------------------------- */
 function collapseChildren(parentLabel) {
-    const childNames = nodes.filter(n => n.parent === parentLabel).map(n => n.name);
+    const childNames = nodes
+        .filter(n => n.parent === parentLabel)
+        .map(n => n.name);
 
     nodes = nodes.filter(n => n.parent !== parentLabel);
 
@@ -187,6 +177,7 @@ async function toggleSymptoms() {
 
     if (symptoms.length === 0) {
 
+        // only text, no child nodes
         symptomsTextLabel = labelGroup.append("text")
             .text("No symptoms available")
             .attr("font-size", "14px")
@@ -198,11 +189,13 @@ async function toggleSymptoms() {
 
     } else {
 
+        // create child symptom nodes
         symptoms.forEach(sym => {
             nodes.push({ name: sym, type: "symptomDetail", parent: "Symptoms" });
             links.push({ source: "Symptoms", target: sym });
         });
 
+        // helper text under the parent bubble
         symptomsTextLabel = labelGroup.append("text")
             .text("Click a symptom for details")
             .attr("font-size", "14px")
@@ -272,7 +265,7 @@ async function toggleRiskFactors() {
 }
 
 /* -------------------------------------------------------
-   Re-render graph
+   Re-render graph after any change
 ------------------------------------------------------- */
 function restartSimulation() {
 
@@ -288,14 +281,15 @@ function restartSimulation() {
 
     link.exit().remove();
 
-    link = link.enter()
+    const linkEnter = link.enter()
         .append("line")
         .attr("stroke", "#ccc")
-        .attr("stroke-opacity", 0)
-        .transition().duration(300)
-        .attr("stroke-opacity", 1)
-        .selection()
-        .merge(link);
+        .attr("stroke-opacity", 0);
+
+    linkEnter.transition().duration(300)
+        .attr("stroke-opacity", 1);
+
+    link = linkEnter.merge(link);
 
     /* NODES */
     node = nodeGroup.selectAll("circle")
@@ -319,22 +313,6 @@ function restartSimulation() {
             if (d.type === "symptoms") toggleSymptoms();
             if (d.type === "risk") toggleRiskFactors();
         })
-        .on("mouseover", (event, d) => {
-            if (
-                d.type === "symptomDetail" ||
-                d.type === "riskDetail" ||
-                d.type === "noSymptoms" ||
-                d.type === "noRisks"
-            ) {
-                tooltip.style("opacity", 1).html(d.name);
-            }
-        })
-        .on("mousemove", event => {
-            tooltip
-                .style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY - 10) + "px");
-        })
-        .on("mouseout", () => tooltip.style("opacity", 0))
         .call(drag);
 
     nodeEnter.transition().duration(300)
@@ -343,7 +321,7 @@ function restartSimulation() {
 
     node = nodeEnter.merge(node);
 
-    /* LABELS for main nodes only */
+    /* MAIN LABELS (disease, Symptoms, Risk Factors) */
     const labelData = nodes.filter(
         d => d.type === "disease" || d.type === "symptoms" || d.type === "risk"
     );
@@ -360,13 +338,37 @@ function restartSimulation() {
         .attr("font-size", d => d.type === "disease" ? "18px" : "14px")
         .attr("font-weight", d => d.type === "disease" ? "bold" : "normal")
         .attr("text-anchor", "middle")
-        .attr("dy", -40)
         .style("opacity", 0);
 
     labelEnter.transition().duration(300).style("opacity", 1);
 
     label = labelEnter.merge(label);
 
+    /* CHILD LABELS (always visible above teal / lavender bubbles) */
+    const childLabelData = nodes.filter(d =>
+        d.type === "symptomDetail" || d.type === "riskDetail"
+    );
+
+    let childLabels = labelGroup.selectAll("text.childLabel")
+        .data(childLabelData, d => d.name);
+
+    childLabels.exit().remove();
+
+    const childLabelEnter = childLabels.enter()
+        .append("text")
+        .classed("childLabel", true)
+        .text(d => d.name)
+        .attr("font-size", "13px")
+        .attr("text-anchor", "middle")
+        .style("fill", "#333")
+        .style("opacity", 0);
+
+    childLabelEnter.transition().duration(250)
+        .style("opacity", 1);
+
+    childLabels = childLabelEnter.merge(childLabels);
+
+    /* Update simulation with new nodes */
     sim.nodes(nodes);
     sim.alpha(1).restart();
 }
@@ -377,8 +379,8 @@ function restartSimulation() {
 restartSimulation();
 
 /* -------------------------------------------------------
-   SIMULATION TICK
-   + position labels under Symptoms / Risk Factors
+   SIMULATION TICK:
+   move nodes, labels & helper texts
 ------------------------------------------------------- */
 sim.on("tick", () => {
 
@@ -392,12 +394,12 @@ sim.on("tick", () => {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
 
-    /* Move main-node text */
-    label
+    /* main labels above their nodes */
+    labelGroup.selectAll("text.mainlabel")
         .attr("x", d => d.x)
         .attr("y", d => d.y - 40);
 
-    /* Move floating Symptoms label */
+    /* floating Symptoms helper text */
     if (symptomsTextLabel) {
         const symNode = nodes.find(n => n.name === "Symptoms");
         if (symNode) {
@@ -407,7 +409,7 @@ sim.on("tick", () => {
         }
     }
 
-    /* Move floating Risk Factors label */
+    /* floating Risk Factors helper text */
     if (riskTextLabel) {
         const riskNode = nodes.find(n => n.name === "Risk Factors");
         if (riskNode) {
@@ -416,5 +418,9 @@ sim.on("tick", () => {
                 .attr("y", riskNode.y + 55);
         }
     }
-});
 
+    /* child labels above each child bubble */
+    labelGroup.selectAll("text.childLabel")
+        .attr("x", d => d.x)
+        .attr("y", d => d.y - (nodeRadius(d) + 10));
+});
