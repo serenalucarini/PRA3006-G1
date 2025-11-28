@@ -56,12 +56,12 @@ let links = [
 let expandedSymptoms = false;
 let expandedRisks = false;
 
-/* Floating parent text labels (NOT nodes) */
+/* Text labels for cases with no data */
 let symptomsTextLabel = null;
 let riskTextLabel = null;
 
 /* -------------------------------------------------------
-   SVG + Groups + Simulation
+   SVG + Groups
 ------------------------------------------------------- */
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -73,7 +73,6 @@ const svg = d3.select("#graph")
     .style("overflow", "visible");
 
 const zoomGroup = svg.append("g");
-
 const linkGroup = zoomGroup.append("g");
 const nodeGroup = zoomGroup.append("g");
 const labelGroup = zoomGroup.append("g");
@@ -82,7 +81,7 @@ let link = linkGroup.selectAll("line");
 let node = nodeGroup.selectAll("circle");
 let label = labelGroup.selectAll("text");
 
-/* Zoom + Pan */
+/* Zoom */
 svg.call(
     d3.zoom()
         .scaleExtent([0.5, 4])
@@ -106,11 +105,11 @@ function nodeRadius(d) {
 }
 
 function nodeColor(d) {
-    if (d.type === "disease") return "#7393B3";   // center
-    if (d.type === "symptoms") return "#00008B";  // dark blue
-    if (d.type === "risk") return "#5D3FD3";      // purple
-    if (d.type === "symptomDetail") return "#CCCCFF"; // light lavender
-    if (d.type === "riskDetail") return "#008080";    // teal
+    if (d.type === "disease") return "#7393B3";
+    if (d.type === "symptoms") return "#00008B";
+    if (d.type === "risk") return "#5D3FD3";
+    if (d.type === "symptomDetail") return "#CCCCFF";
+    if (d.type === "riskDetail") return "#008080";
     if (d.type === "noSymptoms" || d.type === "noRisks") return "#bfbfbf";
     return "gray";
 }
@@ -135,7 +134,7 @@ const drag = d3.drag()
     });
 
 /* -------------------------------------------------------
-   Remove children of a parent (Symptoms / Risk Factors)
+   Remove children of parent
 ------------------------------------------------------- */
 function collapseChildren(parentLabel) {
     const childNames = nodes
@@ -143,7 +142,6 @@ function collapseChildren(parentLabel) {
         .map(n => n.name);
 
     nodes = nodes.filter(n => n.parent !== parentLabel);
-
     links = links.filter(l => {
         const s = typeof l.source === "string" ? l.source : l.source.name;
         const t = typeof l.target === "string" ? l.target : l.target.name;
@@ -159,7 +157,6 @@ async function toggleSymptoms() {
     // COLLAPSE
     if (expandedSymptoms) {
         expandedSymptoms = false;
-
         collapseChildren("Symptoms");
 
         if (symptomsTextLabel) {
@@ -177,33 +174,21 @@ async function toggleSymptoms() {
 
     if (symptoms.length === 0) {
 
-        // only text, no child nodes
         symptomsTextLabel = labelGroup.append("text")
             .text("No symptoms available")
             .attr("font-size", "14px")
             .attr("text-anchor", "middle")
-            .style("fill", "#555")
+            .style("fill", "#444")
             .style("opacity", 0);
 
         symptomsTextLabel.transition().duration(250).style("opacity", 1);
 
     } else {
 
-        // create child symptom nodes
         symptoms.forEach(sym => {
             nodes.push({ name: sym, type: "symptomDetail", parent: "Symptoms" });
             links.push({ source: "Symptoms", target: sym });
         });
-
-        // helper text under the parent bubble
-        symptomsTextLabel = labelGroup.append("text")
-            .text("Click a symptom for details")
-            .attr("font-size", "14px")
-            .attr("text-anchor", "middle")
-            .style("fill", "#555")
-            .style("opacity", 0);
-
-        symptomsTextLabel.transition().duration(250).style("opacity", 1);
     }
 
     restartSimulation();
@@ -217,7 +202,6 @@ async function toggleRiskFactors() {
     // COLLAPSE
     if (expandedRisks) {
         expandedRisks = false;
-
         collapseChildren("Risk Factors");
 
         if (riskTextLabel) {
@@ -239,7 +223,7 @@ async function toggleRiskFactors() {
             .text("No risk factors available")
             .attr("font-size", "14px")
             .attr("text-anchor", "middle")
-            .style("fill", "#555")
+            .style("fill", "#444")
             .style("opacity", 0);
 
         riskTextLabel.transition().duration(250).style("opacity", 1);
@@ -250,22 +234,13 @@ async function toggleRiskFactors() {
             nodes.push({ name: risk, type: "riskDetail", parent: "Risk Factors" });
             links.push({ source: "Risk Factors", target: risk });
         });
-
-        riskTextLabel = labelGroup.append("text")
-            .text("Click a risk factor for details")
-            .attr("font-size", "14px")
-            .attr("text-anchor", "middle")
-            .style("fill", "#555")
-            .style("opacity", 0);
-
-        riskTextLabel.transition().duration(250).style("opacity", 1);
     }
 
     restartSimulation();
 }
 
 /* -------------------------------------------------------
-   Re-render graph after any change
+   RENDER
 ------------------------------------------------------- */
 function restartSimulation() {
 
@@ -273,11 +248,7 @@ function restartSimulation() {
 
     /* LINKS */
     link = linkGroup.selectAll("line")
-        .data(links, d => {
-            const s = typeof d.source === "string" ? d.source : d.source.name;
-            const t = typeof d.target === "string" ? d.target : d.target.name;
-            return `${s}->${t}`;
-        });
+        .data(links, d => (d.source.name ?? d.source) + "->" + (d.target.name ?? d.target));
 
     link.exit().remove();
 
@@ -286,8 +257,7 @@ function restartSimulation() {
         .attr("stroke", "#ccc")
         .attr("stroke-opacity", 0);
 
-    linkEnter.transition().duration(300)
-        .attr("stroke-opacity", 1);
+    linkEnter.transition().duration(300).attr("stroke-opacity", 1);
 
     link = linkEnter.merge(link);
 
@@ -305,7 +275,6 @@ function restartSimulation() {
         .append("circle")
         .attr("r", 0)
         .attr("fill", d => nodeColor(d))
-        .style("opacity", 0)
         .style("cursor", d =>
             d.type === "symptoms" || d.type === "risk" ? "pointer" : "default"
         )
@@ -321,7 +290,10 @@ function restartSimulation() {
 
     node = nodeEnter.merge(node);
 
-    /* MAIN LABELS (disease, Symptoms, Risk Factors) */
+    /* MAIN LABELS:
+       Disease — BELOW the bubble (1B)
+       Symptoms / Risk — ABOVE their bubbles
+    */
     const labelData = nodes.filter(
         d => d.type === "disease" || d.type === "symptoms" || d.type === "risk"
     );
@@ -335,18 +307,18 @@ function restartSimulation() {
         .append("text")
         .classed("mainlabel", true)
         .text(d => d.name)
-        .attr("font-size", d => d.type === "disease" ? "18px" : "14px")
-        .attr("font-weight", d => d.type === "disease" ? "bold" : "normal")
         .attr("text-anchor", "middle")
+        .attr("font-weight", d => d.type === "disease" ? "bold" : "normal")
+        .attr("font-size", d => d.type === "disease" ? "20px" : "15px")
         .style("opacity", 0);
 
     labelEnter.transition().duration(300).style("opacity", 1);
 
     label = labelEnter.merge(label);
 
-    /* CHILD LABELS (always visible above teal / lavender bubbles) */
-    const childLabelData = nodes.filter(d =>
-        d.type === "symptomDetail" || d.type === "riskDetail"
+    /* CHILD LABELS — always above child nodes */
+    const childLabelData = nodes.filter(
+        d => d.type === "symptomDetail" || d.type === "riskDetail"
     );
 
     let childLabels = labelGroup.selectAll("text.childLabel")
@@ -358,29 +330,24 @@ function restartSimulation() {
         .append("text")
         .classed("childLabel", true)
         .text(d => d.name)
-        .attr("font-size", "13px")
         .attr("text-anchor", "middle")
+        .attr("font-size", "13px")
         .style("fill", "#333")
         .style("opacity", 0);
 
-    childLabelEnter.transition().duration(250)
-        .style("opacity", 1);
+    childLabelEnter.transition().duration(250).style("opacity", 1);
 
     childLabels = childLabelEnter.merge(childLabels);
 
-    /* Update simulation with new nodes */
     sim.nodes(nodes);
     sim.alpha(1).restart();
 }
 
-/* -------------------------------------------------------
-   INITIAL DRAW
-------------------------------------------------------- */
+/* INITIAL DRAW */
 restartSimulation();
 
 /* -------------------------------------------------------
-   SIMULATION TICK:
-   move nodes, labels & helper texts
+   SIMULATION TICK
 ------------------------------------------------------- */
 sim.on("tick", () => {
 
@@ -394,33 +361,38 @@ sim.on("tick", () => {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
 
-    /* main labels above their nodes */
+    /* MAIN LABELS POSITIONING */
     labelGroup.selectAll("text.mainlabel")
         .attr("x", d => d.x)
-        .attr("y", d => d.y - 40);
+        .attr("y", d =>
+            d.type === "disease"
+                ? d.y + nodeRadius(d) + 20      // disease name BELOW (1B)
+                : d.y - nodeRadius(d) - 20      // symptoms & risk ABOVE
+        );
 
-    /* floating Symptoms helper text */
+    /* No symptoms text */
     if (symptomsTextLabel) {
         const symNode = nodes.find(n => n.name === "Symptoms");
         if (symNode) {
             symptomsTextLabel
                 .attr("x", symNode.x)
-                .attr("y", symNode.y + 55);
+                .attr("y", symNode.y + nodeRadius(symNode) + 20);
         }
     }
 
-    /* floating Risk Factors helper text */
+    /* No risk factors text */
     if (riskTextLabel) {
         const riskNode = nodes.find(n => n.name === "Risk Factors");
         if (riskNode) {
             riskTextLabel
                 .attr("x", riskNode.x)
-                .attr("y", riskNode.y + 55);
+                .attr("y", riskNode.y + nodeRadius(riskNode) + 20);
         }
     }
 
-    /* child labels above each child bubble */
+    /* CHILD LABELS ABOVE EACH CHILD NODE */
     labelGroup.selectAll("text.childLabel")
         .attr("x", d => d.x)
-        .attr("y", d => d.y - (nodeRadius(d) + 10));
+        .attr("y", d => d.y - nodeRadius(d) - 10);
 });
+
