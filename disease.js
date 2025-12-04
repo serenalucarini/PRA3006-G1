@@ -64,19 +64,10 @@ const svg = d3.select("#graph")
     .attr("height", height)
     .style("overflow", "visible");
 
-// Group for zoom/pan
-const zoomGroup = svg.append("g");
 // Subgroups: links, nodes, and labels
-const linkGroup = zoomGroup.append("g");
-const nodeGroup = zoomGroup.append("g");
-const labelGroup = zoomGroup.append("g");
-
-// Enable zoom/pan but disable scroll zoom (so page scroll works normally) 
-svg.call(
-    d3.zoom()
-        .scaleExtent([0.5, 4])
-        .on("zoom", event => zoomGroup.attr("transform", event.transform))
-).on("wheel.zoom",null); // disables scroll zoom so page can scroll 
+const linkGroup = svg.append("g");
+const nodeGroup = svg.append("g");
+const labelGroup = svg.append("g");
 
 // Force Simulation
 const sim = d3.forceSimulation(nodes)
