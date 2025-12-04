@@ -6,7 +6,7 @@ document.getElementById("headerDiseaseName").textContent = diseaseName; // Put t
 // SPARQL Queries 
 async function fetchSymptoms(diseaseName) { // Get symptoms for this specific disease from Wikidata
     // Get all symptoms (P780) for disease with this label 
-    const query = `      
+    const query = `
     SELECT ?symptomLabel WHERE {
       ?disease rdfs:label "${diseaseName}"@en.
       ?disease wdt:P780 ?symptom.
