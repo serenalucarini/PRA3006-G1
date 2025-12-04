@@ -149,11 +149,15 @@ async function toggleSymptoms() {
     const symptoms = await fetchSymptoms(diseaseName);
     // If no symptoms exist, show label "no symptoms available"
     if (symptoms.length === 0) {
+        const symNode = nodes.find(n => n.name === "Symptoms");
+        
         symptomsTextLabel = labelGroup.append("text")
             .text("No symptoms available")
             .attr("font-size", "14px")
             .attr("text-anchor", "middle")
             .style("fill", "#444")
+            .attr("x", symNode?.x || 0)
+            .attr("y", (symNode?.y || 0) + 50) // below the Symptoms node
             .style("opacity", 0);
         symptomsTextLabel.transition().duration(250).style("opacity", 1);
 
