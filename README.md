@@ -21,7 +21,7 @@ The website answers the Research Question by:
 # 2.1 Data Source
 ALL the data of this project is traceable to **Wikidata**, which is a collaborative and open knowledge database. 
 
-# 2.2 
+# 2.2 Data Collection
 We use **SPARQL endpoints** to query Wikidata and retrieve:
 
 - diseases that are associated with smoking as a risk factor  
@@ -50,15 +50,15 @@ To answer the research question, we focus on two aspects:
  Furthermore, it provides navigation to: 
  1. **Network Visualization**
  2. **Bar Charts**
- 3. **Pie Charts**
+ 3. **Pie Chart**
  4. **About us**
  5. **Course Information**
  6. **Disclaimer** 
 
-# 3.2 Network Visualization (Circles.html) 
+# 3.2 Network Visualization (Circles.html, network.js, disease.html, disease.js) 
 Displays a **network of diseases** related to smoking.  
 - Nodes represent diseases; connections represent **shared symptoms or risk factors**.  
-- The user can explore how diseases cluster together and which ones are highly connected, helping to see similarities in underlying causes and manifestations.
+- The user can explore underlying causes and manifestations by interacting with the nodes.
 
 # 3.3 Bar Charts (Barcharts.html, Barcharts.js) 
 
@@ -72,16 +72,15 @@ Displays a **network of diseases** related to smoking.
  
 The Bar Charts together provide a comparative analysis. 
 
-# 3.4 Pie Chart (pie.html) 
+# 3.4 Pie Chart (pie.html, pie.js) 
  Shows the frequency of symptoms across all smoking-related diseases. 
  
 - Each slice corresponds to one symptom; the size of the slice reflects how often this symptom appears among diseases in our dataset.  
 - This helps answer which symptoms are **most characteristic** of smoking-related diseases overall.
 
-
 # 3.5 Context Pages 
 Here the webpage navigates to the following: 
-- About us **(Aboutus.html)**- it introduces the developers and their roles.
+- About us **(AboutUs.html)**- it introduces the developers.
 - Course **(Course.html)**- situates the project within PRA3006
 - Disclaimer **(Disclaimer.html)**- clarifies that the website is for educational purposes and it is NOT medical advice.
 
@@ -96,7 +95,8 @@ This will deepen the analysis of similarities between diseases and their underly
 - HTML to structure the pages
 - CSS for styling and layout
 - JavaScript for data handling and interactivity
-- D3.js for network, pie charts and all necessary visualisations
+- D3.js for network and bar charts
+- Chart.js for pie chart
 - SPARQL for query WikiData
 
 # 6. Done! Now you can try to navigate the website 
