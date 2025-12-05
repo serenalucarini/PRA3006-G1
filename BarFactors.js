@@ -261,7 +261,7 @@
                 .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
                 .style("text-anchor", "middle")
                 .style("fill", "#000000")
-                .text("Risk Factors");
+                .text("Risk Factor");
         }
 
         /* initialization function - runs when page loads
