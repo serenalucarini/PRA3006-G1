@@ -28,9 +28,9 @@ async function convert(data) {
 // fetch data from SPARQL endpoint
 async function fetchData() {
     const loadingMessage = document.getElementById("loading-message"); // makes a loading message according to css style
-    loadingMessage.classList.remove("hidden"); //??? check how to use loading message properly
+    loadingMessage.classList.remove("hidden");
 
-    // SPARQL query to get diseases caused by smoking
+    // SPARQL query to get diseases (P5642) caused by smoking
     const sparqlQuery = `
     SELECT ?disease ?diseaseLabel
     WHERE {
@@ -46,16 +46,16 @@ async function fetchData() {
         
         const data = await response.json();
         const results = data.results.bindings; // selects the correct array from the fetched data
-        console.log(results); // print in the console the results
+        console.log(results); // print in the console the results, to verify if data is fetched correctly
         
         const network = await convert(results); // convert results into appropriate json format
-        loadingMessage.classList.add("hidden"); //??? check how to use loading message properly
+        loadingMessage.classList.add("hidden");
         
         return network;
     } catch (error) {
         console.error("Error fetching data:", error); // print error message in console if present
         loadingMessage.classList.add("hidden");
-        return { nodes: [], links: [] }; // returns a blank array, array are defined by []
+        return { nodes: [], links: [] }; // returns a blank array, arrays are defined by []
     }
 }
 
@@ -64,12 +64,12 @@ async function initializeNetwork() {
     const network = await fetchData();
     
     // set up network dimensions
-    const headerHeight = window.innerHeight * 0.18;
-    const footerHeight = window.innerHeight * 0.18;
+    const headerHeight = window.innerHeight * 0.15;
+    const footerHeight = window.innerHeight * 0.2;
     const width = window.innerWidth * 0.8;
     const height = window.innerHeight - headerHeight - footerHeight;
 
-    // add nodes + make sure the circle is centered within the barchart
+    // add nodes + make sure the circle is centered within the chart area
     const svg = d3.select("#network-container")
     .append("svg")
     .attr("width", width)
@@ -79,14 +79,14 @@ async function initializeNetwork() {
     .style("align-items", "center");
 
     // add links
-        const link = svg
-        .selectAll("line")
-        .data(network.links)
-        .enter()
-        .append("line")
-        .style("stroke", "#dbdbdbff");
+    const link = svg
+    .selectAll("line") // select all lines
+    .data(network.links)
+    .enter()
+    .append("line")
+    .style("stroke", "#dbdbdbff"); // light grey lines
 
-    const tooltip = d3.select("#tooltip"); // ???? this should select the tooltip id from the css
+    const tooltip = d3.select("#tooltip"); // select tooltip style from html
 
     const node = svg.append("g")
         .selectAll("circle")
@@ -96,8 +96,7 @@ async function initializeNetwork() {
         .attr("fill", d => d.isMain ? "#483D8B" : "#e6e6fa") // color nodes, smoking vs diseases
         .style("cursor", d => d.isMain ? "default" : "pointer") //pointer only on diseases
 
-        /*NATALIA HERE i added this part so that we see the name when we hover over the disease*/
-        // Interactive Hover
+        // Interactive Hover to show disease names
         .on("mouseover", (event, d) => {
             if (!d.isMain) {
                 // if the mouse is over a disease node:
@@ -106,7 +105,7 @@ async function initializeNetwork() {
                     .attr("r", 20); // increase size
                 const tooltip = d3.select("#tooltip");
         tooltip
-            .style("opacity", 1)
+            .style("opacity", 1) // make tooltip visible
             .html(d.name)
             .style("pointer-events", "none");
             }
