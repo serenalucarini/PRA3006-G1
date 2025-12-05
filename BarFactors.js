@@ -91,7 +91,6 @@
             // return diseases sorted alphabetically for better readability
             return uniqueDiseases.sort();
         }
-
         /* displays the list of diseases in the side panel when a risk factor is clicked */
         function displayDiseases(factorName) {
             // get all diseases associated with this risk factor

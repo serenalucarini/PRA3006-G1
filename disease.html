@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://d3js.org/d3.v6.min.js"></script> <!-- D3.js library linked -->
   <title>Disease details</title> <!-- page title shown in browser tab -->
   <style>
     /* asterisk is the universal selector */
@@ -79,7 +79,7 @@
         background: #fff;
         border-radius: 12px; /* rounded corners */
         padding: 1.5rem 1.75rem; /* padding inside the box */
-        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
     }
 
   .intro-box-disease h2 {
@@ -104,7 +104,7 @@
     </div>
     <!-- CENTER -->
     <div class="header-center"> <!-- center section of the header, with the main title -->
-        <h1 class="title" id="headerDiseaseName">Loading…</h1>
+        <h1 class="title" id="headerDiseaseName"></h1>
     </div>
     <!-- RIGHT -->
     <div class="header-right"> <!-- right section of the header, with the university logo -->
@@ -117,12 +117,13 @@
     <p>
         This interactive network shows how this disease relates to its known symptoms 
         and risk factors based on WikiData information. Click “Symptoms” or 
-        “Risk Factors” to explore additional details. Experiment the interactivity of the network by moving the nodes.
+        “Risk Factors” to explore additional details. Experiment the interactivity of 
+        the network by moving the nodes.
     </p>
 </div>
 
-  <div id="graph" style="width:100%; height:700px;"></div>
+  <div id="graph" style="width:100%; height:700px;"></div> <!-- div to hold the D3.js graph -->
 
-  <script src="disease.js"></script>
+  <script src="disease.js"></script> <!-- link to the JavaScript file for the graph -->
 </body>
 </html>
